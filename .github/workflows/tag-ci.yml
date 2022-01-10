@@ -8,7 +8,7 @@ on:
 jobs:
   auto-capitalize-prepare:
     name: 'npm-prepare auto-capitalize'
-    uses: n3oltd/actions/.github/workflows/npm-prepare.yml@main
+    uses: n3oltd/actions/.github/workflows/npm-prepack.yml@main
     with:
       working-directory: 'auto-capitalize'
 
