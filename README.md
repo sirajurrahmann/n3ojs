@@ -1,4 +1,7 @@
 # N3O JavaScript Library
+
+[![Tag CI](https://github.com/n3oltd/n3ojs/actions/workflows/tag-ci.yml/badge.svg)](https://github.com/n3oltd/n3ojs/actions/workflows/tag-ci.yml)
+
 This repo contains the N3O JavaScript library. These are a series of JavaScript utilities providing the functionality listed below. Packages are published to npm under `@n3oltd`.
 
 ## Functionality
