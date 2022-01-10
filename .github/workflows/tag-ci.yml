@@ -6,7 +6,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  job1:
+  auto-capitalize:
     name: 'npm-publish auto-capitalize'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
