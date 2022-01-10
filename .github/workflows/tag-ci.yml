@@ -11,7 +11,7 @@ jobs:
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       prepack: true
-      working-directory: 'auto-capitalize'
+      working-directory: 'src/auto-capitalize'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
