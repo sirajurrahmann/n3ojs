@@ -6,17 +6,11 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  auto-capitalize-prepare:
-    name: 'npm-prepare auto-capitalize'
-    uses: n3oltd/actions/.github/workflows/npm-prepack.yml@main
-    with:
-      working-directory: 'auto-capitalize'
-
-  auto-capitalize-publish:
+  job1:
     name: 'npm-publish auto-capitalize'
-    needs: auto-capitalize-prepare
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
+      prepack: true
       working-directory: 'auto-capitalize'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
