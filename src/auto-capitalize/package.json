@@ -13,21 +13,18 @@
   },
   "files": [
     "**/*.js",
+    "**/*.ts",
     "**/*.d.ts",
     "LICENSE.md",
     "README.md"
   ],
-  "main": "src/index.ts",
+  "main": "index.ts",
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
   ],
-  "scripts": {
-    "build": "rollup -c rollup.config.js",
-    "prepack": "npm install && npm run build"
-  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
