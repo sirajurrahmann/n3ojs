@@ -30,7 +30,7 @@ bower_components
 .lock-wscript
 
 # IDEs and editors
-.idea
+**/.idea
 .project
 .classpath
 .c9/
@@ -90,6 +90,13 @@ lerna-debug.log
 .DS_Store
 Thumbs.db
 
+
+
 # NPM Build output
 **/index.d.ts
 **/dist/index.js
+**/build/*.d.ts
+**/build/*.d.ts.map
+**/build/*.ts
+**/build/*.js
+**/build/*.js.map
