@@ -89,3 +89,7 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# NPM Build output
+**/index.d.ts
+**/dist/index.js
