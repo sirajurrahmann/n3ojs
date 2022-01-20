@@ -27,7 +27,7 @@ export default {
       babelHelpers: "bundled",
       exclude: ["node_modules/**"],
       include: [
-        "src/**",
+        "src/*",
         "node_modules/lit/**",
         "node_modules/lit-element/**",
         "node_modules/lit-html/**",
