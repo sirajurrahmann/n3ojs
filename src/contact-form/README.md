@@ -20,7 +20,7 @@ Questions:
 
 A N3O Package for use in client websites.
 
-Adds Stripe Payment Collection to checkout.
+Adds the Contact Form to checkout.
 
 ### Usage
 

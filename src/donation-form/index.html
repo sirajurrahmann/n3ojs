@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>N3O Donation Form</title>
+
+  <script type="module" src="./build/index.js"></script>
+
+  <style>
+    data-donation-form {
+      --row-spacing: 16px;
+      --font-family: "Museo Sans 300", Arial, sans-serif !important;
+      --default-text-color: rgb(33, 37, 41);
+      --input-height: 28px;
+      --input-font-size: 16px;
+
+      --type-button-text-transform: uppercase;
+      --type-button-padding: 6px 12px;
+
+      --button-text-size: 18px;
+
+      --button-background-color: none;
+      --button-text-color: #6c757d;
+      --button-border: 1px solid #6c757d;
+      --button-box-shadow: none;
+
+      --button-hover-background-color: #4FAF46;
+      --button-hover-text-color: #fff;
+      --button-hover-border: 1px solid #4FAF46;
+      --button-hover-box-shadow: 0 0 0 0.2rem rgba(79, 175, 70, 0.5);
+
+      --button-selected-background-color: #4FAF46;
+      --button-selected-text-color: #fff;
+      --button-selected-border: 1px solid #4FAF46;
+      --button-selected-box-shadow: 0 0 0 0.2rem rgba(79, 175, 70, 0.5);
+    }
+  </style>
+  <script type="module">
+    const el = document.querySelector("#donationForm");
+    el.data = {
+      formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
+      baseUrl: "https://localhost:5001",
+      primaryColor: "#4FAF46",
+      singleText: "One-Off",
+      regularText: "Monthly",
+      showFrequencyFirst: true,
+      showCurrencyText: true
+    };
+  </script>
+</head>
+
+<body>
+<div style="width: 300px">
+  <data-donation-form id="donationForm"> </data-donation-form>
+</div>
+</body>
+
+</html>
