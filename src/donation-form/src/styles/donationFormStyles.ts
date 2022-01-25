@@ -65,7 +65,7 @@ export const frequencyStyles = css`
   }
 `;
 
-export const fundSelectorStyles = css`
+export const selectStyles = css`
   select {
     width: 100%;
     height: var(--input-height);

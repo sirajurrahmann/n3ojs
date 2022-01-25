@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { fundSelectorStyles } from "../styles/donationFormStyles";
+import { selectStyles } from "../styles/donationFormStyles";
 let FundSelector = class FundSelector extends LitElement {
     constructor() {
         super(...arguments);
@@ -27,7 +27,7 @@ let FundSelector = class FundSelector extends LitElement {
         return html `
       <div class="n3o-donation-form-fund-select">
         <select
-          class="n3o-form-input n3o-form-input-select"
+          id="fund-select"
           @change="${(e) => {
             var _a;
             const item = this.options.find((opt) => {
@@ -59,7 +59,10 @@ let FundSelector = class FundSelector extends LitElement {
     `;
     }
 };
-FundSelector.styles = fundSelectorStyles;
+FundSelector.styles = [selectStyles];
+__decorate([
+    property()
+], FundSelector.prototype, "value", void 0);
 __decorate([
     property()
 ], FundSelector.prototype, "onChange", void 0);

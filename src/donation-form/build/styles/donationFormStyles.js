@@ -60,7 +60,7 @@ export const frequencyStyles = css `
     justify-content: space-between;
   }
 `;
-export const fundSelectorStyles = css `
+export const selectStyles = css `
   select {
     width: 100%;
     height: var(--input-height);

@@ -97,7 +97,8 @@ Thumbs.db
 **/index.d.ts
 **/dist/index.js
 **/build/*.d.ts
-**/build/*.d.ts.map
-**/build/*.ts
-**/build/*.js
-**/build/*.js.map
+**/build/**/*.d.ts.map
+**/build/**/*.ts
+**/build/**/*.js
+**/build/**/*.js.map
+**/**/build

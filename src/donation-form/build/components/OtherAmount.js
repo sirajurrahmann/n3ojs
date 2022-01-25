@@ -30,7 +30,6 @@ let OtherAmount = class OtherAmount extends LitElement {
     }
     render() {
         var _a, _b, _c;
-        console.log(this.value);
         //language=HTML
         return html `
       <div class="n3o-donation-form-other-amount">
