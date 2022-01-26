@@ -12,6 +12,9 @@ class OtherAmount extends LitElement {
   onChange?: (amount?: MoneyReq) => void;
 
   @property()
+  onCurrencyChange?: (selected: Currency) => void;
+
+  @property()
   value?: MoneyReq;
 
   @property()
@@ -38,15 +41,36 @@ class OtherAmount extends LitElement {
     }
   }
 
+  renderSingleCurrency() {
+    return html`<span class="n3o-input-amount-symbol">
+      ${this.currency?.symbol}
+    </span>`;
+  }
+
+  renderMultiCurrency() {
+    return html`
+      <select
+        @change="${(e: Event) =>
+          this.onCurrencyChange?.(
+            (e.target as HTMLSelectElement).value as Currency,
+          )}"
+      >
+        ${this.currencies.map(
+          (curr) => html`<option value="${curr.text}">${curr.symbol}</option>`,
+        )}
+      </select>
+    `;
+  }
+
   render() {
     //language=HTML
     return html`
       <div class="n3o-donation-form-other-amount">
         <span class="n3o-amount-input">
           <span>
-            <span class="n3o-input-amount-symbol">
-              ${this.currency?.symbol}
-            </span>
+            ${this.currencies.length > 1
+              ? this.renderMultiCurrency()
+              : this.renderSingleCurrency()}
             <input
               .value="${this.value?.amount || ""}"
               @input="${(e: Event) => {

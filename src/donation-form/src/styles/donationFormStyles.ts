@@ -3,6 +3,18 @@ import { css } from "lit";
 export const donationFormStyles = css`
   div[id*="n3o-donation-form"] {
     font-family: var(--font-family);
+    border: 4px solid var(--theme-color);
+    color: var(--text-color);
+  }
+
+  .n3o-donation-form-title {
+    text-align: center;
+    font-size: var(--header-font-size);
+    color: var(--theme-color);
+  }
+
+  .n3o-donation-form-card {
+    border-top: 4px solid var(--theme-color);
   }
 
   .n3o-donation-form-footer {
@@ -95,6 +107,15 @@ export const otherAmountStyles = css`
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+  .n3o-amount-input select {
+    font-size: var(--input-font-size);
+    height: var(--input-height);
+    border: none;
+  }
+  .n3o-amount-input select:focus-visible {
+    border: none;
+    outline: none;
   }
   .n3o-input-amount-symbol {
     padding-left: 5px;

@@ -5,8 +5,8 @@ import {
   FixedOrDefaultFundDimensionOptionRes,
 } from "@n3oltd/umbraco-donations-client/src/index";
 import { donationFormStyles } from "./styles/donationFormStyles";
-import { styleMap } from "lit/directives/style-map.js";
 import {
+  Currency,
   DonationsClient,
   PriceHandleRes,
 } from "@n3oltd/umbraco-donations-client";
@@ -31,6 +31,8 @@ import "./components/AmountSelector";
 import "./components/OtherAmount";
 import "./components/FundDimension";
 import "./components/DonateButton";
+
+// TODO: where to get currencies?
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -70,6 +72,12 @@ class DonationForm extends LitElement {
 
   @property()
   formTitle: string = "";
+
+  @property()
+  currencies = [
+    { symbol: "£", text: "GBP", selected: true },
+    { symbol: "€", text: "EUR", selected: false },
+  ];
 
   @state()
   _loading: boolean = true;
@@ -350,29 +358,17 @@ class DonationForm extends LitElement {
   }
 
   render() {
-    const containerStyle = styleMap({
-      border: `4px solid ${this.data.primaryColor}`,
-      textAlign: "center",
-      fontSize: "20px",
-      fontFamily: "Arial, sans-serif",
-      color: this.data.primaryColor,
-    });
-
-    const cardStyle = styleMap({
-      borderTop: `4px solid ${this.data.primaryColor}`,
-    });
-
     if (this._loading) {
       return html`<donation-form-loading></donation-form-loading>`;
     }
 
     //language=HTML
     return html`
-      <div style="${containerStyle}" id="n3o-donation-form-${this.data.formId}">
+      <div id="n3o-donation-form-${this.data.formId}">
         <div class="n3o-donation-form-title">
           ${this.formTitle.toUpperCase()}
         </div>
-        <div class="n3o-donation-form-card" style="${cardStyle}">
+        <div class="n3o-donation-form-card">
           ${this.data.showFrequencyFirst
             ? this.renderFrequencyFirst()
             : this.renderFundFirst()}
@@ -403,8 +399,15 @@ class DonationForm extends LitElement {
               }}"
               .value="${this._otherAmount}"
               .showCurrencyText="${this.data.showCurrencyText}"
-              .currency="${{ symbol: "£", text: "GBP" }}"
-              .currencies="${[{ symbol: "£", text: "GBP" }]}"
+              .currency="${this.currencies.find((c) => c.selected)}"
+              .currencies="${this.currencies}"
+              .onCurrencyChange="${(selected: Currency) => {
+                this.currencies = this.currencies.map((c) =>
+                  c.text === selected
+                    ? { ...c, selected: true }
+                    : { ...c, selected: false },
+                );
+              }}"
             ></other-amount>
           </div>
 
