@@ -4,6 +4,7 @@
 
 - "We accept all major credit cards and PayPal" - pass in as property?
 - What aspects (visual) are configurable?
+- Arrow icon in selects?
 
 A N3O Package for use in client websites.
 
