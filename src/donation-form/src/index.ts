@@ -43,7 +43,6 @@ class DonationForm extends LitElement {
     baseUrl: string;
     formId: string;
     mode: DonationFormMode;
-    primaryColor: string;
     showFrequencyFirst: boolean;
     singleText?: string;
     regularText?: string;
@@ -53,7 +52,6 @@ class DonationForm extends LitElement {
     baseUrl: "",
     formId: "",
     mode: DonationFormMode.full,
-    primaryColor: "",
     showFrequencyFirst: false,
     singleText: "Single",
     regularText: "Regular",

@@ -2,11 +2,14 @@ import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { AllocationsClient } from "@n3oltd/umbraco-allocations-client";
 import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
-import { selectStyles } from "../styles/donationFormStyles";
+import {
+  selectStyles,
+  selectCustomArrowStyles,
+} from "../styles/donationFormStyles";
 
 @customElement("fund-dimension")
 class FundDimension extends LitElement {
-  static styles = [selectStyles];
+  static styles = [selectStyles, selectCustomArrowStyles];
 
   @property()
   dimensionNumber?: number;

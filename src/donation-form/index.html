@@ -49,6 +49,10 @@
       --donate-button-hover-background: var(--theme-color);
       --donate-button-hover-border: none;
       --donate-button-hover-box-shadow: none;
+
+      /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
+      --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%234FAF46' height='26' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+
     }
   </style>
   <script type="module">
@@ -56,7 +60,6 @@
     el.data = {
       formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
       baseUrl: "https://localhost:5001",
-      primaryColor: "#4FAF46",
       singleText: "One-Off",
       regularText: "Monthly",
       showFrequencyFirst: true,

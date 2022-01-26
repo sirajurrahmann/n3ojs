@@ -1,12 +1,15 @@
 import { MoneyReq } from "@n3oltd/umbraco-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { otherAmountStyles } from "../styles/donationFormStyles";
+import {
+  otherAmountStyles,
+  selectCustomArrowStyles,
+} from "../styles/donationFormStyles";
 import { Currency } from "@n3oltd/umbraco-donations-client";
 
 @customElement("other-amount")
 class OtherAmount extends LitElement {
-  static styles = otherAmountStyles;
+  static styles = [otherAmountStyles, selectCustomArrowStyles];
 
   @property()
   onChange?: (amount?: MoneyReq) => void;

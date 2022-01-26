@@ -96,6 +96,17 @@ export const selectStyles = css`
   }
 `;
 
+export const selectCustomArrowStyles = css`
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: var(--select-dropdown-url);
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    padding: 0 5px;
+  }
+`;
+
 export const otherAmountStyles = css`
   .n3o-amount-input {
     background-color: #fff;
@@ -112,6 +123,8 @@ export const otherAmountStyles = css`
     font-size: var(--input-font-size);
     height: var(--input-height);
     border: none;
+    width: 38px;
+    background-position-y: 2px;
   }
   .n3o-amount-input select:focus-visible {
     border: none;

@@ -5,11 +5,14 @@ import {
   DonationItemRes,
   NamedLookupRes,
 } from "@n3oltd/umbraco-allocations-client";
-import { selectStyles } from "../styles/donationFormStyles";
+import {
+  selectStyles,
+  selectCustomArrowStyles,
+} from "../styles/donationFormStyles";
 
 @customElement("fund-selector")
 class FundSelector extends LitElement {
-  static styles = [selectStyles];
+  static styles = [selectStyles, selectCustomArrowStyles];
 
   @property()
   value?: DonationOptionRes;
