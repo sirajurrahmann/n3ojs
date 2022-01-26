@@ -16,12 +16,12 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-    error-modal:
-      name: 'npm-publish error-modal'
-      uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
-      with:
-        prepack: true
-        working-directory: 'src/error-modal'
-        version: ${GITHUB_REF#refs/tags/}
-      secrets:
-        npm-token: ${{ secrets.NPM_TOKEN }}
+  error-modal:
+    name: 'npm-publish error-modal'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      prepack: true
+      working-directory: 'src/error-modal'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}

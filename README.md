@@ -9,6 +9,9 @@ This repo contains the N3O JavaScript library. These are a series of JavaScript 
 #### Auto capitalize
 Used for autocorrecting user input on name and address input fields which is often entered in lowercase for example.
 
+#### Error Modal
+A reusable error modal component built with Lit which can be used by other components to display errors such as form validation errors, API errors.
+
 ## Questions & Support
 For questions and support please visit the [N3O Support Centre](https://support.n3o.ltd/).
 
