@@ -21,7 +21,7 @@ import {
   DonationType,
   MoneyReq,
 } from "@n3oltd/umbraco-cart-client";
-import { ApiErrorResponse, DonationFormMode } from "./types";
+import { ApiErrorResponse, DonationFormMode, DonationFormType } from "./types";
 import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
 
 import "./components/FundSelector";
@@ -58,6 +58,9 @@ class DonationForm extends LitElement {
     showCurrencyText: false,
     footerText: "",
   };
+
+  @property()
+  type: DonationFormType = DonationFormType.Full;
 
   @property()
   options: DonationOptionRes[] = [];
@@ -355,39 +358,46 @@ class DonationForm extends LitElement {
     `;
   }
 
-  render() {
-    if (this._loading) {
-      return html`<donation-form-loading></donation-form-loading>`;
-    }
-
-    //language=HTML
+  renderQuickDonationContents() {
     return html`
-      <div id="n3o-donation-form-${this.data.formId}">
-        ${this._error ? html`<error-modal></error-modal>` : undefined}
+      <div>Donation Type Selector</div>
 
-        <div class="n3o-donation-form-title">
-          ${this.formTitle.toUpperCase()}
-        </div>
-        <div class="n3o-donation-form-card">
-          ${this.data.showFrequencyFirst
-            ? this.renderFrequencyFirst()
-            : this.renderFundFirst()}
-          ${this.shouldShowPriceHandles()
-            ? html`<div class="n3o-donation-form-row">
-                <amount-selector
-                  .onChange="${(amount: PriceHandleRes) => {
-                    this._amount = amount;
-                    if (amount) {
-                      this._otherAmount = undefined;
-                    }
-                  }}"
-                  .value="${this._amount}"
-                  .priceHandles="${this._frequency === DonationType.Single
-                    ? this._option?.fund?.singlePriceHandles
-                    : this._option?.fund?.regularPriceHandles}"
-                ></amount-selector>
-              </div>`
-            : null}
+      <div>Donation Item</div>
+
+      <div>Donation Amount</div>
+
+      <div>
+        <button>Donate</button>
+      </div>
+    `;
+  }
+
+  renderDonationCardContents() {
+    return html`
+    <div class="n3o-donation-form-card">
+          ${
+            this.data.showFrequencyFirst
+              ? this.renderFrequencyFirst()
+              : this.renderFundFirst()
+          }
+          ${
+            this.shouldShowPriceHandles()
+              ? html`<div class="n3o-donation-form-row">
+                  <amount-selector
+                    .onChange="${(amount: PriceHandleRes) => {
+                      this._amount = amount;
+                      if (amount) {
+                        this._otherAmount = undefined;
+                      }
+                    }}"
+                    .value="${this._amount}"
+                    .priceHandles="${this._frequency === DonationType.Single
+                      ? this._option?.fund?.singlePriceHandles
+                      : this._option?.fund?.regularPriceHandles}"
+                  ></amount-selector>
+                </div>`
+              : null
+          }
 
           <div class="n3o-donation-form-row">
             <other-amount
@@ -411,60 +421,66 @@ class DonationForm extends LitElement {
             ></other-amount>
           </div>
 
-          ${this.shouldPickFundDimensions()
-            ? html`
-                <div>
-                  ${this.shouldShowDimension(this._option?.fund?.dimension1)
-                    ? html`<div class="n3o-donation-form-row">
-                        <fund-dimension
-                          .baseUrl="${this.data.baseUrl}"
-                          .dimensionNumber="${1}"
-                          .value="${this._dimension1}"
-                          .onChange="${(dim?: FundDimensionOptionRes) =>
-                            (this._dimension1 = dim)}"
-                          .default="${this._option?.fund?.dimension1?.default}"
-                        ></fund-dimension>
-                      </div>`
-                    : undefined}
-                  ${this.shouldShowDimension(this._option?.fund?.dimension2)
-                    ? html`<div class="n3o-donation-form-row">
-                        <fund-dimension
-                          .baseUrl="${this.data.baseUrl}"
-                          .dimensionNumber="${2}"
-                          .value="${this._dimension2}"
-                          .onChange="${(dim?: FundDimensionOptionRes) =>
-                            (this._dimension1 = dim)}"
-                          .default="${this._option?.fund?.dimension2?.default}"
-                        ></fund-dimension>
-                      </div>`
-                    : undefined}
-                  ${this.shouldShowDimension(this._option?.fund?.dimension3)
-                    ? html`<div class="n3o-donation-form-row">
-                        <fund-dimension
-                          .baseUrl="${this.data.baseUrl}"
-                          .dimensionNumber="${3}"
-                          .value="${this._dimension3}"
-                          .onChange="${(dim?: FundDimensionOptionRes) =>
-                            (this._dimension1 = dim)}"
-                          .default="${this._option?.fund?.dimension3?.default}"
-                        ></fund-dimension>
-                      </div>`
-                    : undefined}
-                  ${this.shouldShowDimension(this._option?.fund?.dimension4)
-                    ? html`<div class="n3o-donation-form-row">
-                        <fund-dimension
-                          .baseUrl="${this.data.baseUrl}"
-                          .dimensionNumber="${4}"
-                          .value="${this._dimension4}"
-                          .onChange="${(dim?: FundDimensionOptionRes) =>
-                            (this._dimension1 = dim)}"
-                          .default="${this._option?.fund?.dimension4?.default}"
-                        ></fund-dimension>
-                      </div>`
-                    : undefined}
-                </div>
-              `
-            : undefined}
+          ${
+            this.shouldPickFundDimensions()
+              ? html`
+                  <div>
+                    ${this.shouldShowDimension(this._option?.fund?.dimension1)
+                      ? html`<div class="n3o-donation-form-row">
+                          <fund-dimension
+                            .baseUrl="${this.data.baseUrl}"
+                            .dimensionNumber="${1}"
+                            .value="${this._dimension1}"
+                            .onChange="${(dim?: FundDimensionOptionRes) =>
+                              (this._dimension1 = dim)}"
+                            .default="${this._option?.fund?.dimension1
+                              ?.default}"
+                          ></fund-dimension>
+                        </div>`
+                      : undefined}
+                    ${this.shouldShowDimension(this._option?.fund?.dimension2)
+                      ? html`<div class="n3o-donation-form-row">
+                          <fund-dimension
+                            .baseUrl="${this.data.baseUrl}"
+                            .dimensionNumber="${2}"
+                            .value="${this._dimension2}"
+                            .onChange="${(dim?: FundDimensionOptionRes) =>
+                              (this._dimension1 = dim)}"
+                            .default="${this._option?.fund?.dimension2
+                              ?.default}"
+                          ></fund-dimension>
+                        </div>`
+                      : undefined}
+                    ${this.shouldShowDimension(this._option?.fund?.dimension3)
+                      ? html`<div class="n3o-donation-form-row">
+                          <fund-dimension
+                            .baseUrl="${this.data.baseUrl}"
+                            .dimensionNumber="${3}"
+                            .value="${this._dimension3}"
+                            .onChange="${(dim?: FundDimensionOptionRes) =>
+                              (this._dimension1 = dim)}"
+                            .default="${this._option?.fund?.dimension3
+                              ?.default}"
+                          ></fund-dimension>
+                        </div>`
+                      : undefined}
+                    ${this.shouldShowDimension(this._option?.fund?.dimension4)
+                      ? html`<div class="n3o-donation-form-row">
+                          <fund-dimension
+                            .baseUrl="${this.data.baseUrl}"
+                            .dimensionNumber="${4}"
+                            .value="${this._dimension4}"
+                            .onChange="${(dim?: FundDimensionOptionRes) =>
+                              (this._dimension1 = dim)}"
+                            .default="${this._option?.fund?.dimension4
+                              ?.default}"
+                          ></fund-dimension>
+                        </div>`
+                      : undefined}
+                  </div>
+                `
+              : undefined
+          }
 
           <div class="n3o-donation-form-row">
             <donate-button
@@ -473,12 +489,44 @@ class DonationForm extends LitElement {
             ></donate-button>
           </div>
 
-          ${this.data.footerText
-            ? html`<div class="n3o-donation-form-footer">
-                ${this.data.footerText}
-              </div>`
-            : undefined}
+          ${
+            this.data.footerText
+              ? html`<div class="n3o-donation-form-footer">
+                  ${this.data.footerText}
+                </div>`
+              : undefined
+          }
         </div>
+      </div>`;
+  }
+
+  render() {
+    if (this._loading) {
+      // TODO: style
+      return html`<donation-form-loading></donation-form-loading>`;
+    }
+
+    //language=HTML
+    return html`
+      <div
+        id="n3o-donation-form-${this.data.formId}"
+        class="${this.type === DonationFormType.Quick
+          ? "n3o-quick-donate-form"
+          : ""}"
+      >
+        ${this._error ? html`<error-modal></error-modal>` : undefined}
+
+        <div class="n3o-donation-form-title">
+          ${this.formTitle.toUpperCase()}
+        </div>
+
+        ${this.type === DonationFormType.Full
+          ? html`
+              <div class="n3o-donation-form-card">
+                ${this.renderDonationCardContents()}
+              </div>
+            `
+          : this.renderQuickDonationContents()}
       </div>
     `;
   }

@@ -10,3 +10,8 @@ export interface ApiErrorResponse {
     [key: string]: string;
   };
 }
+
+export enum DonationFormType {
+  Full = "full",
+  Quick = "quick",
+}

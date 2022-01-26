@@ -9,6 +9,10 @@
   "engines": {
     "node": "14.17.6"
   },
+  "scripts": {
+    "prepack": "npm install && npm run build",
+    "build": "rollup -c rollup.config.js"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

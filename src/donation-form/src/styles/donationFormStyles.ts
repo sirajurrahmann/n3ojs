@@ -7,6 +7,13 @@ export const donationFormStyles = css`
     color: var(--text-color);
   }
 
+  .n3o-quick-donate-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border: none !important;
+  }
+
   .n3o-donation-form-title {
     text-align: center;
     font-size: var(--header-font-size);

@@ -57,6 +57,7 @@
   </style>
   <script type="module">
     const el = document.querySelector("#donationForm");
+    const el2 = document.querySelector("#quickDonationForm");
     el.data = {
       formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
       baseUrl: "https://localhost:5001",
@@ -66,12 +67,37 @@
       showCurrencyText: true,
       footerText: "We accept all major credit cards and PayPal"
     };
+
+    el2.data = {
+      formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
+      baseUrl: "https://localhost:5001",
+      singleText: "One-Off",
+      regularText: "Monthly",
+      showFrequencyFirst: true,
+      showCurrencyText: true,
+      footerText: "We accept all major credit cards and PayPal"
+    };
   </script>
+
+  <style>
+    #quickDonationFormContainer {
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      background: rgba(255,255,255, 0.8);
+      height: 60px;
+    }
+  </style>
 </head>
 
 <body>
-<div style="width: 300px">
-  <data-donation-form id="donationForm"> </data-donation-form>
+<div style="height: 800px">
+  <div style="width: 300px">
+    <data-donation-form id="donationForm" type="full"> </data-donation-form>
+    <div id="quickDonationFormContainer">
+      <data-donation-form id="quickDonationForm" type="quick"> </data-donation-form>
+    </div>
+  </div>
 </div>
 </body>
 
