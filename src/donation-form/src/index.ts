@@ -15,8 +15,14 @@ import {
   DonationItemRes,
   NamedLookupRes,
 } from "@n3oltd/umbraco-allocations-client";
-import { MoneyReq } from "@n3oltd/umbraco-cart-client";
-import { DonationFormMode, Frequency } from "./types";
+import {
+  AddToCartReq,
+  CartClient,
+  DonationType,
+  MoneyReq,
+} from "@n3oltd/umbraco-cart-client";
+import { ApiErrorResponse, DonationFormMode } from "./types";
+import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
 
 import "./components/FundSelector";
 import "./components/Loading";
@@ -24,7 +30,7 @@ import "./components/FrequencySelector";
 import "./components/AmountSelector";
 import "./components/OtherAmount";
 import "./components/FundDimension";
-import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
+import "./components/DonateButton";
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -67,7 +73,7 @@ class DonationForm extends LitElement {
   _loading: boolean = true;
 
   @state()
-  _frequency: Frequency = Frequency.single;
+  _frequency: DonationType = DonationType.Single;
 
   @state()
   _option?: DonationOptionRes;
@@ -89,6 +95,76 @@ class DonationForm extends LitElement {
 
   @state()
   _dimension4?: FundDimensionOptionRes;
+
+  @state()
+  _saving: boolean = false;
+
+  @state()
+  _error?: ApiErrorResponse;
+
+  handleError(err: ApiErrorResponse) {
+    if (err.status === 400) {
+      this._error = err;
+    } else {
+      this._error = {
+        title: err.title || "Something went wrong",
+        errors: err.errors || {},
+        status: err.status,
+      };
+    }
+  }
+
+  donate() {
+    // TODO: How much frontend validation to do?
+    if (!this._option) return;
+
+    this._saving = true;
+
+    const client = new CartClient(this.data.baseUrl);
+
+    const req: AddToCartReq = {
+      donationType: this._frequency,
+      allocation: {
+        type: this._option.type,
+        value: this._otherAmount
+          ? {
+              amount: this._otherAmount.amount,
+              currency: this._otherAmount.currency,
+            }
+          : {
+              amount: this._amount?.amount?.amount,
+              currency: this._amount?.amount?.currency,
+            },
+        dimension1: this._dimension1,
+        dimension2: this._dimension2,
+        dimension3: this._dimension3,
+        dimension4: this._dimension4,
+        fund:
+          this._option.type === "fund"
+            ? {
+                donationItem: this._option.fund?.donationItem,
+              }
+            : undefined,
+        sponsorship:
+          this._option.type === "sponsorship"
+            ? {
+                scheme: this._option.sponsorship?.scheme,
+              }
+            : undefined,
+      },
+      quantity: 1, // TODO: Does this apply to sponsorships only?
+    };
+
+    client
+      .add(req)
+      .then((res) => {
+        this._saving = false;
+      })
+      .catch((err) => {
+        this.handleError(err);
+        this._saving = false;
+      });
+  }
 
   getDonationForm() {
     const client = new DonationsClient(this.data.baseUrl);
@@ -132,11 +208,11 @@ class DonationForm extends LitElement {
     // TODO: remove
     return true;
 
-    if (this._frequency === Frequency.single)
+    if (this._frequency === DonationType.Single)
       return this._option?.sponsorship
         ? false
         : Boolean(this._option?.fund?.singlePriceHandles?.length);
-    if (this._frequency === Frequency.regular)
+    if (this._frequency === DonationType.Regular)
       return this._option?.sponsorship
         ? false
         : Boolean(this._option?.fund?.regularPriceHandles?.length);
@@ -209,7 +285,7 @@ class DonationForm extends LitElement {
           <frequency-selector
             .singleText="${this.data.singleText}"
             .regularText="${this.data.regularText}"
-            .onChange="${(frequency: Frequency) =>
+            .onChange="${(frequency: DonationType) =>
               (this._frequency = frequency)}"
             .selected="${this._frequency}"
             .disableSingle="${this._option?.type === "fund"
@@ -231,7 +307,7 @@ class DonationForm extends LitElement {
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
               if (opt.type === "fund")
-                return this._frequency === Frequency.single
+                return this._frequency === DonationType.Single
                   ? !opt.fund?.hideSingle
                   : !opt.fund?.hideRegular;
               if (opt.fund === "sponsorship") return true;
@@ -262,7 +338,7 @@ class DonationForm extends LitElement {
           <frequency-selector
             .singleText="${this.data.singleText}"
             .regularText="${this.data.regularText}"
-            .onChange="${(frequency: Frequency) =>
+            .onChange="${(frequency: DonationType) =>
               (this._frequency = frequency)}"
             .selected="${this._frequency}"
           ></frequency-selector>
@@ -308,7 +384,7 @@ class DonationForm extends LitElement {
                     }
                   }}"
                   .value="${this._amount}"
-                  .priceHandles="${this._frequency === Frequency.single
+                  .priceHandles="${this._frequency === DonationType.Single
                     ? this._option?.fund?.singlePriceHandles
                     : this._option?.fund?.regularPriceHandles}"
                 ></amount-selector>
@@ -384,6 +460,13 @@ class DonationForm extends LitElement {
                 </div>
               `
             : undefined}
+
+          <div class="n3o-donation-form-row">
+            <donate-button
+              .saving="${this._saving}"
+              .onClick="${() => this.donate()}"
+            ></donate-button>
+          </div>
         </div>
       </div>
     `;

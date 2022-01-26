@@ -3,7 +3,10 @@ export enum DonationFormMode {
   quick = "Quick",
 }
 
-export enum Frequency {
-  regular = "Regular",
-  single = "Single",
+export interface ApiErrorResponse {
+  status: number;
+  title?: string;
+  errors?: {
+    [key: string]: string;
+  };
 }

@@ -2,6 +2,7 @@ import { MoneyReq } from "@n3oltd/umbraco-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { otherAmountStyles } from "../styles/donationFormStyles";
+import { Currency } from "@n3oltd/umbraco-donations-client";
 
 @customElement("other-amount")
 class OtherAmount extends LitElement {
@@ -27,7 +28,7 @@ class OtherAmount extends LitElement {
     if (re.test(target.value)) {
       this.onChange?.({
         amount: Number(target.value),
-        currency: this.currency,
+        currency: this.currency?.text as Currency,
       });
     } else {
       // Not allowing the input

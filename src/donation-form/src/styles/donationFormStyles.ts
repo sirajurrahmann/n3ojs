@@ -108,3 +108,22 @@ export const otherAmountStyles = css`
     font-size: var(--input-font-size);
   }
 `;
+
+export const donateButtonStyles = css`
+  .n3o-donate-button button {
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    font-size: var(--button-text-size);
+    transition: background-color 0.5s ease;
+    color: var(--donate-button-text-color);
+    background: var(--donate-button-background);
+  }
+  .n3o-donate-button button:hover,
+  .n3o-donate-button button:active {
+    color: var(--donate-button-hover-text-color);
+    background: var(--donate-button-hover-background);
+    border: var(--donate-button-hover-border);
+    box-shadow: var(--donate-button-hover-box-shadow);
+  }
+`;

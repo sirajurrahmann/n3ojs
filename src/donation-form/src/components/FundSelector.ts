@@ -1,5 +1,5 @@
 import { html, LitElement } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { DonationOptionRes } from "@n3oltd/umbraco-donations-client/src/index";
 import {
   DonationItemRes,
@@ -39,7 +39,6 @@ class FundSelector extends LitElement {
     return html`
       <div class="n3o-donation-form-fund-select">
         <select
-          id="fund-select"
           @change="${(e: Event) => {
             const item = this.options.find((opt) =>
               opt.type === "fund"
