@@ -40,6 +40,11 @@ export const buttonStyles = css`
     color: var(--button-selected-text-color);
     box-shadow: var(--button-selected-box-shadow);
   }
+
+  .n3o-button-disabled {
+    background: lightgray;
+    cursor: not-allowed;
+  }
 `;
 
 export const amountSelectorStyles = css`

@@ -16,10 +16,15 @@ class DonateButton extends LitElement {
   saving?: boolean;
 
   render() {
+    // TODO: Loading icon or similar?
     //language=HTML
     return html`
       <div class="n3o-donate-button" @click="${this.onClick}">
-        <button .disabled="${this.saving}" class="n3o-donation-form-button">
+        <button
+          class="n3o-donation-form-button ${this.saving
+            ? "n3o-button-disabled"
+            : ""}"
+        >
           ${this.buttonText}
         </button>
       </div>
