@@ -363,6 +363,8 @@ class DonationForm extends LitElement {
     //language=HTML
     return html`
       <div id="n3o-donation-form-${this.data.formId}">
+        ${this._error ? html`<error-modal></error-modal>` : undefined}
+
         <div class="n3o-donation-form-title">
           ${this.formTitle.toUpperCase()}
         </div>
