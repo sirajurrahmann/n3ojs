@@ -5,6 +5,12 @@ export const donationFormStyles = css`
     font-family: var(--font-family);
   }
 
+  .n3o-donation-form-footer {
+    font-size: 10px;
+    text-align: center;
+    color: var(--text-muted-color, #6c757d);
+  }
+
   .n3o-donation-form-row {
     margin-bottom: var(--row-spacing, 24px);
   }

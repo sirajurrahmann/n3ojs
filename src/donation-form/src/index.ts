@@ -46,6 +46,7 @@ class DonationForm extends LitElement {
     singleText?: string;
     regularText?: string;
     showCurrencyText?: boolean;
+    footerText?: string;
   } = {
     baseUrl: "",
     formId: "",
@@ -55,6 +56,7 @@ class DonationForm extends LitElement {
     singleText: "Single",
     regularText: "Regular",
     showCurrencyText: false,
+    footerText: "",
   };
 
   @property()
@@ -467,6 +469,12 @@ class DonationForm extends LitElement {
               .onClick="${() => this.donate()}"
             ></donate-button>
           </div>
+
+          ${this.data.footerText
+            ? html`<div class="n3o-donation-form-footer">
+                ${this.data.footerText}
+              </div>`
+            : undefined}
         </div>
       </div>
     `;
