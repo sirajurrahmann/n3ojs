@@ -1,6 +1,9 @@
 import { css } from "lit";
 
 export const donationFormStyles = css`
+  :host {
+    width: 100%;
+  }
   div[id*="n3o-donation-form"] {
     font-family: var(--font-family);
     border: 4px solid var(--theme-color);
@@ -12,6 +15,20 @@ export const donationFormStyles = css`
     align-items: center;
     justify-content: space-around;
     border: none !important;
+  }
+  .n3o-quick-donate-form .n3o-quick-donate-title {
+    padding: 0 30px;
+  }
+  .n3o-quick-donate-form .n3o-quick-donate-form-selects {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border: none !important;
+    flex-grow: 1;
+  }
+  .n3o-quick-donate-form .n3o-quick-donate-form-selects .n3o-quick-donate-col {
+    width: 22%;
+    padding: 0 2%;
   }
 
   .n3o-donation-form-title {
@@ -158,6 +175,13 @@ export const otherAmountStyles = css`
     padding: 0;
     height: var(--input-height);
     font-size: var(--input-font-size);
+    width: 80px;
+  }
+  .n3o-amount-disabled {
+    background-color: rgba(239, 239, 239, 0.4);
+  }
+  .n3o-amount-disabled input {
+    background: none;
   }
 `;
 
@@ -177,5 +201,10 @@ export const donateButtonStyles = css`
     background: var(--donate-button-hover-background);
     border: var(--donate-button-hover-border);
     box-shadow: var(--donate-button-hover-box-shadow);
+  }
+`;
+
+export const quickInputStyles = css`
+  .n3o-quick-input-container {
   }
 `;

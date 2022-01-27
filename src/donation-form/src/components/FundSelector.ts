@@ -6,13 +6,18 @@ import {
   NamedLookupRes,
 } from "@n3oltd/umbraco-allocations-client";
 import {
-  selectStyles,
+  quickInputStyles,
   selectCustomArrowStyles,
+  selectStyles,
 } from "../styles/donationFormStyles";
+import { DonationFormType } from "../types";
 
 @customElement("fund-selector")
 class FundSelector extends LitElement {
-  static styles = [selectStyles, selectCustomArrowStyles];
+  static styles = [selectStyles, selectCustomArrowStyles, quickInputStyles];
+
+  @property()
+  variation: DonationFormType = DonationFormType.Full;
 
   @property()
   value?: DonationOptionRes;
@@ -29,18 +34,37 @@ class FundSelector extends LitElement {
   @property()
   sponsorshipSchemes: NamedLookupRes[] = [];
 
-  getDonationItemName(id: string): string {
-    return this.donationItems.find((d) => d.id === id)?.name || "";
+  getDonationItemName(option: DonationOptionRes): string {
+    const name =
+      this.donationItems.find((d) => d.id === option.fund?.donationItem)
+        ?.name || "";
+
+    // TODO: Fix this when types updated
+    const hasFixedPrice = true;
+    if (this.variation === DonationFormType.Quick && hasFixedPrice)
+      return `${name} (£30)`;
+    else return name;
   }
 
-  getSponsorshipSchemeName(id: string): string {
-    return this.sponsorshipSchemes.find((d) => d.id === id)?.name || "";
+  getSponsorshipSchemeName(option: DonationOptionRes): string {
+    const name =
+      this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme)
+        ?.name || "";
+    // TODO: Fix this when types updated
+    const hasFixedPrice = true;
+    if (this.variation === DonationFormType.Quick && hasFixedPrice)
+      return `${name} (£30)`;
+    else return name;
   }
 
   render() {
     //language=HTML
     return html`
-      <div class="n3o-donation-form-fund-select">
+      <div
+        class="${this.variation === DonationFormType.Quick
+          ? "n3o-quick-input-container"
+          : ""}"
+      >
         <select
           @change="${(e: Event) => {
             const item = this.options.find((opt) =>
@@ -55,16 +79,13 @@ class FundSelector extends LitElement {
         >
           ${this.options.map((option) => {
             return html`<option
-              @change="${(e: any) => console.log(e)}"
               value="${option.type === "fund"
                 ? option.fund?.donationItem
                 : option.sponsorship?.scheme}"
             >
               ${option.type === "fund"
-                ? this.getDonationItemName(option.fund?.donationItem as string)
-                : this.getSponsorshipSchemeName(
-                    option.sponsorship?.scheme as string,
-                  )}
+                ? this.getDonationItemName(option)
+                : this.getSponsorshipSchemeName(option)}
             </option>`;
           })}
         </select>

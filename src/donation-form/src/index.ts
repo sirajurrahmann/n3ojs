@@ -21,7 +21,7 @@ import {
   DonationType,
   MoneyReq,
 } from "@n3oltd/umbraco-cart-client";
-import { ApiErrorResponse, DonationFormMode, DonationFormType } from "./types";
+import { ApiErrorResponse, DonationFormType } from "./types";
 import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
 
 import "./components/FundSelector";
@@ -31,18 +31,19 @@ import "./components/AmountSelector";
 import "./components/OtherAmount";
 import "./components/FundDimension";
 import "./components/DonateButton";
+import "./components/Quick/QuickDonationType";
 
 // TODO: where to get currencies?
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
-  static styles = donationFormStyles;
+  static styles = [donationFormStyles];
 
   @property({ attribute: false })
   data: {
     baseUrl: string;
     formId: string;
-    mode: DonationFormMode;
+    mode: DonationFormType;
     showFrequencyFirst: boolean;
     singleText?: string;
     regularText?: string;
@@ -51,7 +52,7 @@ class DonationForm extends LitElement {
   } = {
     baseUrl: "",
     formId: "",
-    mode: DonationFormMode.full,
+    mode: DonationFormType.Full,
     showFrequencyFirst: false,
     singleText: "Single",
     regularText: "Regular",
@@ -80,6 +81,9 @@ class DonationForm extends LitElement {
     { symbol: "€", text: "EUR", selected: false },
   ];
 
+  @property()
+  donationTypes: NamedLookupRes[] = [];
+
   @state()
   _loading: boolean = true;
 
@@ -106,6 +110,9 @@ class DonationForm extends LitElement {
 
   @state()
   _dimension4?: FundDimensionOptionRes;
+
+  @state()
+  _quick_donationType: DonationType = DonationType.Single;
 
   @state()
   _saving: boolean = false;
@@ -177,6 +184,10 @@ class DonationForm extends LitElement {
       });
   }
 
+  quickDonate() {
+    console.log("quick donate");
+  }
+
   getDonationForm() {
     const client = new DonationsClient(this.data.baseUrl);
     return client
@@ -185,6 +196,18 @@ class DonationForm extends LitElement {
         this.options = res.options || [];
         this.formTitle = res.title || "Donate Now";
         this._option = res.options?.[0];
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  getDonationTypes() {
+    const client = new AllocationsClient(this.data.baseUrl);
+    return client
+      .getLookupDonationTypes()
+      .then((res) => {
+        this.donationTypes = res || [];
       })
       .catch((err) => {
         console.log(err);
@@ -273,18 +296,35 @@ class DonationForm extends LitElement {
     else return !!dim.default && !dim.fixed;
   }
 
+  getSelectedOptionFixedPrice(): MoneyReq | undefined {
+    // TODO: Fix when response includes this info
+    // return this._option?.fund?.fixed;
+    return { currency: "GBP" as Currency, amount: 100 };
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
     // Wait till event loop empty
     setTimeout(() => {
-      Promise.all([
-        this.getDonationForm(),
-        this.getDonationItems(),
-        this.getSponsorshipSchemes(),
-      ]).then(() => {
-        this._loading = false;
-      });
+      if (this.type === DonationFormType.Full) {
+        Promise.all([
+          this.getDonationForm(),
+          this.getDonationItems(),
+          this.getSponsorshipSchemes(),
+        ]).then(() => {
+          this._loading = false;
+        });
+      } else {
+        Promise.all([
+          this.getDonationForm(),
+          this.getDonationItems(),
+          this.getSponsorshipSchemes(),
+          this.getDonationTypes(),
+        ]).then(() => {
+          this._loading = false;
+        });
+      }
     });
   }
 
@@ -310,6 +350,7 @@ class DonationForm extends LitElement {
 
         <div class="n3o-donation-form-row">
           <fund-selector
+            .variation="${DonationFormType.Full}"
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
@@ -335,6 +376,7 @@ class DonationForm extends LitElement {
       <div>
         <div class="n3o-donation-form-row">
           <fund-selector
+            .variation="${DonationFormType.Full}"
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
@@ -359,22 +401,67 @@ class DonationForm extends LitElement {
   }
 
   renderQuickDonationContents() {
+    //language=html
     return html`
-      <div>Donation Type Selector</div>
+      <div class="n3o-quick-donate-form-selects">
+        <div class="n3o-quick-donate-col">
+          <quick-donation-type
+            .onChange="${(t: DonationType) => (this._quick_donationType = t)}"
+            .value="${this._quick_donationType}"
+            .options="${this.donationTypes}"
+          ></quick-donation-type>
+        </div>
 
-      <div>Donation Item</div>
+        <div class="n3o-quick-donate-col">
+          <fund-selector
+            .variation="${DonationFormType.Quick}"
+            .donationItems="${this.donationItems}"
+            .sponsorshipSchemes="${this.sponsorshipSchemes}"
+            .onChange="${(option: DonationOptionRes) => {
+              this._option = option;
+            }}"
+            .options="${this.options}"
+            .value="${this._option}"
+          ></fund-selector>
+        </div>
 
-      <div>Donation Amount</div>
+        <div class="n3o-quick-donate-col">
+          <other-amount
+            .onChange="${(amount?: MoneyReq) => {
+              this._otherAmount = amount;
+              if (amount) {
+                this._amount = undefined;
+              }
+            }}"
+            .value="${this._otherAmount}"
+            .fixed="${this.getSelectedOptionFixedPrice()}"
+            .showCurrencyText="${this.data.showCurrencyText}"
+            .currency="${this.currencies.find((c) => c.selected)}"
+            .currencies="${this.currencies}"
+            .onCurrencyChange="${(selected: Currency) => {
+              this.currencies = this.currencies.map((c) =>
+                c.text === selected
+                  ? { ...c, selected: true }
+                  : { ...c, selected: false },
+              );
+            }}"
+          ></other-amount>
+        </div>
 
-      <div>
-        <button>Donate</button>
+        <div class="n3o-quick-donate-col">
+          <donate-button
+            .saving="${this._saving}"
+            .onClick="${() => this.quickDonate()}"
+          ></donate-button>
+        </div>
       </div>
     `;
   }
 
   renderDonationCardContents() {
+    //language=html
     return html`
-    <div class="n3o-donation-form-card">
+    <div>
           ${
             this.data.showFrequencyFirst
               ? this.renderFrequencyFirst()
@@ -516,7 +603,11 @@ class DonationForm extends LitElement {
       >
         ${this._error ? html`<error-modal></error-modal>` : undefined}
 
-        <div class="n3o-donation-form-title">
+        <div
+          class="n3o-donation-form-title ${this.type === DonationFormType.Quick
+            ? "n3o-quick-donate-title"
+            : ""}"
+        >
           ${this.formTitle.toUpperCase()}
         </div>
 
