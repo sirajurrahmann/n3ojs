@@ -1,10 +1,7 @@
 import { MoneyReq } from "@n3oltd/umbraco-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import {
-  otherAmountStyles,
-  selectCustomArrowStyles,
-} from "../styles/donationFormStyles";
+import { otherAmountStyles, selectCustomArrowStyles } from "../styles/donationFormStyles";
 import { Currency } from "@n3oltd/umbraco-donations-client";
 
 @customElement("other-amount")
@@ -48,23 +45,17 @@ class OtherAmount extends LitElement {
   }
 
   renderSingleCurrency() {
-    return html`<span class="n3o-input-amount-symbol">
-      ${this.currency?.symbol}
-    </span>`;
+    return html`<span class="n3o-input-amount-symbol"> ${this.currency?.symbol} </span>`;
   }
 
   renderMultiCurrency() {
     return html`
       <select
-        .disabled="${this.fixed}"
+        class="${this.fixed ? "n3o-amount-disabled" : ""}"
         @change="${(e: Event) =>
-          this.onCurrencyChange?.(
-            (e.target as HTMLSelectElement).value as Currency,
-          )}"
+          this.onCurrencyChange?.((e.target as HTMLSelectElement).value as Currency)}"
       >
-        ${this.currencies.map(
-          (curr) => html`<option value="${curr.text}">${curr.symbol}</option>`,
-        )}
+        ${this.currencies.map((curr) => html`<option value="${curr.text}">${curr.symbol}</option>`)}
       </select>
     `;
   }
@@ -73,20 +64,12 @@ class OtherAmount extends LitElement {
     //language=HTML
     return html`
       <div class="n3o-donation-form-other-amount">
-        <span
-          class="n3o-amount-input ${Boolean(this.fixed)
-            ? "n3o-amount-disabled"
-            : ""}"
-        >
-          <span>
-            ${this.currencies.length > 1
-              ? this.renderMultiCurrency()
-              : this.renderSingleCurrency()}
+        <span class="n3o-amount-input ${Boolean(this.fixed) ? "n3o-amount-disabled" : ""}">
+          <span class="n3o-amount-input-inner">
+            ${this.currencies.length > 1 ? this.renderMultiCurrency() : this.renderSingleCurrency()}
             <input
               .disabled="${Boolean(this.fixed)}"
-              .value="${this.fixed
-                ? this.fixed.amount
-                : this.value?.amount || ""}"
+              .value="${this.fixed ? this.fixed.amount : this.value?.amount || ""}"
               @input="${(e: Event) => {
                 if ((e.target as HTMLInputElement).value) {
                   this.validateInput(e.target as HTMLInputElement);
@@ -97,11 +80,7 @@ class OtherAmount extends LitElement {
             />
           </span>
           ${this.showCurrencyText
-            ? html`
-                <span class="n3o-input-amount-text">
-                  ${this.currency?.text}
-                </span>
-              `
+            ? html` <span class="n3o-input-amount-text"> ${this.currency?.text} </span> `
             : undefined}
         </span>
       </div>

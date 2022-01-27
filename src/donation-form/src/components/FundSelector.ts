@@ -1,20 +1,13 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { DonationOptionRes } from "@n3oltd/umbraco-donations-client/src/index";
-import {
-  DonationItemRes,
-  NamedLookupRes,
-} from "@n3oltd/umbraco-allocations-client";
-import {
-  quickInputStyles,
-  selectCustomArrowStyles,
-  selectStyles,
-} from "../styles/donationFormStyles";
+import { DonationItemRes, NamedLookupRes } from "@n3oltd/umbraco-allocations-client";
+import { selectCustomArrowStyles, selectStyles } from "../styles/donationFormStyles";
 import { DonationFormType } from "../types";
 
 @customElement("fund-selector")
 class FundSelector extends LitElement {
-  static styles = [selectStyles, selectCustomArrowStyles, quickInputStyles];
+  static styles = [selectStyles, selectCustomArrowStyles];
 
   @property()
   variation: DonationFormType = DonationFormType.Full;
@@ -35,44 +28,33 @@ class FundSelector extends LitElement {
   sponsorshipSchemes: NamedLookupRes[] = [];
 
   getDonationItemName(option: DonationOptionRes): string {
-    const name =
-      this.donationItems.find((d) => d.id === option.fund?.donationItem)
-        ?.name || "";
+    const name = this.donationItems.find((d) => d.id === option.fund?.donationItem)?.name || "";
 
     // TODO: Fix this when types updated
     const hasFixedPrice = true;
-    if (this.variation === DonationFormType.Quick && hasFixedPrice)
-      return `${name} (£30)`;
+    if (this.variation === DonationFormType.Quick && hasFixedPrice) return `${name} (£30)`;
     else return name;
   }
 
   getSponsorshipSchemeName(option: DonationOptionRes): string {
     const name =
-      this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme)
-        ?.name || "";
+      this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme)?.name || "";
     // TODO: Fix this when types updated
     const hasFixedPrice = true;
-    if (this.variation === DonationFormType.Quick && hasFixedPrice)
-      return `${name} (£30)`;
+    if (this.variation === DonationFormType.Quick && hasFixedPrice) return `${name} (£30)`;
     else return name;
   }
 
   render() {
     //language=HTML
     return html`
-      <div
-        class="${this.variation === DonationFormType.Quick
-          ? "n3o-quick-input-container"
-          : ""}"
-      >
+      <div class="${this.variation === DonationFormType.Quick ? "n3o-quick-input-container" : ""}">
         <select
           @change="${(e: Event) => {
             const item = this.options.find((opt) =>
               opt.type === "fund"
-                ? opt.fund?.donationItem ===
-                  (e.target as HTMLSelectElement).value
-                : opt.sponsorship?.scheme ===
-                  (e.target as HTMLSelectElement).value,
+                ? opt.fund?.donationItem === (e.target as HTMLSelectElement).value
+                : opt.sponsorship?.scheme === (e.target as HTMLSelectElement).value,
             );
             this.onChange?.(item);
           }}"
@@ -89,9 +71,7 @@ class FundSelector extends LitElement {
                     : this.getSponsorshipSchemeName(option)}
                 </option>`;
               })
-            : html`<option value="" disabled selected>
-                No funds available
-              </option>`}
+            : html`<option value="" disabled selected>No funds available</option>`}
         </select>
       </div>
     `;

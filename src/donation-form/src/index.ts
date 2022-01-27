@@ -300,7 +300,8 @@ class DonationForm extends LitElement {
   getSelectedOptionFixedPrice(): MoneyReq | undefined {
     // TODO: Fix when response includes this info
     // return this._option?.fund?.fixed;
-    return { currency: "GBP" as Currency, amount: 100 };
+    // return { currency: "GBP" as Currency, amount: 100 };
+    return undefined;
   }
 
   fundsCanBeInferred(opt: DonationOptionRes, fundStructure: FundStructure | void): boolean {

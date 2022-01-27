@@ -16,6 +16,7 @@ export const donationFormStyles = css`
     justify-content: space-around;
     border: none !important;
   }
+
   .n3o-quick-donate-form .n3o-quick-donate-title {
     padding: 0 30px;
   }
@@ -53,6 +54,29 @@ export const donationFormStyles = css`
   .n3o-donation-form-title,
   .n3o-donation-form-card {
     padding: 8px 16px;
+  }
+
+  @media (max-width: 992px) {
+    .n3o-quick-donate-form {
+      display: block;
+    }
+    .n3o-quick-donate-form .n3o-quick-donate-title {
+      margin-bottom: 32px;
+    }
+    .n3o-quick-donate-form .n3o-quick-donate-form-selects {
+      flex-wrap: wrap;
+    }
+    .n3o-quick-donate-form .n3o-quick-donate-form-selects .n3o-quick-donate-col {
+      width: 46%;
+      padding: 12px 2%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .n3o-quick-donate-form .n3o-quick-donate-form-selects .n3o-quick-donate-col {
+      width: 94%;
+      padding: 12px 3%;
+    }
   }
 `;
 
@@ -114,6 +138,7 @@ export const frequencyStyles = css`
 
 export const selectStyles = css`
   select {
+    background-color: #fff;
     width: 100%;
     height: var(--input-height);
     font-size: var(--input-font-size);
@@ -133,7 +158,7 @@ export const selectCustomArrowStyles = css`
   select {
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: var(--select-dropdown-url);
+    background-image: var(--select-dropdown-url);
     background-repeat: no-repeat;
     background-position-x: 100%;
     padding: 0 5px;
@@ -159,9 +184,13 @@ export const otherAmountStyles = css`
     box-shadow: var(--input-box-shadow);
   }
 
+  .n3o-amount-input-inner {
+    flex-grow: 1;
+  }
+
   .n3o-amount-input select {
     font-size: var(--input-font-size);
-    height: var(--input-height);
+    height: calc(var(--input-height) - 1px);
     border: none;
     width: 38px;
     background-position-y: 2px;
@@ -183,7 +212,7 @@ export const otherAmountStyles = css`
     border: none;
     outline: none;
     box-shadow: none;
-    background: none;
+    background: #fff;
   }
   input:focus,
   input:focus-visible,
@@ -206,7 +235,7 @@ export const otherAmountStyles = css`
     width: calc(100% - 50px);
   }
   .n3o-amount-disabled {
-    background-color: rgba(239, 239, 239, 0.4);
+    background-color: rgba(246, 246, 246, 1);
   }
   .n3o-amount-disabled input {
     background: none;
@@ -229,10 +258,5 @@ export const donateButtonStyles = css`
     background: var(--donate-button-hover-background);
     border: var(--donate-button-hover-border);
     box-shadow: var(--donate-button-hover-box-shadow);
-  }
-`;
-
-export const quickInputStyles = css`
-  .n3o-quick-input-container {
   }
 `;
