@@ -22,7 +22,10 @@ import {
   MoneyReq,
 } from "@n3oltd/umbraco-cart-client";
 import { ApiErrorResponse, DonationFormType } from "./types";
-import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
+import {
+  FundDimensionOptionRes,
+  FundStructure,
+} from "@n3oltd/umbraco-allocations-client/src/index";
 
 import "./components/FundSelector";
 import "./components/Loading";
@@ -83,6 +86,9 @@ class DonationForm extends LitElement {
 
   @property()
   donationTypes: NamedLookupRes[] = [];
+
+  @property()
+  fundStructure?: FundStructure;
 
   @state()
   _loading: boolean = true;
@@ -188,12 +194,17 @@ class DonationForm extends LitElement {
     console.log("quick donate");
   }
 
-  getDonationForm() {
+  getDonationForm(fundStructure: FundStructure | void) {
     const client = new DonationsClient(this.data.baseUrl);
     return client
       .getForm(this.data.formId)
       .then((res) => {
-        this.options = res.options || [];
+        this.options =
+          this.type === DonationFormType.Full
+            ? res.options || []
+            : res.options?.filter?.((opt) =>
+                this.fundsCanBeInferred(opt, fundStructure),
+              ) || [];
         this.formTitle = res.title || "Donate Now";
         this._option = res.options?.[0];
       })
@@ -220,6 +231,19 @@ class DonationForm extends LitElement {
       .getLookupDonationItems()
       .then((res) => {
         this.donationItems = res || [];
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  getFundStructure(): Promise<void | FundStructure> {
+    const client = new AllocationsClient(this.data.baseUrl);
+    return client
+      .getFundStructure()
+      .then((res) => {
+        this.fundStructure = res || [];
+        return res;
       })
       .catch((err) => {
         console.log(err);
@@ -302,29 +326,58 @@ class DonationForm extends LitElement {
     return { currency: "GBP" as Currency, amount: 100 };
   }
 
+  fundsCanBeInferred(
+    opt: DonationOptionRes,
+    fundStructure: FundStructure | void,
+  ): boolean {
+    if (!fundStructure) return false;
+
+    let canBeInferred = true;
+    if (
+      fundStructure?.dimension1?.isActive &&
+      !(opt.fund?.dimension1?.default || opt.fund?.dimension1?.fixed)
+    ) {
+      canBeInferred = false;
+    }
+    if (
+      fundStructure?.dimension2?.isActive &&
+      !(opt.fund?.dimension2?.default || opt.fund?.dimension2?.fixed)
+    ) {
+      canBeInferred = false;
+    }
+    if (
+      fundStructure?.dimension3?.isActive &&
+      !(opt.fund?.dimension3?.default || opt.fund?.dimension3?.fixed)
+    ) {
+      canBeInferred = false;
+    }
+    if (
+      fundStructure?.dimension4?.isActive &&
+      !(opt.fund?.dimension4?.default || opt.fund?.dimension4?.fixed)
+    ) {
+      canBeInferred = false;
+    }
+
+    return canBeInferred;
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
     // Wait till event loop empty
     setTimeout(() => {
-      if (this.type === DonationFormType.Full) {
-        Promise.all([
-          this.getDonationForm(),
-          this.getDonationItems(),
-          this.getSponsorshipSchemes(),
-        ]).then(() => {
+      this.getFundStructure()
+        .then((fundStructure: FundStructure | void) => {
+          return Promise.all([
+            this.getDonationTypes(),
+            this.getDonationItems(),
+            this.getSponsorshipSchemes(),
+            this.getDonationForm(fundStructure),
+          ]);
+        })
+        .then(() => {
           this._loading = false;
         });
-      } else {
-        Promise.all([
-          this.getDonationForm(),
-          this.getDonationItems(),
-          this.getSponsorshipSchemes(),
-          this.getDonationTypes(),
-        ]).then(() => {
-          this._loading = false;
-        });
-      }
     });
   }
 

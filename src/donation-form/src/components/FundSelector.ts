@@ -77,17 +77,21 @@ class FundSelector extends LitElement {
             this.onChange?.(item);
           }}"
         >
-          ${this.options.map((option) => {
-            return html`<option
-              value="${option.type === "fund"
-                ? option.fund?.donationItem
-                : option.sponsorship?.scheme}"
-            >
-              ${option.type === "fund"
-                ? this.getDonationItemName(option)
-                : this.getSponsorshipSchemeName(option)}
-            </option>`;
-          })}
+          ${this.options?.length
+            ? this.options.map((option) => {
+                return html`<option
+                  value="${option.type === "fund"
+                    ? option.fund?.donationItem
+                    : option.sponsorship?.scheme}"
+                >
+                  ${option.type === "fund"
+                    ? this.getDonationItemName(option)
+                    : this.getSponsorshipSchemeName(option)}
+                </option>`;
+              })
+            : html`<option value="" disabled selected>
+                No funds available
+              </option>`}
         </select>
       </div>
     `;
