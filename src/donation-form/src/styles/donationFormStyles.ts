@@ -118,6 +118,15 @@ export const selectStyles = css`
     height: var(--input-height);
     font-size: var(--input-font-size);
   }
+  select:focus,
+  select:focus-visible,
+  select:focus-within,
+  select:active,
+  select:target {
+    outline: none;
+    border: none;
+    box-shadow: var(--input-box-shadow);
+  }
 `;
 
 export const selectCustomArrowStyles = css`
@@ -143,6 +152,13 @@ export const otherAmountStyles = css`
     align-items: center;
     justify-content: space-between;
   }
+  .n3o-amount-input:focus {
+    background-color: #fff;
+    border-color: var(--theme-color);
+    outline: 0;
+    box-shadow: var(--input-box-shadow);
+  }
+
   .n3o-amount-input select {
     font-size: var(--input-font-size);
     height: var(--input-height);
@@ -159,23 +175,35 @@ export const otherAmountStyles = css`
     padding-right: 5px;
   }
   .n3o-input-amount-text {
-    padding-right: 5px;
+    margin-right: 5px;
+    width: 40px;
   }
   input,
+  select {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+  }
   input:focus,
   input:focus-visible,
   input:focus-within,
   input:active,
-  input:target {
+  input:target,
+  select:focus,
+  select:focus-visible,
+  select:focus-within,
+  select:active,
+  select:target {
     outline: none;
     border: none;
-    box-shadow: none;
+    box-shadow: var(--input-box-shadow);
   }
   input {
     padding: 0;
     height: var(--input-height);
     font-size: var(--input-font-size);
-    width: 80px;
+    width: calc(100% - 50px);
   }
   .n3o-amount-disabled {
     background-color: rgba(239, 239, 239, 0.4);
