@@ -39,8 +39,6 @@ class DonationForm extends LitElement {
     formId: string;
     mode: DonationFormType;
     showFrequencyFirst: boolean;
-    singleText?: string;
-    regularText?: string;
     showCurrencyText?: boolean;
     footerText?: string;
   } = {
@@ -48,8 +46,6 @@ class DonationForm extends LitElement {
     formId: "",
     mode: DonationFormType.Full,
     showFrequencyFirst: false,
-    singleText: "Single",
-    regularText: "Regular",
     showCurrencyText: false,
     footerText: "",
   };
@@ -85,7 +81,7 @@ class DonationForm extends LitElement {
   _loading: boolean = true;
 
   @state()
-  _frequency: DonationType = DonationType.Single;
+  _donationType: DonationType = DonationType.Single;
 
   @state()
   _option?: DonationOptionRes;
@@ -107,9 +103,6 @@ class DonationForm extends LitElement {
 
   @state()
   _dimension4?: FundDimensionOptionRes;
-
-  @state()
-  _quick_donationType: DonationType = DonationType.Single;
 
   @state()
   _saving: boolean = false;
@@ -138,7 +131,7 @@ class DonationForm extends LitElement {
     const client = new CartClient(this.data.baseUrl);
 
     const req: AddToCartReq = {
-      donationType: this._frequency,
+      donationType: this._donationType,
       allocation: {
         type: this._option.type,
         value: this._otherAmount
@@ -255,11 +248,11 @@ class DonationForm extends LitElement {
     // TODO: remove
     return true;
 
-    if (this._frequency === DonationType.Single)
+    if (this._donationType === DonationType.Single)
       return this._option?.sponsorship
         ? false
         : Boolean(this._option?.fund?.singlePriceHandles?.length);
-    if (this._frequency === DonationType.Regular)
+    if (this._donationType === DonationType.Regular)
       return this._option?.sponsorship
         ? false
         : Boolean(this._option?.fund?.regularPriceHandles?.length);
@@ -362,10 +355,10 @@ class DonationForm extends LitElement {
       <div>
         <div class="n3o-donation-form-row">
           <frequency-selector
-            .singleText="${this.data.singleText}"
-            .regularText="${this.data.regularText}"
-            .onChange="${(frequency: DonationType) => (this._frequency = frequency)}"
-            .selected="${this._frequency}"
+            .singleText="${this.donationTypes.find((d) => d.id === DonationType.Single)?.name}"
+            .regularText="${this.donationTypes.find((d) => d.id === DonationType.Regular)?.name}"
+            .onChange="${(frequency: DonationType) => (this._donationType = frequency)}"
+            .selected="${this._donationType}"
             .disableSingle="${this._option?.type === "fund"
               ? this._option?.fund?.hideSingle
               : false}"
@@ -386,7 +379,7 @@ class DonationForm extends LitElement {
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
               if (opt.type === "fund")
-                return this._frequency === DonationType.Single
+                return this._donationType === DonationType.Single
                   ? !opt.fund?.hideSingle
                   : !opt.fund?.hideRegular;
               if (opt.fund === "sponsorship") return true;
@@ -416,10 +409,10 @@ class DonationForm extends LitElement {
 
         <div class="n3o-donation-form-row">
           <frequency-selector
-            .singleText="${this.data.singleText}"
-            .regularText="${this.data.regularText}"
-            .onChange="${(frequency: DonationType) => (this._frequency = frequency)}"
-            .selected="${this._frequency}"
+            .singleText="${this.donationTypes.find((d) => d.id === DonationType.Single)?.name}"
+            .regularText="${this.donationTypes.find((d) => d.id === DonationType.Regular)?.name}"
+            .onChange="${(frequency: DonationType) => (this._donationType = frequency)}"
+            .selected="${this._donationType}"
           ></frequency-selector>
         </div>
       </div>
@@ -432,8 +425,8 @@ class DonationForm extends LitElement {
       <div class="n3o-quick-donate-form-selects">
         <div class="n3o-quick-donate-col">
           <quick-donation-type
-            .onChange="${(t: DonationType) => (this._quick_donationType = t)}"
-            .value="${this._quick_donationType}"
+            .onChange="${(t: DonationType) => (this._donationType = t)}"
+            .value="${this._donationType}"
             .options="${this.donationTypes}"
           ></quick-donation-type>
         </div>
@@ -498,7 +491,7 @@ class DonationForm extends LitElement {
                       }
                     }}"
                     .value="${this._amount}"
-                    .priceHandles="${this._frequency === DonationType.Single
+                    .priceHandles="${this._donationType === DonationType.Single
                       ? this._option?.fund?.singlePriceHandles
                       : this._option?.fund?.regularPriceHandles}"
                   ></amount-selector>

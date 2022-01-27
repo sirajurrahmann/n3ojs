@@ -25,11 +25,15 @@ class QuickDonationType extends LitElement {
           @change="${(e: Event) =>
             this.onChange?.((e.target as HTMLSelectElement).value as DonationType)}"
         >
-          ${this.options.map((option) => {
-            return html`<option .selected="${this.value === option.id}" value="${option.id}">
-              ${option.name}
-            </option>`;
-          })}
+          <option .selected="${this.value === DonationType.Single}" value="${DonationType.Single}">
+            ${this.options.find((o) => o.id === DonationType.Single)?.name}
+          </option>
+          <option
+            .selected="${this.value === DonationType.Regular}"
+            value="${DonationType.Regular}"
+          >
+            ${this.options.find((o) => o.id === DonationType.Regular)?.name}
+          </option>
         </select>
       </div>
     `;
