@@ -9,7 +9,7 @@ class OtherAmount extends LitElement {
   static styles = [otherAmountStyles, selectCustomArrowStyles];
 
   @property()
-  fixed?: MoneyReq;
+  fixed?: boolean;
 
   @property()
   onChange?: (amount?: MoneyReq) => void;
@@ -64,12 +64,12 @@ class OtherAmount extends LitElement {
     //language=HTML
     return html`
       <div class="n3o-donation-form-other-amount">
-        <span class="n3o-amount-input ${Boolean(this.fixed) ? "n3o-amount-disabled" : ""}">
+        <span class="n3o-amount-input ${this.fixed ? "n3o-amount-disabled" : ""}">
           <span class="n3o-amount-input-inner">
             ${this.currencies.length > 1 ? this.renderMultiCurrency() : this.renderSingleCurrency()}
             <input
-              .disabled="${Boolean(this.fixed)}"
-              .value="${this.fixed ? this.fixed.amount : this.value?.amount || ""}"
+              .disabled="${this.fixed}"
+              .value="${this.value?.amount || ""}"
               @input="${(e: Event) => {
                 if ((e.target as HTMLInputElement).value) {
                   this.validateInput(e.target as HTMLInputElement);

@@ -1,4 +1,4 @@
-import { DonationType } from "@n3oltd/umbraco-cart-client";
+import { GivingType } from "@n3oltd/umbraco-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { buttonStyles, frequencyStyles } from "../styles/donationFormStyles";
@@ -11,16 +11,10 @@ class FrequencySelector extends LitElement {
   onChange?: (frequency: string) => void;
 
   @property({ attribute: false })
-  selected?: DonationType;
-
-  @property({ attribute: false })
-  disableSingle: boolean = false;
+  selected?: GivingType;
 
   @property({ attribute: false })
   disableRegular: boolean = false;
-
-  @property({ attribute: false })
-  regularEnabled?: DonationType;
 
   @property({ attribute: false })
   singleText: string = "";
@@ -33,22 +27,20 @@ class FrequencySelector extends LitElement {
     return html`
       <div class="n3o-donation-frequency-container">
         <button
-          aria-selected="${this.selected === DonationType.Single}"
-          class="n3o-donation-form-button ${this.selected ===
-          DonationType.Single
+          aria-selected="${this.selected === GivingType.Donation}"
+          class="n3o-donation-form-button ${this.selected === GivingType.Donation
             ? "n3o-donation-form-button-selected"
             : "n3o-donation-form-button-unselected"}"
-          @click="${() => this.onChange?.(DonationType.Single)}"
+          @click="${() => this.onChange?.(GivingType.Donation)}"
         >
           ${this.singleText}
         </button>
         <button
-          aria-selected="${this.selected === DonationType.Regular}"
-          class="n3o-donation-form-button ${this.selected ===
-          DonationType.Regular
+          aria-selected="${this.selected === GivingType.RegularGiving}"
+          class="n3o-donation-form-button ${this.selected === GivingType.RegularGiving
             ? "n3o-donation-form-button-selected"
             : "n3o-donation-form-button-unselected"}"
-          @click="${() => this.onChange?.(DonationType.Regular)}"
+          @click="${() => this.onChange?.(GivingType.RegularGiving)}"
         >
           ${this.regularText}
         </button>

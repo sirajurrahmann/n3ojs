@@ -5,13 +5,13 @@ import {
   FixedOrDefaultFundDimensionOptionRes,
 } from "@n3oltd/umbraco-donations-client/src/index";
 import { donationFormStyles } from "./styles/donationFormStyles";
-import { Currency, DonationsClient, PriceHandleRes } from "@n3oltd/umbraco-donations-client";
+import { DonationsClient, PriceHandleRes } from "@n3oltd/umbraco-donations-client";
 import {
   AllocationsClient,
   DonationItemRes,
   NamedLookupRes,
 } from "@n3oltd/umbraco-allocations-client";
-import { AddToCartReq, CartClient, DonationType, MoneyReq } from "@n3oltd/umbraco-cart-client";
+import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-cart-client";
 import { ApiErrorResponse, DonationFormType } from "./types";
 import {
   FundDimensionOptionRes,
@@ -25,9 +25,7 @@ import "./components/AmountSelector";
 import "./components/OtherAmount";
 import "./components/FundDimension";
 import "./components/DonateButton";
-import "./components/Quick/QuickDonationType";
-
-// TODO: where to get currencies?
+import "./components/Quick/QuickGivingType";
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -65,6 +63,7 @@ class DonationForm extends LitElement {
   @property()
   formTitle: string = "";
 
+  // TODO: should come from API
   @property()
   currencies = [
     { symbol: "£", text: "GBP", selected: true },
@@ -72,7 +71,7 @@ class DonationForm extends LitElement {
   ];
 
   @property()
-  donationTypes: NamedLookupRes[] = [];
+  givingTypes: NamedLookupRes[] = [];
 
   @property()
   fundStructure?: FundStructure;
@@ -81,7 +80,7 @@ class DonationForm extends LitElement {
   _loading: boolean = true;
 
   @state()
-  _donationType: DonationType = DonationType.Single;
+  _givingType: GivingType = GivingType.Donation;
 
   @state()
   _option?: DonationOptionRes;
@@ -131,7 +130,7 @@ class DonationForm extends LitElement {
     const client = new CartClient(this.data.baseUrl);
 
     const req: AddToCartReq = {
-      donationType: this._donationType,
+      givingType: this._givingType,
       allocation: {
         type: this._option.type,
         value: this._otherAmount
@@ -143,10 +142,10 @@ class DonationForm extends LitElement {
               amount: this._amount?.amount?.amount,
               currency: this._amount?.amount?.currency,
             },
-        dimension1: this._dimension1,
-        dimension2: this._dimension2,
-        dimension3: this._dimension3,
-        dimension4: this._dimension4,
+        dimension1: this._dimension1?.id,
+        dimension2: this._dimension2?.id,
+        dimension3: this._dimension3?.id,
+        dimension4: this._dimension4?.id,
         fund:
           this._option.type === "fund"
             ? {
@@ -195,12 +194,12 @@ class DonationForm extends LitElement {
       });
   }
 
-  getDonationTypes() {
+  getGivingTypes() {
     const client = new AllocationsClient(this.data.baseUrl);
     return client
-      .getLookupDonationTypes()
+      .getLookupGivingTypes()
       .then((res) => {
-        this.donationTypes = res || [];
+        this.givingTypes = res || [];
       })
       .catch((err) => {
         console.log(err);
@@ -248,14 +247,14 @@ class DonationForm extends LitElement {
     // TODO: remove
     return true;
 
-    if (this._donationType === DonationType.Single)
+    if (this._givingType === GivingType.Donation)
       return this._option?.sponsorship
         ? false
-        : Boolean(this._option?.fund?.singlePriceHandles?.length);
-    if (this._donationType === DonationType.Regular)
+        : Boolean(this._option?.fund?.donationPriceHandles?.length);
+    if (this._givingType === GivingType.RegularGiving)
       return this._option?.sponsorship
         ? false
-        : Boolean(this._option?.fund?.regularPriceHandles?.length);
+        : Boolean(this._option?.fund?.regularGivingPriceHandles?.length);
     return false;
   }
 
@@ -263,25 +262,16 @@ class DonationForm extends LitElement {
     if (!this._option) return false;
     else {
       let shouldPick = false;
-      if (this._option.type === "fund") {
-        // If any of the dimensions have a default but are not fixed, donor needs to pick
-        if (this._option.fund?.dimension1?.default && !this._option.fund?.dimension1?.fixed)
-          shouldPick = true;
+      // If any of the dimensions have a default but are not fixed, donor needs to pick
+      if (this._option.dimension1?.default && !this._option.dimension1?.fixed) shouldPick = true;
 
-        if (this._option.fund?.dimension2?.default && !this._option.fund?.dimension2?.fixed)
-          shouldPick = true;
+      if (this._option.dimension2?.default && !this._option.dimension2?.fixed) shouldPick = true;
 
-        if (this._option.fund?.dimension3?.default && !this._option.fund?.dimension3?.fixed)
-          shouldPick = true;
+      if (this._option.dimension3?.default && !this._option.dimension3?.fixed) shouldPick = true;
 
-        if (this._option.fund?.dimension4?.default && !this._option.fund?.dimension4?.fixed)
-          shouldPick = true;
+      if (this._option.dimension4?.default && !this._option.dimension4?.fixed) shouldPick = true;
 
-        return shouldPick;
-      } else {
-        // TODO: Check this
-        return false;
-      }
+      return shouldPick;
     }
   }
 
@@ -290,10 +280,20 @@ class DonationForm extends LitElement {
     else return !dim.fixed;
   }
 
-  getSelectedOptionFixedPrice(): MoneyReq | undefined {
+  selectedOptionIsFixed(): boolean {
     // TODO: Fix when response includes this info
-    // return this._option?.fund?.fixed;
-    // return { currency: "GBP" as Currency, amount: 100 };
+    // Returns boolean depending on whether the amount of the item is fixed ("locked")
+
+    // Logic here is - if the item has a price and the price is locked, return true
+    // Otherwise return false
+    // If there is a price but it is NOT fixed, then it will have been set
+    // as the _otherAmount value when the donor changed the fund.
+    return false;
+  }
+
+  getFixedOtherAmount(option: DonationOptionRes): MoneyReq | undefined {
+    // TODO: Fix when response includes this info
+    // Logic here is: If the option has a price (whether it is locked or not), return it. Otherwise undefined.
     return undefined;
   }
 
@@ -337,7 +337,7 @@ class DonationForm extends LitElement {
       this.getFundStructure()
         .then((fundStructure: FundStructure | void) => {
           return Promise.all([
-            this.getDonationTypes(),
+            this.getGivingTypes(),
             this.getDonationItems(),
             this.getSponsorshipSchemes(),
             this.getDonationForm(fundStructure),
@@ -355,15 +355,12 @@ class DonationForm extends LitElement {
       <div>
         <div class="n3o-donation-form-row">
           <frequency-selector
-            .singleText="${this.donationTypes.find((d) => d.id === DonationType.Single)?.name}"
-            .regularText="${this.donationTypes.find((d) => d.id === DonationType.Regular)?.name}"
-            .onChange="${(frequency: DonationType) => (this._donationType = frequency)}"
-            .selected="${this._donationType}"
-            .disableSingle="${this._option?.type === "fund"
-              ? this._option?.fund?.hideSingle
-              : false}"
+            .singleText="${this.givingTypes.find((d) => d.id === GivingType.Donation)?.name}"
+            .regularText="${this.givingTypes.find((d) => d.id === GivingType.RegularGiving)?.name}"
+            .onChange="${(frequency: GivingType) => (this._givingType = frequency)}"
+            .selected="${this._givingType}"
             .disableRegular="${this._option?.type === "fund"
-              ? this._option?.fund?.hideRegular
+              ? this._option?.hideRegularGiving
               : false}"
           ></frequency-selector>
         </div>
@@ -374,15 +371,12 @@ class DonationForm extends LitElement {
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this._otherAmount = this.getFixedOtherAmount(option);
             }}"
             .value="${this._option}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
-              if (opt.type === "fund")
-                return this._donationType === DonationType.Single
-                  ? !opt.fund?.hideSingle
-                  : !opt.fund?.hideRegular;
-              if (opt.fund === "sponsorship") return true;
+              return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
             })}"
           ></fund-selector>
         </div>
@@ -402,17 +396,22 @@ class DonationForm extends LitElement {
               this._option = option;
             }}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
-            .options="${this.options}"
+            .options="${this.options.filter((opt) => {
+              return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
+            })}"
             .value="${this._option}"
           ></fund-selector>
         </div>
 
         <div class="n3o-donation-form-row">
           <frequency-selector
-            .singleText="${this.donationTypes.find((d) => d.id === DonationType.Single)?.name}"
-            .regularText="${this.donationTypes.find((d) => d.id === DonationType.Regular)?.name}"
-            .onChange="${(frequency: DonationType) => (this._donationType = frequency)}"
-            .selected="${this._donationType}"
+            .singleText="${this.givingTypes.find((d) => d.id === GivingType.Donation)?.name}"
+            .regularText="${this.givingTypes.find((d) => d.id === GivingType.RegularGiving)?.name}"
+            .onChange="${(frequency: GivingType) => (this._givingType = frequency)}"
+            .selected="${this._givingType}"
+            disableRegular="${this._option?.type === "fund"
+              ? this._option?.hideRegularGiving
+              : false}"
           ></frequency-selector>
         </div>
       </div>
@@ -425,9 +424,9 @@ class DonationForm extends LitElement {
       <div class="n3o-quick-donate-form-selects">
         <div class="n3o-quick-donate-col">
           <quick-donation-type
-            .onChange="${(t: DonationType) => (this._donationType = t)}"
-            .value="${this._donationType}"
-            .options="${this.donationTypes}"
+            .onChange="${(t: GivingType) => (this._givingType = t)}"
+            .value="${this._givingType}"
+            .options="${this.givingTypes}"
           ></quick-donation-type>
         </div>
 
@@ -453,11 +452,11 @@ class DonationForm extends LitElement {
               }
             }}"
             .value="${this._otherAmount}"
-            .fixed="${this.getSelectedOptionFixedPrice()}"
+            .fixed="${this.selectedOptionIsFixed()}"
             .showCurrencyText="${this.data.showCurrencyText}"
             .currency="${this.currencies.find((c) => c.selected)}"
             .currencies="${this.currencies}"
-            .onCurrencyChange="${(selected: Currency) => {
+            .onCurrencyChange="${(selected: string) => {
               this.currencies = this.currencies.map((c) =>
                 c.text === selected ? { ...c, selected: true } : { ...c, selected: false },
               );
@@ -491,9 +490,9 @@ class DonationForm extends LitElement {
                       }
                     }}"
                     .value="${this._amount}"
-                    .priceHandles="${this._donationType === DonationType.Single
-                      ? this._option?.fund?.singlePriceHandles
-                      : this._option?.fund?.regularPriceHandles}"
+                    .priceHandles="${this._givingType === GivingType.Donation
+                      ? this._option?.fund?.donationPriceHandles
+                      : this._option?.fund?.regularGivingPriceHandles}"
                   ></amount-selector>
                 </div>`
               : null
@@ -511,7 +510,8 @@ class DonationForm extends LitElement {
               .showCurrencyText="${this.data.showCurrencyText}"
               .currency="${this.currencies.find((c) => c.selected)}"
               .currencies="${this.currencies}"
-              .onCurrencyChange="${(selected: Currency) => {
+              .onCurrencyChange="${(selected: any) => {
+                // TODO: change any type
                 this.currencies = this.currencies.map((c) =>
                   c.text === selected ? { ...c, selected: true } : { ...c, selected: false },
                 );
@@ -523,7 +523,7 @@ class DonationForm extends LitElement {
             this.shouldPickFundDimensions()
               ? html`
                   <div>
-                    ${this.shouldShowDimension(this._option?.fund?.dimension1) &&
+                    ${this.shouldShowDimension(this._option?.dimension1) &&
                     this.fundStructure?.dimension1?.isActive
                       ? html`<div class="n3o-donation-form-row">
                           <fund-dimension
@@ -532,11 +532,11 @@ class DonationForm extends LitElement {
                             .value="${this._dimension1}"
                             .onChange="${(dim?: FundDimensionOptionRes) =>
                               (this._dimension1 = dim)}"
-                            .default="${this._option?.fund?.dimension1?.default}"
+                            .default="${this._option?.dimension1?.default}"
                           ></fund-dimension>
                         </div>`
                       : undefined}
-                    ${this.shouldShowDimension(this._option?.fund?.dimension2) &&
+                    ${this.shouldShowDimension(this._option?.dimension2) &&
                     this.fundStructure?.dimension2?.isActive
                       ? html`<div class="n3o-donation-form-row">
                           <fund-dimension
@@ -545,11 +545,11 @@ class DonationForm extends LitElement {
                             .value="${this._dimension2}"
                             .onChange="${(dim?: FundDimensionOptionRes) =>
                               (this._dimension1 = dim)}"
-                            .default="${this._option?.fund?.dimension2?.default}"
+                            .default="${this._option?.dimension2?.default}"
                           ></fund-dimension>
                         </div>`
                       : undefined}
-                    ${this.shouldShowDimension(this._option?.fund?.dimension3) &&
+                    ${this.shouldShowDimension(this._option?.dimension3) &&
                     this.fundStructure?.dimension3?.isActive
                       ? html`<div class="n3o-donation-form-row">
                           <fund-dimension
@@ -558,11 +558,11 @@ class DonationForm extends LitElement {
                             .value="${this._dimension3}"
                             .onChange="${(dim?: FundDimensionOptionRes) =>
                               (this._dimension1 = dim)}"
-                            .default="${this._option?.fund?.dimension3?.default}"
+                            .default="${this._option?.dimension3?.default}"
                           ></fund-dimension>
                         </div>`
                       : undefined}
-                    ${this.shouldShowDimension(this._option?.fund?.dimension4) &&
+                    ${this.shouldShowDimension(this._option?.dimension4) &&
                     this.fundStructure?.dimension4?.isActive
                       ? html`<div class="n3o-donation-form-row">
                           <fund-dimension
@@ -571,7 +571,7 @@ class DonationForm extends LitElement {
                             .value="${this._dimension4}"
                             .onChange="${(dim?: FundDimensionOptionRes) =>
                               (this._dimension1 = dim)}"
-                            .default="${this._option?.fund?.dimension4?.default}"
+                            .default="${this._option?.dimension4?.default}"
                           ></fund-dimension>
                         </div>`
                       : undefined}
