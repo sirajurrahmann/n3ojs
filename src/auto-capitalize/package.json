@@ -11,7 +11,8 @@
   },
   "scripts": {
     "prepack": "npm install && npm run build",
-    "build": "rollup -c rollup.config.js"
+    "build": "rollup -c rollup.config.js",
+    "upgrade@n3o": "npx update-by-scope -n npm -c install @n3o"
   },
   "license": "MIT",
   "repository": {

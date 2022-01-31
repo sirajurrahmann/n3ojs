@@ -17,7 +17,8 @@
     "build": "rollup -c rollup.config.js",
     "prepack": "npm install && npm run build",
     "serve": "concurrently --raw \"tsc --watch --preserveWatchOutput\" \"wds --watch\"",
-    "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write"
+    "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write",
+    "upgrade@n3o": "npx update-by-scope -n npm -c install @n3o"
   },
   "author": "",
   "license": "ISC",
