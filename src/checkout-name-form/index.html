@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>N3O Name Form</title>
+
+  <script type="module" src="./build/index.js"></script>
+  <script type="module">
+    const el = document.querySelector("#checkoutNameForm");
+    el.data = {
+      title: {
+        mandatory: false,
+        label: "Title",
+        order: 0
+      },
+      firstName: {
+        mandatory: true,
+        label: "First Name",
+        order: 1,
+      },
+      lastName: {
+        mandatory: true,
+        label: "Last Name",
+        order: 2,
+      },
+    };
+
+    const el2 = document.querySelector("#checkoutNameForm2");
+    el2.data = {
+      title: {
+        mandatory: false,
+        label: "Title",
+        order: 0
+      },
+      firstName: {
+        mandatory: true,
+        label: "First Name",
+        order: 1,
+      },
+      lastName: {
+        mandatory: true,
+        label: "Last Name",
+        order: 2,
+      },
+    };
+  </script>
+
+  <style>
+    checkout-name-form {
+      --label-font: Arial, sans-serif;
+      --label-font-size: 12px;
+      --label-text-transform: capitalize;
+      --label-text-color: #A6A4A3;
+      --label-font-weight: 600;
+      --label-padding-bottom: 10px;
+
+      /* Used in Vertical layout only */
+      --vertical-field-col-width-xs: 100%;
+      --vertical-field-col-width-sm: 100%;
+      --vertical-field-col-width-md: 100%;
+      --vertical-field-col-width-lg: 50%;
+      --vertical-field-col-width-xl: 50%;
+
+      /* Spacing between fields when rendered horizontally */
+      --row-gutter-horizontal: 12px;
+
+      /* Spacing between fields when rendered vertically */
+      --row-gutter-vertical: 16px;
+    }
+    .container {
+      width: 50%;
+      background: whitesmoke;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+<h4>Horizontal Layout</h4>
+<div class="container">
+  <checkout-name-form id="checkoutNameForm" layout="horizontal"> </checkout-name-form>
+</div>
+
+<h4>Vertical Layout</h4>
+<div class="container">
+  <checkout-name-form id="checkoutNameForm2" layout="vertical"> </checkout-name-form>
+</div>
+</body>
+
+</html>

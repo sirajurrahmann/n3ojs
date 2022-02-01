@@ -1,10 +1,8 @@
-# Donation Form
+# Checkout Form Name Fields
 
 See main `README.md` for intended functionality of this package.
 
 #### Development
-
-Node version: v14.17.6 (recommend using [NVM](https://github.com/nvm-sh/nvm) to manage Node version.)
 
 Install Dependencies:
 

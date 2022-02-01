@@ -1,21 +1,23 @@
-# lit-starter
+# checkout-name-form
 
 A N3O Package for use in client websites.
 
-This package provides a basic starter template for an N3O JS package, including Lit.
+Provides the Name component for use as part of website checkouts.
 
+Can be rendered in `horizontal` and `vertical` layouts.
+
+Examples of both layouts are provided in this repo. Run `npm run serve` to run the example code.
 
 ### Usage
 
 As with all n3o frontend packages, install the package in the JS directory of the given client project.
 
 ```shell script
-npm install @n3o/lit-starter
+npm install @n3o/checkout-name-form
 ```
 
 ### Basic Use
 
-Complete this
 
 ### Styling
 
