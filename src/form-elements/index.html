@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>N3O Form Elements</title>
+    <style>
+        sample-app {
+            --label-font: Arial, sans-serif;
+            --label-font-size: 16px;
+            --label-text-transform: capitalize;
+            --label-text-color: #A6A4A3;
+            --label-font-weight: 600;
+            --input-height: 28px;
+            --input-font-size: 16px;
+            --input-box-shadow: 0 0 0 0.2rem rgba(79, 175, 70, 0.5);
+            --theme-color: #4FAF46;
+            --text-color: rgb(33, 37, 41);
+            --disabled-text-color: rgba(33, 37, 41, 0.6);
+            --input-border-radius: 4px;
+
+            /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
+            --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%234FAF46' height='26' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        }
+    </style>
+
+    <script type="module" src="./build/index.js"></script>
+</head>
+
+<body>
+<div style="width: 400px">
+    <sample-app primaryColor="#4FAF46"></sample-app>
+</div>
+</body>
+
+</html>
