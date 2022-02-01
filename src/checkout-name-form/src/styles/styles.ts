@@ -125,10 +125,6 @@ export const nameFormStyles = css`
     }
   }
 
-  .n3o-form-label-required::after {
-    content: "*";
-  }
-
   .n3o-form-item-label-col {
     width: 100%;
     font-family: var(--label-font);

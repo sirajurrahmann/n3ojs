@@ -3,6 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 import { ICheckoutNameForm, LayoutOption } from "./types/types";
 import { nameFormStyles } from "./styles/styles";
 
+import "./components/FormItemLabel";
+
 @customElement("checkout-name-form")
 class CheckoutNameForm extends LitElement {
   static styles = nameFormStyles;
@@ -29,6 +31,9 @@ class CheckoutNameForm extends LitElement {
   @property()
   layout: LayoutOption = LayoutOption.Vertical;
 
+  @property()
+  primaryColor: string = "";
+
   render() {
     // language=html
     return html`
@@ -41,12 +46,13 @@ class CheckoutNameForm extends LitElement {
           >
             <div class="n3o-name-form-col n3o-name-form-title-col">
               <div class="n3o-name-form-item-row">
-                <div
-                  class="n3o-form-item-label-col ${this.data.title.mandatory
-                    ? "n3o-form-label-required"
-                    : ""}"
-                >
-                  ${this.data.title.label}
+                <div class="n3o-form-item-label-col">
+                  <form-item-label
+                    .primaryColor="${this.primaryColor}"
+                    .required="${this.data.title.mandatory}"
+                  >
+                    <span slot="labelText">${this.data.title.label}</span>
+                  </form-item-label>
                 </div>
                 <div class="n3o-form-item-field-col">
                   <select>
@@ -60,12 +66,13 @@ class CheckoutNameForm extends LitElement {
 
             <div class="n3o-name-form-col n3o-name-form-firstName-col">
               <div class="n3o-name-form-item-row">
-                <div
-                  class="n3o-form-item-label-col ${this.data.firstName.mandatory
-                    ? "n3o-form-label-required"
-                    : ""}"
-                >
-                  ${this.data.firstName.label}
+                <div class="n3o-form-item-label-col">
+                  <form-item-label
+                    .primaryColor="${this.primaryColor}"
+                    .required="${this.data.firstName.mandatory}"
+                  >
+                    <span slot="labelText">${this.data.firstName.label}</span>
+                  </form-item-label>
                 </div>
                 <div class="n3o-form-item-field-col">
                   <input />
@@ -75,12 +82,13 @@ class CheckoutNameForm extends LitElement {
 
             <div class="n3o-name-form-col n3o-name-form-lastName-col">
               <div class="n3o-name-form-item-row">
-                <div
-                  class="n3o-form-item-label-col ${this.data.lastName.mandatory
-                    ? "n3o-form-label-required"
-                    : ""}"
-                >
-                  ${this.data.lastName.label}
+                <div class="n3o-form-item-label-col">
+                  <form-item-label
+                    .primaryColor="${this.primaryColor}"
+                    .required="${this.data.lastName.mandatory}"
+                  >
+                    <span slot="labelText">${this.data.lastName.label}</span>
+                  </form-item-label>
                 </div>
                 <div class="n3o-form-item-field-col">
                   <input />
