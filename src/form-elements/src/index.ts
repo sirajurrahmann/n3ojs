@@ -49,6 +49,7 @@ class SampleApp extends LitElement {
           .requiredMessage="${"This field is required"}"
           .error="${this._firstNameError}"
           .capitalizationOption="${CapitalizationOption.Capitalize}"
+          .helpText="${"This is required so we can send you a receipt of your donation."}"
           .onChange="${(v: string) => {
             console.log(`Value changed: ${v}`);
             this._firstName = v;
@@ -67,6 +68,7 @@ class SampleApp extends LitElement {
         <form-element-label
           .primaryColor="${this.primaryColor}"
           .required="${false}"
+          .helpText="${"This is required so we can send you a receipt of your donation."}"
         >
           <span slot="labelText">Last Name</span>
         </form-element-label>

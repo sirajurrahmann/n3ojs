@@ -3,6 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { labelStyles } from "../styles/FormLabel.styles";
 
+import "./internal/HelpTooltip";
+
 @customElement("form-element-label")
 class FormElementLabel extends LitElement {
   static styles = labelStyles;
@@ -12,6 +14,9 @@ class FormElementLabel extends LitElement {
 
   @property()
   primaryColor: string = "";
+
+  @property()
+  helpText?: string;
 
   connectedCallback() {
     super.connectedCallback();
@@ -39,6 +44,9 @@ class FormElementLabel extends LitElement {
         <slot name="labelText"></slot> ${this.required
           ? html`<span style="${headerStyle}">*</span>`
           : ""}
+        ${this.helpText
+          ? html`<help-tooltip .text="${this.helpText}"></help-tooltip>`
+          : undefined}
       </span>
     `;
   }

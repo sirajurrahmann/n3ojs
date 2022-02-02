@@ -1,11 +1,11 @@
-import { LitElement, html } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { inputStyles } from "../styles/FormInput.styles";
-
 // TODO: These should come from an n3o package
 import { CapitalizationOption } from "../types";
 
 import "./internal/ErrorMessage";
+import "./internal/HelpText";
 
 @customElement("form-element-input")
 class FormElementInput extends LitElement {
@@ -34,6 +34,9 @@ class FormElementInput extends LitElement {
 
   @property()
   capitalizationOption?: CapitalizationOption;
+
+  @property()
+  helpText?: string = "";
 
   @state()
   _touched: boolean = false;
@@ -79,7 +82,6 @@ class FormElementInput extends LitElement {
   }
 
   render() {
-    console.log(this.value, this._requiredError, this.error);
     // language=html
     return html`
       <div>
@@ -123,6 +125,9 @@ class FormElementInput extends LitElement {
           : undefined}
         ${this.error
           ? html`<error-message .message="${this.error}"></error-message>`
+          : undefined}
+        ${this.helpText
+          ? html`<help-text .text="${this.helpText}"></help-text>`
           : undefined}
       </div>
     `;

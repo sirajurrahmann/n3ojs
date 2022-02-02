@@ -40,10 +40,13 @@ In your Lit application code:
 <form-element-label
       .primaryColor="${this.primaryColor}"
       .required="${true}"
+      .helpText="${"This is required so we can...."}"
     >
       <span slot="labelText">Country</span>
 </form-element-label>
 ```
+
+NB `helpText` can either be provided as a prop to the label element, in which case it will be displayed as a ? icon beside the label name, or as a prop to the form element, in which case it will be shown as muted text beneath the form element. 
 
 `form-element-label` requires the below CSS variables to be set to control styling
 
@@ -56,6 +59,14 @@ your-app-name {
     --label-text-transform: capitalize;
     --label-text-color: #A6A4A3;
     --label-font-weight: 600;
+    
+    /* Used for the help text label */
+    --text-muted-color: #6c757d;
+    --tooltip-background: rgba(79, 175, 70, 0.1);
+
+    /* Used for error message text */
+    --error-color: #e60730;
+
 
     /* Will be the asterisk color if label is required */
     --theme-color: #4FAF46;
@@ -71,6 +82,7 @@ In your Lit application code:
   .disabled="${true}"
   .required="${true}"
   .requiredMessage="${"Last Name is required"}"
+  .helpText="${"This is required so we can...."}"
   .error="${this._error}"
   .capitalizationOption="${CapitalizationOption.Capitalize}"
   .value="${this._lastName}"
@@ -130,7 +142,7 @@ In your Lit application code:
 ></form-element-select>
 ```
 
-`form-element-input` requires the below CSS variables to be set to control styling
+`form-element-select` requires the below CSS variables to be set to control styling
 
 In HTML file:
 ```html
