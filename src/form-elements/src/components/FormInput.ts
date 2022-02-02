@@ -24,7 +24,10 @@ class FormElementInput extends LitElement {
   required: boolean = false;
 
   @property()
-  errorMessage: string = "";
+  requiredMessage: string = "";
+
+  @property()
+  error: string = "";
 
   @property()
   validateInput?: (target: HTMLInputElement) => void;
@@ -76,6 +79,7 @@ class FormElementInput extends LitElement {
   }
 
   render() {
+    console.log(this.value, this._requiredError, this.error);
     // language=html
     return html`
       <div>
@@ -99,7 +103,9 @@ class FormElementInput extends LitElement {
 
             if ((e.target as HTMLInputElement).value && this.validateInput) {
               this.validateInput?.(e.target as HTMLInputElement);
-            } else if ((e.target as HTMLInputElement).value) {
+            }
+
+            if ((e.target as HTMLInputElement).value) {
               this._touched = true;
               this._requiredError = false;
               this.onChange?.((e.target as HTMLInputElement).value);
@@ -112,8 +118,11 @@ class FormElementInput extends LitElement {
         />
         ${this._requiredError
           ? html`<error-message
-              .message="${this.errorMessage}"
+              .message="${this.requiredMessage}"
             ></error-message>`
+          : undefined}
+        ${this.error
+          ? html`<error-message .message="${this.error}"></error-message>`
           : undefined}
       </div>
     `;

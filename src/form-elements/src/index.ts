@@ -15,7 +15,13 @@ class SampleApp extends LitElement {
   _firstName: string = "Initial value";
 
   @state()
+  _firstNameError?: string = "";
+
+  @state()
   _lastName: string = "I am disabled";
+
+  @state()
+  _lastNameError?: string = "";
 
   @state()
   _country: { id: string; value: string } = {
@@ -40,11 +46,19 @@ class SampleApp extends LitElement {
           .disabled="${false}"
           .required="${true}"
           .value="${this._firstName}"
-          .errorMessage="${"This field is required"}"
+          .requiredMessage="${"This field is required"}"
+          .error="${this._firstNameError}"
           .capitalizationOption="${CapitalizationOption.Capitalize}"
           .onChange="${(v: string) => {
             console.log(`Value changed: ${v}`);
             this._firstName = v;
+          }}"
+          .validateInput="${(target: HTMLInputElement) => {
+            if (target.value?.length > 0 && target.value?.length <= 1)
+              this._firstNameError = "First Name is too short";
+            else {
+              this._firstNameError = undefined;
+            }
           }}"
         ></form-element-input>
       </div>

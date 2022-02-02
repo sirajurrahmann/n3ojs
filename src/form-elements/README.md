@@ -1,4 +1,4 @@
-# lit-starter
+# form-elements
 
 A N3O Package for use in client websites.
 
@@ -69,10 +69,21 @@ In your Lit application code:
 ```html
 <form-element-input
   .disabled="${true}"
+  .required="${true}"
+  .requiredMessage="${"Last Name is required"}"
+  .error="${this._error}"
+  .capitalizationOption="${CapitalizationOption.Capitalize}"
   .value="${this._lastName}"
   .onChange="${(v: string) => {
-    this._lastName = v;
+      this._lastName = v;
   }}"
+  .validateInput="${(target: HTMLInputElement) => {
+      if (target.value?.length > 0 && target.value?.length <= 1)
+        this._error = "Last Name is too short";
+      else {
+        this._error = undefined;
+      }
+   }}"
 ></form-element-input>
 ```
 
