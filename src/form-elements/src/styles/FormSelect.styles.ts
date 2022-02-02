@@ -3,6 +3,7 @@ import { css } from "lit";
 export const selectStyles = css`
   * {
     box-sizing: border-box;
+    font-family: var(--font);
   }
 
   select {

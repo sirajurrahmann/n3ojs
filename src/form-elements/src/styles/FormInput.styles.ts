@@ -3,6 +3,7 @@ import { css } from "lit";
 export const inputStyles = css`
   * {
     box-sizing: border-box;
+    font-family: var(--font);
   }
   .n3o-element-input {
     border-radius: var(--input-border-radius);

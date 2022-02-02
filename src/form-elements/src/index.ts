@@ -37,7 +37,9 @@ class SampleApp extends LitElement {
       <div style="margin-bottom: 40px">
         <form-element-input
           .disabled="${false}"
+          .required="${true}"
           .value="${this._firstName}"
+          .errorMessage="${"This field is required"}"
           .onChange="${(v: string) => {
             console.log(`Value changed: ${v}`);
             this._firstName = v;
