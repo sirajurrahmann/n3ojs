@@ -1,9 +1,10 @@
 import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ICheckoutNameForm, LayoutOption } from "./types/types";
 import { nameFormStyles } from "./styles/styles";
 
-import "./components/FormItemLabel";
+// TODO: change one the build script is fixed for n3oltd packages
+import "@n3oltd/form-elements/build";
 
 @customElement("checkout-name-form")
 class CheckoutNameForm extends LitElement {
@@ -34,6 +35,23 @@ class CheckoutNameForm extends LitElement {
   @property()
   primaryColor: string = "";
 
+  // TODO: Fetch from API
+  @property()
+  titles: { id: string; value: string }[] = [
+    { id: "mr", value: "Mr" },
+    { id: "mrs", value: "Mrs" },
+    { id: "miss", value: "Miss" },
+  ];
+
+  @state()
+  _firstName: string = "";
+
+  @state()
+  _lastName: string = "";
+
+  @state()
+  _title?: { id: string; value: string };
+
   render() {
     // language=html
     return html`
@@ -47,19 +65,21 @@ class CheckoutNameForm extends LitElement {
             <div class="n3o-name-form-col n3o-name-form-title-col">
               <div class="n3o-name-form-item-row">
                 <div class="n3o-form-item-label-col">
-                  <form-item-label
+                  <form-element-label
                     .primaryColor="${this.primaryColor}"
                     .required="${this.data.title.mandatory}"
                   >
-                    <span slot="labelText">${this.data.title.label}</span>
-                  </form-item-label>
+                    <span slot="labelText">Title</span>
+                  </form-element-label>
                 </div>
                 <div class="n3o-form-item-field-col">
-                  <select>
-                    <option value="mr">Mr</option>
-                    <option value="mrs">Mrs</option>
-                    <option value="miss">Miss</option>
-                  </select>
+                  <form-element-select
+                    .options="${this.titles}"
+                    .value="${this._title}"
+                    .disabled="${false}"
+                    .onChange="${(v: { id: string; value: string }) =>
+                      (this._title = v)}"
+                  ></form-element-select>
                 </div>
               </div>
             </div>
@@ -67,15 +87,20 @@ class CheckoutNameForm extends LitElement {
             <div class="n3o-name-form-col n3o-name-form-firstName-col">
               <div class="n3o-name-form-item-row">
                 <div class="n3o-form-item-label-col">
-                  <form-item-label
+                  <form-element-label
                     .primaryColor="${this.primaryColor}"
                     .required="${this.data.firstName.mandatory}"
                   >
                     <span slot="labelText">${this.data.firstName.label}</span>
-                  </form-item-label>
+                  </form-element-label>
                 </div>
                 <div class="n3o-form-item-field-col">
-                  <input />
+                  <form-element-input
+                    .value="${this._firstName}"
+                    .onChange="${(v: string) => {
+                      this._firstName = v;
+                    }}"
+                  ></form-element-input>
                 </div>
               </div>
             </div>
@@ -83,15 +108,20 @@ class CheckoutNameForm extends LitElement {
             <div class="n3o-name-form-col n3o-name-form-lastName-col">
               <div class="n3o-name-form-item-row">
                 <div class="n3o-form-item-label-col">
-                  <form-item-label
+                  <form-element-label
                     .primaryColor="${this.primaryColor}"
                     .required="${this.data.lastName.mandatory}"
                   >
                     <span slot="labelText">${this.data.lastName.label}</span>
-                  </form-item-label>
+                  </form-element-label>
                 </div>
                 <div class="n3o-form-item-field-col">
-                  <input />
+                  <form-element-input
+                    .value="${this._lastName}"
+                    .onChange="${(v: string) => {
+                      this._lastName = v;
+                    }}"
+                  ></form-element-input>
                 </div>
               </div>
             </div>
