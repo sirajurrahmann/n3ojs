@@ -25,3 +25,13 @@ jobs:
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
+
+  form-elements:
+    name: 'npm-publish form-elements'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      prepack: true
+      working-directory: 'src/form-elements'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
