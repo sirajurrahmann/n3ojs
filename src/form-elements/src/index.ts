@@ -4,6 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import "./components/FormLabel";
 import "./components/FormInput";
 import "./components/FormSelect";
+import { CapitalizationOption } from "./types";
 
 @customElement("sample-app")
 class SampleApp extends LitElement {
@@ -40,6 +41,7 @@ class SampleApp extends LitElement {
           .required="${true}"
           .value="${this._firstName}"
           .errorMessage="${"This field is required"}"
+          .capitalizationOption="${CapitalizationOption.Capitalize}"
           .onChange="${(v: string) => {
             console.log(`Value changed: ${v}`);
             this._firstName = v;
