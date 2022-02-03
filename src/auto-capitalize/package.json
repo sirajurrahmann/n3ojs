@@ -10,7 +10,6 @@
     "node": "14.17.6"
   },
   "scripts": {
-    "prepack": "npm install && npm run build",
     "build": "shx cp -r ./src/* ./build && cp index.ts ./build",
     "upgrade@n3o": "npx update-by-scope -n npm -c install @n3oltd"
   },
