@@ -1,8 +1,8 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { selectCustomArrowStyles, selectStyles } from "../../styles/donationFormStyles";
-import { NamedLookupRes } from "@n3oltd/umbraco-allocations-client";
-import { DonationType } from "@n3oltd/umbraco-cart-client";
+import { NamedLookupRes } from "@n3oltd/umbraco-giving-client";
+import { GivingType } from "@n3oltd/umbraco-cart-client";
 
 @customElement("quick-donation-type")
 class QuickDonationType extends LitElement {
@@ -12,10 +12,10 @@ class QuickDonationType extends LitElement {
   options: NamedLookupRes[] = [];
 
   @property()
-  value: DonationType = DonationType.Single;
+  value: GivingType = GivingType.Donation;
 
   @property()
-  onChange?: (type: DonationType) => void;
+  onChange?: (type: GivingType) => void;
 
   render() {
     //language=html
@@ -23,16 +23,16 @@ class QuickDonationType extends LitElement {
       <div class="n3o-quick-input-container">
         <select
           @change="${(e: Event) =>
-            this.onChange?.((e.target as HTMLSelectElement).value as DonationType)}"
+            this.onChange?.((e.target as HTMLSelectElement).value as GivingType)}"
         >
-          <option .selected="${this.value === DonationType.Single}" value="${DonationType.Single}">
-            ${this.options.find((o) => o.id === DonationType.Single)?.name}
+          <option .selected="${this.value === GivingType.Donation}" value="${GivingType.Donation}">
+            ${this.options.find((o) => o.id === GivingType.Donation)?.name}
           </option>
           <option
-            .selected="${this.value === DonationType.Regular}"
-            value="${DonationType.Regular}"
+            .selected="${this.value === GivingType.RegularGiving}"
+            value="${GivingType.RegularGiving}"
           >
-            ${this.options.find((o) => o.id === DonationType.Regular)?.name}
+            ${this.options.find((o) => o.id === GivingType.RegularGiving)?.name}
           </option>
         </select>
       </div>

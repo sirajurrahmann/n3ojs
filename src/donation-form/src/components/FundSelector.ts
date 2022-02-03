@@ -1,7 +1,11 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { DonationOptionRes } from "@n3oltd/umbraco-donations-client/src/index";
-import { DonationItemRes, NamedLookupRes } from "@n3oltd/umbraco-allocations-client";
+import { DonationOptionRes } from "@n3oltd/umbraco-giving-client/src/index";
+import {
+  DonationItemRes,
+  NamedLookupRes,
+  SponsorshipSchemeRes,
+} from "@n3oltd/umbraco-giving-client";
 import { selectCustomArrowStyles, selectStyles } from "../styles/donationFormStyles";
 import { DonationFormType } from "../types";
 
@@ -25,24 +29,29 @@ class FundSelector extends LitElement {
   donationItems: DonationItemRes[] = [];
 
   @property()
-  sponsorshipSchemes: NamedLookupRes[] = [];
+  sponsorshipSchemes: SponsorshipSchemeRes[] = [];
 
   getDonationItemName(option: DonationOptionRes): string {
-    const name = this.donationItems.find((d) => d.id === option.fund?.donationItem)?.name || "";
+    const di = this.donationItems.find((d) => d.id === option.fund?.donationItem);
 
-    // TODO: Fix this when types updated
-    const hasFixedPrice = true;
-    if (this.variation === DonationFormType.Quick && hasFixedPrice) return `${name} (£30)`;
-    else return name;
+    const hasFixedPrice = di?.pricing?.locked;
+    // TODO: should choose correct currency
+    if (this.variation === DonationFormType.Quick && hasFixedPrice)
+      return `${di?.name} (${di?.pricing?.amount})`;
+    else return di?.name || "";
   }
 
   getSponsorshipSchemeName(option: DonationOptionRes): string {
-    const name =
-      this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme)?.name || "";
-    // TODO: Fix this when types updated
-    const hasFixedPrice = true;
-    if (this.variation === DonationFormType.Quick && hasFixedPrice) return `${name} (£30)`;
-    else return name;
+    const sp = this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme);
+
+    // For sponsorships, we can assume for now there is only one mandatory component and just deal with that one.
+    // In the future, we'll look at supporting multiple components
+    const mandatoryComponent = sp?.components?.find((c) => c.mandatory);
+    const hasFixedPrice = mandatoryComponent?.pricing?.locked;
+    // TODO: should choose correct currency
+    if (this.variation === DonationFormType.Quick && hasFixedPrice)
+      return `${mandatoryComponent?.name} (${mandatoryComponent.pricing?.amount})`;
+    else return sp?.name || "";
   }
 
   render() {

@@ -2,7 +2,7 @@ import { MoneyReq } from "@n3oltd/umbraco-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { otherAmountStyles, selectCustomArrowStyles } from "../styles/donationFormStyles";
-import { Currency } from "@n3oltd/umbraco-donations-client";
+import { CurrencyRes } from "@n3oltd/umbraco-giving-client";
 
 @customElement("other-amount")
 class OtherAmount extends LitElement {
@@ -15,16 +15,16 @@ class OtherAmount extends LitElement {
   onChange?: (amount?: MoneyReq) => void;
 
   @property()
-  onCurrencyChange?: (selected: Currency) => void;
+  onCurrencyChange?: (selected?: CurrencyRes) => void;
 
   @property()
   value?: MoneyReq;
 
   @property()
-  currencies: { text: string; symbol: string }[] = [];
+  currencies: CurrencyRes[] = [];
 
   @property()
-  currency?: { text: string; symbol: string };
+  currency?: CurrencyRes;
 
   @property()
   showCurrencyText?: boolean;
@@ -34,7 +34,7 @@ class OtherAmount extends LitElement {
     if (re.test(target.value)) {
       this.onChange?.({
         amount: Number(target.value),
-        currency: this.currency?.text as Currency,
+        currency: this.currency?.id,
       });
     } else {
       // Not allowing the input
@@ -52,10 +52,14 @@ class OtherAmount extends LitElement {
     return html`
       <select
         class="${this.fixed ? "n3o-amount-disabled" : ""}"
-        @change="${(e: Event) =>
-          this.onCurrencyChange?.((e.target as HTMLSelectElement).value as Currency)}"
+        @change="${(e: Event) => {
+          const currencySelected = this.currencies.find(
+            (c) => c.id === (e.target as HTMLSelectElement).value,
+          );
+          this.onCurrencyChange?.(currencySelected);
+        }}"
       >
-        ${this.currencies.map((curr) => html`<option value="${curr.text}">${curr.symbol}</option>`)}
+        ${this.currencies.map((curr) => html`<option value="${curr.id}">${curr.symbol}</option>`)}
       </select>
     `;
   }
@@ -80,7 +84,7 @@ class OtherAmount extends LitElement {
             />
           </span>
           ${this.showCurrencyText
-            ? html` <span class="n3o-input-amount-text"> ${this.currency?.text} </span> `
+            ? html` <span class="n3o-input-amount-text"> ${this.currency?.code} </span> `
             : undefined}
         </span>
       </div>

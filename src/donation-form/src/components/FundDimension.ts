@@ -1,11 +1,7 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { AllocationsClient } from "@n3oltd/umbraco-allocations-client";
-import { FundDimensionOptionRes } from "@n3oltd/umbraco-allocations-client/src/index";
-import {
-  selectStyles,
-  selectCustomArrowStyles,
-} from "../styles/donationFormStyles";
+import { GivingClient, FundDimensionValueRes } from "@n3oltd/umbraco-giving-client";
+import { selectStyles, selectCustomArrowStyles } from "../styles/donationFormStyles";
 
 @customElement("fund-dimension")
 class FundDimension extends LitElement {
@@ -15,13 +11,13 @@ class FundDimension extends LitElement {
   dimensionNumber?: number;
 
   @property()
-  value?: FundDimensionOptionRes;
+  value?: FundDimensionValueRes;
 
   @property()
-  default?: FundDimensionOptionRes;
+  default?: FundDimensionValueRes;
 
   @property()
-  onChange?: (dim?: FundDimensionOptionRes) => void;
+  onChange?: (dim?: FundDimensionValueRes) => void;
 
   @property()
   baseUrl: string = "";
@@ -30,32 +26,32 @@ class FundDimension extends LitElement {
   _loading: boolean = true;
 
   @state()
-  _dimensions: FundDimensionOptionRes[] = [];
+  _dimensions: FundDimensionValueRes[] = [];
 
   getFundDimensions1() {
-    const client = new AllocationsClient(this.baseUrl);
-    return client.getLookupFundDimension1Options().then((r) => {
+    const client = new GivingClient(this.baseUrl);
+    return client.getLookupFundDimension1Values().then((r) => {
       this._dimensions = r;
     });
   }
 
   getFundDimensions2() {
-    const client = new AllocationsClient(this.baseUrl);
-    return client.getLookupFundDimension2Options().then((r) => {
+    const client = new GivingClient(this.baseUrl);
+    return client.getLookupFundDimension2Values().then((r) => {
       this._dimensions = r;
     });
   }
 
   getFundDimensions3() {
-    const client = new AllocationsClient(this.baseUrl);
-    return client.getLookupFundDimension3Options().then((r) => {
+    const client = new GivingClient(this.baseUrl);
+    return client.getLookupFundDimension3Values().then((r) => {
       this._dimensions = r;
     });
   }
 
   getFundDimensions4() {
-    const client = new AllocationsClient(this.baseUrl);
-    return client.getLookupFundDimension4Options().then((r) => {
+    const client = new GivingClient(this.baseUrl);
+    return client.getLookupFundDimension4Values().then((r) => {
       this._dimensions = r;
     });
   }
@@ -97,16 +93,13 @@ class FundDimension extends LitElement {
         <select
           @change="${(e: Event) => {
             this.onChange?.(
-              this._dimensions?.find(
-                (d) => d.id === (e.target as HTMLSelectElement).value,
-              ),
+              this._dimensions?.find((d) => d.id === (e.target as HTMLSelectElement).value),
             );
           }}"
         >
           ${this._dimensions?.map((dim) => {
             return html`<option
-              .selected="${dim.id === this.value?.id ||
-              dim.id === this.default?.id}"
+              .selected="${dim.id === this.value?.id || dim.id === this.default?.id}"
               value="${dim.id}"
             >
               ${dim.name}
