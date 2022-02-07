@@ -15,7 +15,7 @@ import {
   PriceHandleRes,
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
-import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-cart-client";
+import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
 import { ApiErrorResponse, DonationFormType } from "./types";
 
 import "./components/FundSelector";
@@ -141,10 +141,12 @@ class DonationForm extends LitElement {
               amount: this._amount?.amount,
               currency: "GBP", // TODO: use this._amount.currencyValues
             },
-        dimension1: this._dimension1?.id,
-        dimension2: this._dimension2?.id,
-        dimension3: this._dimension3?.id,
-        dimension4: this._dimension4?.id,
+        fundDimensions: {
+          dimension1: this._dimension1?.id,
+          dimension2: this._dimension2?.id,
+          dimension3: this._dimension3?.id,
+          dimension4: this._dimension4?.id,
+        },
         fund:
           this._option.type === "fund"
             ? {

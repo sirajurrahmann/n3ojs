@@ -1,4 +1,4 @@
-import { MoneyReq } from "@n3oltd/umbraco-cart-client";
+import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { otherAmountStyles, selectCustomArrowStyles } from "../styles/donationFormStyles";

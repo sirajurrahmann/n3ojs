@@ -1,4 +1,4 @@
-import { GivingType } from "@n3oltd/umbraco-cart-client";
+import { GivingType } from "@n3oltd/umbraco-giving-cart-client";
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { buttonStyles, frequencyStyles } from "../styles/donationFormStyles";

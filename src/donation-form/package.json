@@ -42,7 +42,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@n3oltd/umbraco-cart-client": "^9.0.0-beta-81",
+    "@n3oltd/umbraco-giving-cart-client": "^9.0.0-beta-94",
     "@n3oltd/umbraco-giving-client": "^9.0.0-beta-94",
     "js-cookie": "^3.0.1",
     "lit": "^2.1.1"

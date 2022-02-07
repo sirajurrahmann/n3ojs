@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { selectCustomArrowStyles, selectStyles } from "../../styles/donationFormStyles";
 import { NamedLookupRes } from "@n3oltd/umbraco-giving-client";
-import { GivingType } from "@n3oltd/umbraco-cart-client";
+import { GivingType } from "@n3oltd/umbraco-giving-cart-client";
 
 @customElement("quick-donation-type")
 class QuickDonationType extends LitElement {
