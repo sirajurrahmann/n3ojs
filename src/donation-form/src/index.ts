@@ -1,5 +1,6 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import Cookies from "js-cookie";
 import { donationFormStyles } from "./styles/donationFormStyles";
 import {
   AllocationType,
@@ -63,10 +64,7 @@ class DonationForm extends LitElement {
   formTitle: string = "";
 
   @property()
-  currencies = [
-    { symbol: "£", text: "GBP", selected: true },
-    { symbol: "€", text: "EUR", selected: false },
-  ];
+  currencies: CurrencyRes[] = [];
 
   @property()
   givingTypes: NamedLookupRes[] = [];
@@ -100,6 +98,9 @@ class DonationForm extends LitElement {
 
   @state()
   _dimension4?: FundDimensionValueRes;
+
+  @state()
+  _selectedCurrencyId?: string; // The currency ID, keep in sync with ID stored in cookies
 
   @state()
   _saving: boolean = false;
@@ -241,6 +242,25 @@ class DonationForm extends LitElement {
       });
   }
 
+  getCurrencies() {
+    const client = new GivingClient(this.data.baseUrl);
+    return client
+      .getLookupCurrencies()
+      .then((res) => {
+        this.currencies = res || [];
+
+        // Currency should have already been set in the Cookies by previous requests, it is
+        // included as a header all responses from Umbraco.
+        const currentCurrency = Cookies.get("Currency");
+        if (currentCurrency) {
+          this._selectedCurrencyId = currentCurrency;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   shouldShowPriceHandles(): boolean {
     if (this._givingType === GivingType.Donation)
       return this._option?.sponsorship
@@ -344,6 +364,16 @@ class DonationForm extends LitElement {
     return canBeInferred;
   }
 
+  setCurrency(currencyId: string) {
+    this._selectedCurrencyId = currencyId;
+
+    // Calling this enpoint will set the cookie on the response headers
+    const client = new GivingClient(this.data.baseUrl);
+    client.setCurrency(currencyId).catch((err) => {
+      console.log(err);
+    });
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -356,6 +386,7 @@ class DonationForm extends LitElement {
             this.getDonationItems(),
             this.getSponsorshipSchemes(),
             this.getDonationForm(fundStructure),
+            this.getCurrencies(),
           ]);
         })
         .then(() => {
@@ -460,6 +491,11 @@ class DonationForm extends LitElement {
 
         <div class="n3o-quick-donate-col">
           <other-amount
+            .onCurrencyChange="${(currency: CurrencyRes) => {
+              if (currency?.id) {
+                this.setCurrency(currency.id);
+              }
+            }}"
             .onChange="${(amount?: MoneyReq) => {
               this._otherAmount = amount;
               if (amount) {
@@ -469,13 +505,8 @@ class DonationForm extends LitElement {
             .value="${this._otherAmount}"
             .fixed="${this.selectedOptionIsFixed()}"
             .showCurrencyText="${this.data.showCurrencyText}"
-            .currency="${this.currencies.find((c) => c.selected)}"
+            .selectedCurrencyId="${this._selectedCurrencyId}"
             .currencies="${this.currencies}"
-            .onCurrencyChange="${(selected: string) => {
-              this.currencies = this.currencies.map((c) =>
-                c.text === selected ? { ...c, selected: true } : { ...c, selected: false },
-              );
-            }}"
           ></other-amount>
         </div>
 
@@ -504,6 +535,7 @@ class DonationForm extends LitElement {
                         this._otherAmount = undefined;
                       }
                     }}"
+                    .selectedCurrencyId="${this._selectedCurrencyId}"
                     .value="${this._amount}"
                     .priceHandles="${this._givingType === GivingType.Donation
                       ? this._option?.fund?.donationPriceHandles
@@ -515,21 +547,21 @@ class DonationForm extends LitElement {
 
           <div class="n3o-donation-form-row">
             <other-amount
-              .onChange="${(amount?: MoneyReq) => {
-                this._otherAmount = amount;
-                if (amount) {
-                  this._amount = undefined;
-                }
-              }}"
+             .onCurrencyChange="${(currency: CurrencyRes) => {
+               if (currency?.id) {
+                 this.setCurrency(currency.id);
+               }
+             }}"
+            .onChange="${(amount?: MoneyReq) => {
+              this._otherAmount = amount;
+              if (amount) {
+                this._amount = undefined;
+              }
+            }}"
               .value="${this._otherAmount}"
               .showCurrencyText="${this.data.showCurrencyText}"
-              .currency="${this.currencies.find((c) => c.selected)}"
+              .selectedCurrencyId="${this._selectedCurrencyId}"
               .currencies="${this.currencies}"
-              .onCurrencyChange="${(selected: CurrencyRes) => {
-                this.currencies = this.currencies.map((c) =>
-                  c.text === selected ? { ...c, selected: true } : { ...c, selected: false },
-                );
-              }}"
             ></other-amount>
           </div>
 
@@ -556,7 +588,7 @@ class DonationForm extends LitElement {
                             .baseUrl="${this.data.baseUrl}"
                             .dimensionNumber="${2}"
                             .value="${this._dimension2}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
+                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension2 = dim)}"
                             .default="${this._option?.dimension2?.default}"
                           ></fund-dimension>
                         </div>`
@@ -568,7 +600,7 @@ class DonationForm extends LitElement {
                             .baseUrl="${this.data.baseUrl}"
                             .dimensionNumber="${3}"
                             .value="${this._dimension3}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
+                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension3 = dim)}"
                             .default="${this._option?.dimension3?.default}"
                           ></fund-dimension>
                         </div>`
@@ -580,7 +612,7 @@ class DonationForm extends LitElement {
                             .baseUrl="${this.data.baseUrl}"
                             .dimensionNumber="${4}"
                             .value="${this._dimension4}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
+                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension4 = dim)}"
                             .default="${this._option?.dimension4?.default}"
                           ></fund-dimension>
                         </div>`

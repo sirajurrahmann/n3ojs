@@ -24,7 +24,7 @@ class OtherAmount extends LitElement {
   currencies: CurrencyRes[] = [];
 
   @property()
-  currency?: CurrencyRes;
+  selectedCurrencyId?: string;
 
   @property()
   showCurrencyText?: boolean;
@@ -34,7 +34,9 @@ class OtherAmount extends LitElement {
     if (re.test(target.value)) {
       this.onChange?.({
         amount: Number(target.value),
-        currency: this.currency?.id,
+        currency: this.currencies?.find(
+          (c) => c.id?.toLowerCase() === this.selectedCurrencyId?.toLowerCase(),
+        )?.id,
       });
     } else {
       // Not allowing the input
@@ -45,7 +47,10 @@ class OtherAmount extends LitElement {
   }
 
   renderSingleCurrency() {
-    return html`<span class="n3o-input-amount-symbol"> ${this.currency?.symbol} </span>`;
+    return html`<span class="n3o-input-amount-symbol">
+      ${this.currencies?.find((c) => c.id?.toLowerCase() === this.selectedCurrencyId?.toLowerCase())
+        ?.symbol}
+    </span>`;
   }
 
   renderMultiCurrency() {
@@ -59,7 +64,14 @@ class OtherAmount extends LitElement {
           this.onCurrencyChange?.(currencySelected);
         }}"
       >
-        ${this.currencies.map((curr) => html`<option value="${curr.id}">${curr.symbol}</option>`)}
+        ${this.currencies.map((curr) => {
+          return html`<option
+            .selected="${this.selectedCurrencyId?.toLowerCase() === curr.id?.toLowerCase()}"
+            value="${curr.id}"
+          >
+            ${curr.symbol}
+          </option>`;
+        })}
       </select>
     `;
   }
@@ -84,7 +96,13 @@ class OtherAmount extends LitElement {
             />
           </span>
           ${this.showCurrencyText
-            ? html` <span class="n3o-input-amount-text"> ${this.currency?.code} </span> `
+            ? html`
+                <span class="n3o-input-amount-text">
+                  ${this.currencies?.find(
+                    (c) => c.id?.toLowerCase() === this.selectedCurrencyId?.toLowerCase(),
+                  )?.code}
+                </span>
+              `
             : undefined}
         </span>
       </div>

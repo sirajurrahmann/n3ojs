@@ -1,62 +1,51 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Currency, PriceHandleRes } from "@n3oltd/umbraco-giving-client";
+import { PriceHandleRes } from "@n3oltd/umbraco-giving-client";
 import { amountSelectorStyles, buttonStyles } from "../styles/donationFormStyles";
+import { MoneyRes } from "@n3oltd/umbraco-giving-client/src/index";
 
 @customElement("amount-selector")
 class AmountSelector extends LitElement {
   static styles = [buttonStyles, amountSelectorStyles];
 
   @property()
-  // TODO: Remove sample data
-  _priceHandles: PriceHandleRes[] = [
-    {
-      amount: {
-        amount: 20,
-        currency: "GBP" as Currency,
-        text: "£20",
-      },
-      description: "Yemen Bread Factory: Produces 500 loaves of bread (feeds 500 people).",
-    },
-    {
-      amount: {
-        amount: 50,
-        currency: "GBP" as Currency,
-        text: "£50",
-      },
-      description: "Yemen Bread Factory: Produces 2,000 loaves of bread (feeds 1,500 people).",
-    },
-    {
-      amount: {
-        amount: 100,
-        currency: "GBP" as Currency,
-        text: "£1000",
-      },
-      description: "Fund the bread factory for a month",
-    },
-  ];
+  priceHandles: PriceHandleRes[] = [];
 
   @property()
   onChange?: (frequency: PriceHandleRes) => void;
 
   @property()
+  selectedCurrencyId?: string;
+
+  @property()
   value?: PriceHandleRes;
+
+  getPriceHandleTextForCurrency(currencyValues: { [key: string]: MoneyRes }): string {
+    if (this.selectedCurrencyId) {
+      return currencyValues[this.selectedCurrencyId.toLowerCase()]?.text || "";
+    }
+    return "";
+  }
+
+  isHandleSelected(handle: PriceHandleRes): boolean {
+    return handle.amount === this.value?.amount;
+  }
 
   render() {
     //language=HTML
     return html`
       <div>
         <div class="n3o-donation-form-price-select">
-          ${this._priceHandles.map((handle) => {
+          ${this.priceHandles.map((handle) => {
             return html`<button
               aria-selected="this.selected?.amount?.text ===
             handle.amount?.text"
-              class="n3o-donation-form-button ${this.value?.amount?.text === handle.amount?.text
+              class="n3o-donation-form-button ${this.isHandleSelected(handle)
                 ? "n3o-donation-form-button-selected"
                 : "n3o-donation-form-button-unselected"}"
               @click="${() => this.onChange?.(handle)}"
             >
-              ${handle.amount?.text}
+              ${this.getPriceHandleTextForCurrency(handle.currencyValues || {})}
             </button>`;
           })}
         </div>
