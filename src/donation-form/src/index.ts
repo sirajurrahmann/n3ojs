@@ -36,7 +36,17 @@ class DonationForm extends LitElement {
     baseUrl: string;
     formId: string;
     mode: DonationFormType;
+
+    // If true, first 2 rows of Donation Form are:
+    // 1) Frequency (One Off/Regular), 2) Fund choice
+    // else 1) Fund Choice, 2) Frequency (One Off/Regular)
     showFrequencyFirst: boolean;
+
+    // If true, after the frequency and fund rows, show
+    // 1) Fund Dimension choices, if necessary 2) Amount selector
+    // else 1) Amount selector, 2) Fund Dimension choices, if necessary
+    showFundDimensionsFirst: boolean;
+
     showCurrencyText?: boolean;
     footerText?: string;
   } = {
@@ -45,6 +55,7 @@ class DonationForm extends LitElement {
     mode: DonationFormType.Full,
     showFrequencyFirst: false,
     showCurrencyText: false,
+    showFundDimensionsFirst: false,
     footerText: "",
   };
 
@@ -366,6 +377,36 @@ class DonationForm extends LitElement {
     return canBeInferred;
   }
 
+  canShowAmountFirst(): boolean {
+    // If there are no pricing rules, we can show the amount selectors first
+    // instead of the fund dimensions first, but if there ARE pricing rules,
+    // then we have to show the fund dimensions first otherwise we will get the amount
+    // changing when the donor changes the fund dims which would be weird
+
+    if (this._option) {
+      if (this._option.type === AllocationType.Fund) {
+        const donationItem = this.donationItems.find(
+          (d) => d.id === this._option?.fund?.donationItem,
+        );
+        if (!donationItem?.pricing?.priceRules?.length) {
+          return true;
+        }
+      } else if (this._option.type === AllocationType.Sponsorship) {
+        const spon = this.sponsorshipSchemes.find(
+          (s) => s.id === this._option?.sponsorship?.scheme,
+        );
+        // Assume we have just 1 mandatory component, deal with this for now, later
+        // support will be added for multiple components
+        const component = spon?.components?.find((c) => c.mandatory);
+        if (!component?.pricing?.priceRules?.length) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   setCurrency(currencyId: string) {
     this._selectedCurrencyId = currencyId;
 
@@ -395,6 +436,79 @@ class DonationForm extends LitElement {
           this._loading = false;
         });
     });
+  }
+
+  renderFundDimensions() {
+    return html`
+      <div>
+        ${this.shouldShowDimension(this._option?.dimension1) &&
+        this.fundStructure?.dimension1?.isActive
+          ? html`<div class="n3o-donation-form-row">
+              <fund-dimension
+                .baseUrl="${this.data.baseUrl}"
+                .dimensionNumber="${1}"
+                .value="${this._dimension1}"
+                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
+                .default="${this._option?.dimension1?.default}"
+              ></fund-dimension>
+            </div>`
+          : undefined}
+        ${this.shouldShowDimension(this._option?.dimension2) &&
+        this.fundStructure?.dimension2?.isActive
+          ? html`<div class="n3o-donation-form-row">
+              <fund-dimension
+                .baseUrl="${this.data.baseUrl}"
+                .dimensionNumber="${2}"
+                .value="${this._dimension2}"
+                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension2 = dim)}"
+                .default="${this._option?.dimension2?.default}"
+              ></fund-dimension>
+            </div>`
+          : undefined}
+        ${this.shouldShowDimension(this._option?.dimension3) &&
+        this.fundStructure?.dimension3?.isActive
+          ? html`<div class="n3o-donation-form-row">
+              <fund-dimension
+                .baseUrl="${this.data.baseUrl}"
+                .dimensionNumber="${3}"
+                .value="${this._dimension3}"
+                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension3 = dim)}"
+                .default="${this._option?.dimension3?.default}"
+              ></fund-dimension>
+            </div>`
+          : undefined}
+        ${this.shouldShowDimension(this._option?.dimension4) &&
+        this.fundStructure?.dimension4?.isActive
+          ? html`<div class="n3o-donation-form-row">
+              <fund-dimension
+                .baseUrl="${this.data.baseUrl}"
+                .dimensionNumber="${4}"
+                .value="${this._dimension4}"
+                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension4 = dim)}"
+                .default="${this._option?.dimension4?.default}"
+              ></fund-dimension>
+            </div>`
+          : undefined}
+      </div>
+    `;
+  }
+
+  renderPriceHandles() {
+    return html`<div class="n3o-donation-form-row">
+      <amount-selector
+        .onChange="${(amount: PriceHandleRes) => {
+          this._amount = amount;
+          if (amount) {
+            this._otherAmount = undefined;
+          }
+        }}"
+        .selectedCurrencyId="${this._selectedCurrencyId}"
+        .value="${this._amount}"
+        .priceHandles="${this._givingType === GivingType.Donation
+          ? this._option?.fund?.donationPriceHandles
+          : this._option?.fund?.regularGivingPriceHandles}"
+      ></amount-selector>
+    </div>`;
   }
 
   renderFrequencyFirst() {
@@ -528,102 +642,57 @@ class DonationForm extends LitElement {
     <div>
           ${this.data.showFrequencyFirst ? this.renderFrequencyFirst() : this.renderFundFirst()}
           ${
-            this.shouldShowPriceHandles()
-              ? html`<div class="n3o-donation-form-row">
-                  <amount-selector
-                    .onChange="${(amount: PriceHandleRes) => {
-                      this._amount = amount;
-                      if (amount) {
-                        this._otherAmount = undefined;
-                      }
-                    }}"
-                    .selectedCurrencyId="${this._selectedCurrencyId}"
-                    .value="${this._amount}"
-                    .priceHandles="${this._givingType === GivingType.Donation
-                      ? this._option?.fund?.donationPriceHandles
-                      : this._option?.fund?.regularGivingPriceHandles}"
-                  ></amount-selector>
-                </div>`
-              : null
-          }
+            !this.data.showFundDimensionsFirst && this.canShowAmountFirst()
+              ? html`<div>
+                  ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
 
-          <div class="n3o-donation-form-row">
-            <other-amount
-             .onCurrencyChange="${(currency: CurrencyRes) => {
-               if (currency?.id) {
-                 this.setCurrency(currency.id);
-               }
-             }}"
-            .onChange="${(amount?: MoneyReq) => {
-              this._otherAmount = amount;
-              if (amount) {
-                this._amount = undefined;
-              }
-            }}"
-              .value="${this._otherAmount}"
-              .showCurrencyText="${this.data.showCurrencyText}"
-              .selectedCurrencyId="${this._selectedCurrencyId}"
-              .currencies="${this.currencies}"
-            ></other-amount>
-          </div>
-
-          ${
-            this.shouldPickFundDimensions()
-              ? html`
-                  <div>
-                    ${this.shouldShowDimension(this._option?.dimension1) &&
-                    this.fundStructure?.dimension1?.isActive
-                      ? html`<div class="n3o-donation-form-row">
-                          <fund-dimension
-                            .baseUrl="${this.data.baseUrl}"
-                            .dimensionNumber="${1}"
-                            .value="${this._dimension1}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
-                            .default="${this._option?.dimension1?.default}"
-                          ></fund-dimension>
-                        </div>`
-                      : undefined}
-                    ${this.shouldShowDimension(this._option?.dimension2) &&
-                    this.fundStructure?.dimension2?.isActive
-                      ? html`<div class="n3o-donation-form-row">
-                          <fund-dimension
-                            .baseUrl="${this.data.baseUrl}"
-                            .dimensionNumber="${2}"
-                            .value="${this._dimension2}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension2 = dim)}"
-                            .default="${this._option?.dimension2?.default}"
-                          ></fund-dimension>
-                        </div>`
-                      : undefined}
-                    ${this.shouldShowDimension(this._option?.dimension3) &&
-                    this.fundStructure?.dimension3?.isActive
-                      ? html`<div class="n3o-donation-form-row">
-                          <fund-dimension
-                            .baseUrl="${this.data.baseUrl}"
-                            .dimensionNumber="${3}"
-                            .value="${this._dimension3}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension3 = dim)}"
-                            .default="${this._option?.dimension3?.default}"
-                          ></fund-dimension>
-                        </div>`
-                      : undefined}
-                    ${this.shouldShowDimension(this._option?.dimension4) &&
-                    this.fundStructure?.dimension4?.isActive
-                      ? html`<div class="n3o-donation-form-row">
-                          <fund-dimension
-                            .baseUrl="${this.data.baseUrl}"
-                            .dimensionNumber="${4}"
-                            .value="${this._dimension4}"
-                            .onChange="${(dim?: FundDimensionValueRes) => (this._dimension4 = dim)}"
-                            .default="${this._option?.dimension4?.default}"
-                          ></fund-dimension>
-                        </div>`
-                      : undefined}
+                  <div class="n3o-donation-form-row">
+                    <other-amount
+                      .onCurrencyChange="${(currency: CurrencyRes) => {
+                        if (currency?.id) {
+                          this.setCurrency(currency.id);
+                        }
+                      }}"
+                      .onChange="${(amount?: MoneyReq) => {
+                        this._otherAmount = amount;
+                        if (amount) {
+                          this._amount = undefined;
+                        }
+                      }}"
+                      .value="${this._otherAmount}"
+                      .showCurrencyText="${this.data.showCurrencyText}"
+                      .selectedCurrencyId="${this._selectedCurrencyId}"
+                      .currencies="${this.currencies}"
+                    ></other-amount>
                   </div>
-                `
-              : undefined
-          }
 
+                  ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
+                </div>`
+              : html`<div>
+                  ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
+                  ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
+
+                  <div class="n3o-donation-form-row">
+                    <other-amount
+                      .onCurrencyChange="${(currency: CurrencyRes) => {
+                        if (currency?.id) {
+                          this.setCurrency(currency.id);
+                        }
+                      }}"
+                      .onChange="${(amount?: MoneyReq) => {
+                        this._otherAmount = amount;
+                        if (amount) {
+                          this._amount = undefined;
+                        }
+                      }}"
+                      .value="${this._otherAmount}"
+                      .showCurrencyText="${this.data.showCurrencyText}"
+                      .selectedCurrencyId="${this._selectedCurrencyId}"
+                      .currencies="${this.currencies}"
+                    ></other-amount>
+                  </div>
+                </div>`
+          }
           <div class="n3o-donation-form-row">
             <donate-button
               .saving="${this._saving}"
