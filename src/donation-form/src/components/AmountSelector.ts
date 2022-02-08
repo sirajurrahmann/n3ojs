@@ -22,7 +22,9 @@ class AmountSelector extends LitElement {
 
   getPriceHandleTextForCurrency(currencyValues: { [key: string]: MoneyRes }): string {
     if (this.selectedCurrencyId) {
-      return currencyValues[this.selectedCurrencyId.toLowerCase()]?.text || "";
+      let text = currencyValues[this.selectedCurrencyId.toLowerCase()]?.text;
+      if (text?.endsWith(".00")) text = text.slice(0, -3);
+      return text || "";
     }
     return "";
   }
