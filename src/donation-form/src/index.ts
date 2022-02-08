@@ -13,11 +13,13 @@ import {
   GivingClient,
   NamedLookupRes,
   PriceHandleRes,
-  PricingRuleRes,
+  SponsorshipDuration,
+  SponsorshipDurationRes,
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
 import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
 import { ApiErrorResponse, DonationFormType } from "./types";
+import { DonationFormHelpers } from "./helpers";
 
 import "./components/FundSelector";
 import "./components/Loading";
@@ -26,8 +28,8 @@ import "./components/AmountSelector";
 import "./components/OtherAmount";
 import "./components/FundDimension";
 import "./components/DonateButton";
+import "./components/SponsorshipDuration";
 import "./components/Quick/QuickDonationType";
-import { DonationFormHelpers } from "./helpers";
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -119,6 +121,12 @@ class DonationForm extends LitElement {
   _selectedCurrencyId?: string; // The currency ID, keep in sync with ID stored in cookies
 
   @state()
+  _duration?: SponsorshipDurationRes;
+
+  @state()
+  _quantity: number = 1;
+
+  @state()
   _saving: boolean = false;
 
   @state()
@@ -148,15 +156,12 @@ class DonationForm extends LitElement {
       givingType: this._givingType,
       allocation: {
         type: this._option.type,
-        value: this._otherAmount
-          ? {
-              amount: this._otherAmount.amount,
-              currency: this._otherAmount.currency,
-            }
-          : {
-              amount: this._amount?.amount,
-              currency: "GBP", // TODO: use this._amount.currencyValues
-            },
+        value: DonationFormHelpers.getDonationValue(
+          1, // TODO: should we be multiplying by duration here?
+          this._selectedCurrencyId || "",
+          this._otherAmount,
+          this._amount,
+        ),
         fundDimensions: {
           dimension1: this._dimension1?.id,
           dimension2: this._dimension2?.id,
@@ -173,10 +178,29 @@ class DonationForm extends LitElement {
           this._option.type === "sponsorship"
             ? {
                 scheme: this._option.sponsorship?.scheme,
+                duration:
+                  this._givingType === GivingType.Donation
+                    ? (this._duration?.id as SponsorshipDuration)
+                    : undefined,
+                components: [
+                  {
+                    component: DonationFormHelpers.getMandatoryComponent(
+                      this.sponsorshipSchemes,
+                      this._option.sponsorship?.scheme,
+                    )?.id,
+                    // Currently the component value is the value of the whole donation because we only support the 1 mandatory component
+                    value: DonationFormHelpers.getDonationValue(
+                      this._duration?.months || 1,
+                      this._selectedCurrencyId || "",
+                      this._otherAmount,
+                      this._amount,
+                    ),
+                  },
+                ],
               }
             : undefined,
       },
-      quantity: 1, // TODO: Does this apply to sponsorships only?
+      quantity: this._quantity || 1, // TODO: show a quantity selector for donation items too
     };
 
     client
@@ -475,12 +499,12 @@ class DonationForm extends LitElement {
           return true;
         }
       } else if (this._option.type === AllocationType.Sponsorship) {
-        const spon = this.sponsorshipSchemes.find(
-          (s) => s.id === this._option?.sponsorship?.scheme,
-        );
         // Assume we have just 1 mandatory component, deal with this for now, later
         // support will be added for multiple components
-        const component = spon?.components?.find((c) => c.mandatory);
+        const component = DonationFormHelpers.getMandatoryComponent(
+          this.sponsorshipSchemes,
+          this._option?.sponsorship?.scheme,
+        );
         if (!component?.pricing?.priceRules?.length) {
           return true;
         }
@@ -786,6 +810,19 @@ class DonationForm extends LitElement {
                     ></other-amount>
                   </div>
 
+                  ${this._option?.type === "sponsorship"
+                    ? html`<div class="n3o-donation-form-row">
+                        <sponsorship-duration
+                          .currencies="${this.currencies}"
+                          .value="${this._duration}"
+                          .quantity="${this._quantity}"
+                          .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
+                          .baseUrl="${this.data.baseUrl}"
+                          .amount="${this._otherAmount ||
+                          this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
+                        ></sponsorship-duration>
+                      </div>`
+                    : null}
                   ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
                 </div>`
               : html`<div>
@@ -813,6 +850,20 @@ class DonationForm extends LitElement {
                       .fixed="${this._otherAmountLocked}"
                     ></other-amount>
                   </div>
+
+                  ${this._option?.type === "sponsorship"
+                    ? html`<div class="n3o-donation-form-row">
+                        <sponsorship-duration
+                          .currencies="${this.currencies}"
+                          .quantity="${this._quantity}"
+                          .value="${this._duration}"
+                          .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
+                          .baseUrl="${this.data.baseUrl}"
+                          .amount="${this._otherAmount ||
+                          this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
+                        ></sponsorship-duration>
+                      </div>`
+                    : null}
                 </div>`
           }
           <div class="n3o-donation-form-row">

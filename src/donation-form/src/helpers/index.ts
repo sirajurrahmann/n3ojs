@@ -3,10 +3,13 @@ import {
   DonationItemRes,
   DonationOptionRes,
   FundDimensionValueRes,
+  PriceHandleRes,
   PricingRes,
   PricingRuleRes,
+  SponsorshipComponentRes,
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
+import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
 
 export class DonationFormHelpers {
   public static getPricing(
@@ -18,9 +21,10 @@ export class DonationFormHelpers {
     if (option.type === AllocationType.Fund) {
       pricing = donationItems.find((d) => d.id === option.fund?.donationItem)?.pricing;
     } else {
-      pricing = sponsorshipSchemes
-        .find((s) => s.id === option.sponsorship)
-        ?.components?.find((c) => c.mandatory)?.pricing;
+      pricing = DonationFormHelpers.getMandatoryComponent(
+        sponsorshipSchemes,
+        option.sponsorship?.scheme,
+      )?.pricing;
     }
     return pricing;
   }
@@ -50,5 +54,36 @@ export class DonationFormHelpers {
           : true)
       );
     });
+  }
+
+  public static getMandatoryComponent(
+    schemes: SponsorshipSchemeRes[],
+    schemeId?: string,
+  ): SponsorshipComponentRes | undefined {
+    const spon = schemes.find((s) => s.id === schemeId);
+    // Assume we have just 1 mandatory component, deal with this for now, later
+    // support will be added for multiple components
+    return spon?.components?.find((c) => c.mandatory);
+  }
+
+  public static getDonationValue(
+    duration: number,
+    currencyId: string,
+    userSelectedAmount?: MoneyReq,
+    selectedPriceHandle?: PriceHandleRes,
+  ) {
+    // Gets the value
+    if (userSelectedAmount) {
+      return {
+        currency: userSelectedAmount.currency,
+        amount: (userSelectedAmount.amount || 0) * duration,
+      };
+    } else {
+      return {
+        currency: selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.currency,
+        amount:
+          (selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.amount || 0) * duration,
+      };
+    }
   }
 }
