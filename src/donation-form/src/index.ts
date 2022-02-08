@@ -348,6 +348,7 @@ class DonationForm extends LitElement {
     if (!option) return;
 
     // Invoked when the fund is changed.
+    // Also invoked when the currency is changed, so that if there is a matching rule, the value is updated to the new currency value
 
     // This function assumes that the new fund dimensions values have already been set after the fund has been changed.
 
@@ -726,6 +727,7 @@ class DonationForm extends LitElement {
             .onCurrencyChange="${(currency: CurrencyRes) => {
               if (currency?.id) {
                 this.setCurrency(currency.id);
+                this.setOtherAmount(this._option);
               }
             }}"
             .onChange="${(amount?: MoneyReq) => {
@@ -767,6 +769,7 @@ class DonationForm extends LitElement {
                       .onCurrencyChange="${(currency: CurrencyRes) => {
                         if (currency?.id) {
                           this.setCurrency(currency.id);
+                          this.setOtherAmount(this._option);
                         }
                       }}"
                       .onChange="${(amount?: MoneyReq) => {
@@ -794,6 +797,7 @@ class DonationForm extends LitElement {
                       .onCurrencyChange="${(currency: CurrencyRes) => {
                         if (currency?.id) {
                           this.setCurrency(currency.id);
+                          this.setOtherAmount(this._option);
                         }
                       }}"
                       .onChange="${(amount?: MoneyReq) => {
