@@ -28,6 +28,7 @@ class FundDimension extends LitElement {
   @state()
   _dimensions: FundDimensionValueRes[] = [];
 
+  // TODO: Options here should be taken from donation item, no need to fetch them
   getFundDimensions1() {
     const client = new GivingClient(this.baseUrl);
     return client.getLookupFundDimension1Values().then((r) => {
@@ -61,10 +62,6 @@ class FundDimension extends LitElement {
 
     // Wait till event loop empty
     setTimeout(() => {
-      if (!this.value && this.default) {
-        this.onChange?.(this.default);
-      }
-
       if (this.dimensionNumber === 1) {
         this.getFundDimensions1().then(() => {
           this._loading = false;
@@ -98,10 +95,7 @@ class FundDimension extends LitElement {
           }}"
         >
           ${this._dimensions?.map((dim) => {
-            return html`<option
-              .selected="${dim.id === this.value?.id || dim.id === this.default?.id}"
-              value="${dim.id}"
-            >
+            return html`<option .selected="${dim.id === this.value?.id}" value="${dim.id}">
               ${dim.name}
             </option>`;
           })}

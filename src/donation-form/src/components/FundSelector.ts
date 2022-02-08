@@ -1,13 +1,11 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { DonationOptionRes } from "@n3oltd/umbraco-giving-client/src/index";
-import {
-  DonationItemRes,
-  NamedLookupRes,
-  SponsorshipSchemeRes,
-} from "@n3oltd/umbraco-giving-client";
+import { AllocationType, DonationOptionRes } from "@n3oltd/umbraco-giving-client/src/index";
+import { CurrencyRes, DonationItemRes, SponsorshipSchemeRes } from "@n3oltd/umbraco-giving-client";
 import { selectCustomArrowStyles, selectStyles } from "../styles/donationFormStyles";
 import { DonationFormType } from "../types";
+import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
+import { DonationFormHelpers } from "../helpers";
 
 @customElement("fund-selector")
 class FundSelector extends LitElement {
@@ -18,6 +16,15 @@ class FundSelector extends LitElement {
 
   @property()
   value?: DonationOptionRes;
+
+  @property()
+  fixedAmount?: MoneyReq;
+
+  @property()
+  showFixedAmountInOption?: boolean = false;
+
+  @property()
+  selectedCurrencyId?: string;
 
   @property()
   onChange?: (option?: DonationOptionRes) => void;
@@ -31,27 +38,45 @@ class FundSelector extends LitElement {
   @property()
   sponsorshipSchemes: SponsorshipSchemeRes[] = [];
 
-  getDonationItemName(option: DonationOptionRes): string {
-    const di = this.donationItems.find((d) => d.id === option.fund?.donationItem);
+  getItemName(option: DonationOptionRes): string {
+    let name: string;
+    if (option.type === "fund") {
+      name = this.donationItems.find((d) => d.id === option.fund?.donationItem)?.name || "";
+    } else {
+      name = this.sponsorshipSchemes.find((s) => s.id === option.sponsorship?.scheme)?.name || "";
+    }
+    if (!this.showFixedAmountInOption) {
+      return name;
+    }
 
-    const hasFixedPrice = di?.pricing?.locked;
-    // TODO: should choose correct currency
-    if (this.variation === DonationFormType.Quick && hasFixedPrice)
-      return `${di?.name} (${di?.pricing?.amount})`;
-    else return di?.name || "";
-  }
+    const pricing = DonationFormHelpers.getPricing(
+      option,
+      this.donationItems,
+      this.sponsorshipSchemes,
+    );
 
-  getSponsorshipSchemeName(option: DonationOptionRes): string {
-    const sp = this.sponsorshipSchemes.find((d) => d.id === option.sponsorship?.scheme);
+    const matchingPricingRule = DonationFormHelpers.getMatchingPricingRule(
+      pricing?.priceRules || [],
+      {
+        dimension1: option.dimension1?.fixed || option.dimension1?.default,
+        dimension2: option.dimension2?.fixed || option.dimension2?.default,
+        dimension3: option.dimension3?.fixed || option.dimension3?.default,
+        dimension4: option.dimension4?.fixed || option.dimension4?.default,
+      },
+    );
 
-    // For sponsorships, we can assume for now there is only one mandatory component and just deal with that one.
-    // In the future, we'll look at supporting multiple components
-    const mandatoryComponent = sp?.components?.find((c) => c.mandatory);
-    const hasFixedPrice = mandatoryComponent?.pricing?.locked;
-    // TODO: should choose correct currency
-    if (this.variation === DonationFormType.Quick && hasFixedPrice)
-      return `${mandatoryComponent?.name} (${mandatoryComponent.pricing?.amount})`;
-    else return sp?.name || "";
+    // First we check whether a matching price rule is locked, which is more specific
+    if (matchingPricingRule && matchingPricingRule.locked) {
+      return `${name} (${
+        matchingPricingRule.currencyValues?.[this.selectedCurrencyId || ""]?.text || ""
+      })`;
+
+      // Then we check whether the fallback price is locked
+    } else if (pricing?.locked) {
+      return `${name} (${pricing.currencyValues?.[this.selectedCurrencyId || ""]?.text})`;
+    }
+
+    return name;
   }
 
   render() {
@@ -75,9 +100,7 @@ class FundSelector extends LitElement {
                     ? option.fund?.donationItem
                     : option.sponsorship?.scheme}"
                 >
-                  ${option.type === "fund"
-                    ? this.getDonationItemName(option)
-                    : this.getSponsorshipSchemeName(option)}
+                  ${this.getItemName(option)}
                 </option>`;
               })
             : html`<option value="" disabled selected>No funds available</option>`}

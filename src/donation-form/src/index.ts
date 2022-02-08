@@ -13,6 +13,7 @@ import {
   GivingClient,
   NamedLookupRes,
   PriceHandleRes,
+  PricingRuleRes,
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
 import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
@@ -26,6 +27,7 @@ import "./components/OtherAmount";
 import "./components/FundDimension";
 import "./components/DonateButton";
 import "./components/Quick/QuickDonationType";
+import { DonationFormHelpers } from "./helpers";
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -97,6 +99,9 @@ class DonationForm extends LitElement {
 
   @state()
   _otherAmount?: MoneyReq;
+
+  @state()
+  _otherAmountLocked: boolean = false;
 
   @state()
   _dimension1?: FundDimensionValueRes;
@@ -200,6 +205,9 @@ class DonationForm extends LitElement {
             : res.options?.filter?.((opt) => this.fundsCanBeInferred(opt, fundStructure)) || [];
         this.formTitle = res.title || "Donate Now";
         this._option = res.options?.[0];
+
+        this.updateFundDimensions(this._option);
+        this.setOtherAmount(this._option);
       })
       .catch((err) => {
         console.log(err);
@@ -275,14 +283,42 @@ class DonationForm extends LitElement {
   }
 
   shouldShowPriceHandles(): boolean {
+    // Don't show price handles for sponsorships
+    // If we're dealing with a donation item and the item has a price (or a pricing rule matches)
+    // then we should not show price handles
+
+    // NB. Technically the check of whether a donation has price is redundant - if the donation item had
+    // a price/pricing rules, should never have been allowed to configure price handles in Umbraco anyway.
+
     if (this._givingType === GivingType.Donation)
       return this._option?.sponsorship
         ? false
-        : Boolean(this._option?.fund?.donationPriceHandles?.length);
+        : !this.donationHasPrice(this._option?.fund?.donationItem) &&
+            Boolean(this._option?.fund?.donationPriceHandles?.length);
     if (this._givingType === GivingType.RegularGiving)
       return this._option?.sponsorship
         ? false
-        : Boolean(this._option?.fund?.regularGivingPriceHandles?.length);
+        : !this.donationHasPrice(this._option?.fund?.donationItem) &&
+            Boolean(this._option?.fund?.regularGivingPriceHandles?.length);
+    return false;
+  }
+
+  donationHasPrice(donationItem?: string): boolean {
+    const item = this.donationItems.find((d) => d.id === donationItem);
+
+    if (
+      item?.pricing?.amount ||
+      Boolean(
+        DonationFormHelpers.getMatchingPricingRule(item?.pricing?.priceRules || [], {
+          dimension1: this._dimension1,
+          dimension2: this._dimension2,
+          dimension3: this._dimension3,
+          dimension4: this._dimension4,
+        }),
+      )
+    )
+      return true;
+
     return false;
   }
 
@@ -308,41 +344,87 @@ class DonationForm extends LitElement {
     else return !dim.fixed;
   }
 
-  selectedOptionIsFixed(): boolean {
-    // Returns boolean depending on whether the amount of the item is fixed ("locked")
+  setOtherAmount(option?: DonationOptionRes): void {
+    if (!option) return;
 
-    // Logic here is - if the item has a price and the price is locked, return true
-    // Otherwise return false
-    // If there is a price but it is NOT fixed, then it will have been set
-    // as the _otherAmount value when the donor changed the fund.
+    // Invoked when the fund is changed.
 
-    let pricing;
-    if (this._option?.type === AllocationType.Fund) {
-      pricing = this.donationItems.find((d) => d.id === this._option?.fund?.donationItem)?.pricing;
+    // This function assumes that the new fund dimensions values have already been set after the fund has been changed.
+
+    // This function sets the _otherAmount field (if it can) and also the _otherAmountLocked
+
+    // We need to check whether the fund dimensions which are initially selected for this fund match
+    // any pricing rules, and if not we can also consider the fallback price on the donation item too.
+
+    // If there are price handles we can exit early - there would never be price handles AND a set price
+    // on the donation item.
+
+    // If there are price handles then there cannot also be a price on the donation item,
+    // so unLock any amount previously entered by the user.
+    if (option?.type === AllocationType.Fund) {
+      if (this._givingType === GivingType.Donation) {
+        if (option.fund?.donationPriceHandles?.length) {
+          this._otherAmountLocked = false;
+          return;
+        }
+      } else {
+        if (option.fund?.regularGivingPriceHandles?.length) {
+          this._otherAmountLocked = false;
+          return;
+        }
+      }
     } else {
-      pricing = this.sponsorshipSchemes
-        .find((s) => s.id === this._option?.sponsorship)
-        ?.components?.find((c) => c.mandatory)?.pricing;
+      // Sponsorships do not have price handles anyway so nothing to check here.
     }
-    return !!pricing?.locked;
+
+    const pricing = DonationFormHelpers.getPricing(
+      option,
+      this.donationItems,
+      this.sponsorshipSchemes,
+    );
+
+    if (pricing) {
+      const matchingPricingRule = DonationFormHelpers.getMatchingPricingRule(
+        pricing?.priceRules || [],
+        {
+          dimension1: this._dimension1,
+          dimension2: this._dimension2,
+          dimension3: this._dimension3,
+          dimension4: this._dimension4,
+        },
+      );
+
+      if (matchingPricingRule && this._selectedCurrencyId) {
+        this._otherAmount = matchingPricingRule.currencyValues?.[this._selectedCurrencyId];
+        this._otherAmountLocked = matchingPricingRule.locked || false;
+      } else {
+        if (pricing?.amount && this._selectedCurrencyId) {
+          this._otherAmount = pricing.currencyValues?.[this._selectedCurrencyId];
+          this._otherAmountLocked = pricing?.locked || false;
+        }
+      }
+    } else {
+      // If no pricing on the donation item, we can leave the amount (if someone entered it before)
+      // but now the amount will definitely not be fixed
+      this._otherAmountLocked = false;
+    }
   }
 
-  getFixedOtherAmount(option: DonationOptionRes): MoneyReq | undefined {
-    // Logic here is: If the option has a price (whether it is locked or not), return it.
-    let pricing;
-    if (option.type === AllocationType.Fund) {
-      pricing = this.donationItems.find((d) => d.id === option.fund?.donationItem)?.pricing;
-    } else {
-      pricing = this.sponsorshipSchemes
-        .find((s) => s.id === option.sponsorship)
-        ?.components?.find((c) => c.mandatory)?.pricing;
+  updateFundDimensions(option?: DonationOptionRes): void {
+    // Invoked when the fund is changed, updates the fund dimensions to the defaults for this
+    // option, or leaves them as whatever was previously selected.
+    if (option?.dimension1?.default) {
+      this._dimension1 = option?.dimension1.default;
     }
-    if (pricing?.amount)
-      return {
-        amount: pricing.amount,
-        currency: "GBP", // TODO: Use correct currency amounts from pricing.currencyValues
-      };
-    return undefined;
+    if (option?.dimension2?.default) {
+      this._dimension2 = option?.dimension2.default;
+    }
+    if (option?.dimension3?.default) {
+      this._dimension3 = option?.dimension3.default;
+    }
+    if (option?.dimension4?.default) {
+      this._dimension4 = option?.dimension4.default;
+    }
   }
 
   fundsCanBeInferred(opt: DonationOptionRes, fundStructure: FundStructureRes | void): boolean {
@@ -422,15 +504,19 @@ class DonationForm extends LitElement {
 
     // Wait till event loop empty
     setTimeout(() => {
+      let fs: FundStructureRes | void;
       this.getFundStructure()
         .then((fundStructure: FundStructureRes | void) => {
+          fs = fundStructure;
           return Promise.all([
             this.getGivingTypes(),
             this.getDonationItems(),
             this.getSponsorshipSchemes(),
-            this.getDonationForm(fundStructure),
             this.getCurrencies(),
           ]);
+        })
+        .then(() => {
+          return this.getDonationForm(fs);
         })
         .then(() => {
           this._loading = false;
@@ -448,7 +534,10 @@ class DonationForm extends LitElement {
                 .baseUrl="${this.data.baseUrl}"
                 .dimensionNumber="${1}"
                 .value="${this._dimension1}"
-                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension1 = dim)}"
+                .onChange="${(dim?: FundDimensionValueRes) => {
+                  this._dimension1 = dim;
+                  this.setOtherAmount(this._option);
+                }}"
                 .default="${this._option?.dimension1?.default}"
               ></fund-dimension>
             </div>`
@@ -460,7 +549,10 @@ class DonationForm extends LitElement {
                 .baseUrl="${this.data.baseUrl}"
                 .dimensionNumber="${2}"
                 .value="${this._dimension2}"
-                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension2 = dim)}"
+                .onChange="${(dim?: FundDimensionValueRes) => {
+                  this._dimension2 = dim;
+                  this.setOtherAmount(this._option);
+                }}"
                 .default="${this._option?.dimension2?.default}"
               ></fund-dimension>
             </div>`
@@ -472,7 +564,10 @@ class DonationForm extends LitElement {
                 .baseUrl="${this.data.baseUrl}"
                 .dimensionNumber="${3}"
                 .value="${this._dimension3}"
-                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension3 = dim)}"
+                .onChange="${(dim?: FundDimensionValueRes) => {
+                  this._dimension3 = dim;
+                  this.setOtherAmount(this._option);
+                }}"
                 .default="${this._option?.dimension3?.default}"
               ></fund-dimension>
             </div>`
@@ -484,7 +579,10 @@ class DonationForm extends LitElement {
                 .baseUrl="${this.data.baseUrl}"
                 .dimensionNumber="${4}"
                 .value="${this._dimension4}"
-                .onChange="${(dim?: FundDimensionValueRes) => (this._dimension4 = dim)}"
+                .onChange="${(dim?: FundDimensionValueRes) => {
+                  this._dimension4 = dim;
+                  this.setOtherAmount(this._option);
+                }}"
                 .default="${this._option?.dimension4?.default}"
               ></fund-dimension>
             </div>`
@@ -533,9 +631,14 @@ class DonationForm extends LitElement {
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
-              this._otherAmount = this.getFixedOtherAmount(option);
+              this.updateFundDimensions(option);
+              this.setOtherAmount(option);
             }}"
+            .fixedAmount="${this._otherAmountLocked && this._otherAmount
+              ? this._otherAmount
+              : undefined}"
             .value="${this._option}"
+            .selectedCurrencyId="${this._selectedCurrencyId}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
               return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
@@ -554,9 +657,15 @@ class DonationForm extends LitElement {
           <fund-selector
             .variation="${DonationFormType.Full}"
             .donationItems="${this.donationItems}"
+            .selectedCurrencyId="${this._selectedCurrencyId}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this.updateFundDimensions(option);
+              this.setOtherAmount(option);
             }}"
+            .fixedAmount="${this._otherAmountLocked && this._otherAmount
+              ? this._otherAmount
+              : undefined}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
               return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
@@ -596,10 +705,17 @@ class DonationForm extends LitElement {
           <fund-selector
             .variation="${DonationFormType.Quick}"
             .donationItems="${this.donationItems}"
+            .selectedCurrencyId="${this._selectedCurrencyId}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this.updateFundDimensions(option);
+              this.setOtherAmount(option);
             }}"
+            .fixedAmount="${this._otherAmountLocked && this._otherAmount
+              ? this._otherAmount
+              : undefined}"
+            .showFixedAmountInOption="${true}"
             .options="${this.options}"
             .value="${this._option}"
           ></fund-selector>
@@ -619,7 +735,7 @@ class DonationForm extends LitElement {
               }
             }}"
             .value="${this._otherAmount}"
-            .fixed="${this.selectedOptionIsFixed()}"
+            .fixed="${this._otherAmountLocked}"
             .showCurrencyText="${this.data.showCurrencyText}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .currencies="${this.currencies}"
@@ -660,6 +776,7 @@ class DonationForm extends LitElement {
                         }
                       }}"
                       .value="${this._otherAmount}"
+                      .fixed="${this._otherAmountLocked}"
                       .showCurrencyText="${this.data.showCurrencyText}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
@@ -689,6 +806,7 @@ class DonationForm extends LitElement {
                       .showCurrencyText="${this.data.showCurrencyText}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
+                      .fixed="${this._otherAmountLocked}"
                     ></other-amount>
                   </div>
                 </div>`
