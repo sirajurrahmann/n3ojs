@@ -524,6 +524,18 @@ class DonationForm extends LitElement {
     });
   }
 
+  getTheme(): string {
+    let themeDim;
+    if (this.fundStructure?.dimension1?.id === "theme") themeDim = this.fundStructure?.dimension1;
+    if (this.fundStructure?.dimension2?.id === "theme") themeDim = this.fundStructure?.dimension2;
+    if (this.fundStructure?.dimension3?.id === "theme") themeDim = this.fundStructure?.dimension3;
+    if (this.fundStructure?.dimension4?.id === "theme") themeDim = this.fundStructure?.dimension4;
+
+    // This is used to get the sponsorship theme e.g. "Orphans".
+    // We assume that the sponsorship only has one theme option set.
+    return themeDim?.options?.[0]?.name || "";
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -813,7 +825,9 @@ class DonationForm extends LitElement {
                   ${this._option?.type === "sponsorship"
                     ? html`<div class="n3o-donation-form-row">
                         <sponsorship-duration
+                          .givingType="${this._givingType}"
                           .currencies="${this.currencies}"
+                          .theme="${this.getTheme()}"
                           .value="${this._duration}"
                           .quantity="${this._quantity}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
@@ -854,8 +868,10 @@ class DonationForm extends LitElement {
                   ${this._option?.type === "sponsorship"
                     ? html`<div class="n3o-donation-form-row">
                         <sponsorship-duration
+                          .givingType="${this._givingType}"
                           .currencies="${this.currencies}"
                           .quantity="${this._quantity}"
+                          .theme="${this.getTheme()}"
                           .value="${this._duration}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                           .baseUrl="${this.data.baseUrl}"

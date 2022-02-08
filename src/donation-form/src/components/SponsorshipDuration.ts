@@ -1,12 +1,22 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
-import { CurrencyRes, GivingClient, SponsorshipDurationRes } from "@n3oltd/umbraco-giving-client";
+import {
+  CurrencyRes,
+  GivingClient,
+  GivingType,
+  SponsorshipDurationRes,
+} from "@n3oltd/umbraco-giving-client";
 import { selectCustomArrowStyles, selectStyles } from "../styles/donationFormStyles";
 
 @customElement("sponsorship-duration")
 class SponsorshipDuration extends LitElement {
   static styles = [selectStyles, selectCustomArrowStyles];
+
+  static quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  @property()
+  givingType?: GivingType;
 
   @property()
   currencies: CurrencyRes[] = [];
@@ -18,6 +28,9 @@ class SponsorshipDuration extends LitElement {
   quantity: number = 1;
 
   @property()
+  theme: string = "";
+
+  @property()
   baseUrl: string = "";
 
   @property()
@@ -25,6 +38,9 @@ class SponsorshipDuration extends LitElement {
 
   @property()
   onChange?: (val?: SponsorshipDurationRes) => void;
+
+  @property()
+  onChangeQuantity?: (val?: number) => void;
 
   @state()
   _durations: SponsorshipDurationRes[] = [];
@@ -60,7 +76,7 @@ class SponsorshipDuration extends LitElement {
     });
   }
 
-  render() {
+  renderDonationVersion() {
     // language=html
     return html`
       <div>
@@ -82,5 +98,29 @@ class SponsorshipDuration extends LitElement {
         </select>
       </div>
     `;
+  }
+
+  renderRegularGivingVersion() {
+    // language=html
+    return html`
+      <div>
+        <select
+          @change="${(e: Event) => {
+            this.onChangeQuantity?.(Number((e.target as HTMLSelectElement).value));
+          }}"
+        >
+          ${SponsorshipDuration.quantities?.map((q) => {
+            return html`<option .selected="${q === this.quantity}" value="${q}">
+              ${q} ${this.theme.toLowerCase()}/month (${this.getTotal(q)})
+            </option>`;
+          })}
+        </select>
+      </div>
+    `;
+  }
+
+  render() {
+    if (this.givingType === GivingType.Donation) return this.renderDonationVersion();
+    else return this.renderRegularGivingVersion();
   }
 }
