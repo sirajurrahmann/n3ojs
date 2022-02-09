@@ -10,6 +10,7 @@ import {
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
 import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
+import { IconVariety } from "../types";
 
 export class DonationFormHelpers {
   public static getPricing(
@@ -85,6 +86,19 @@ export class DonationFormHelpers {
           (selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.amount || 0) *
           multiplier,
       };
+    }
+  }
+
+  public static getMaterialIconName(variety: IconVariety): string {
+    switch (variety) {
+      case "filled":
+        return "material-icons";
+      case "outlined":
+        return "material-icons-outlined";
+      case "rounded":
+        return "material-icons-rounded";
+      case "sharp":
+        return "material-icons-sharp";
     }
   }
 }

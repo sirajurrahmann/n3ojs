@@ -1,7 +1,5 @@
 # donation-form
 
-### Questions
-
 A N3O Package for use in client websites.
 
 Provides the Donation Form component.
@@ -40,14 +38,15 @@ npm install @n3o/error-modal
 <script type="module">
     const el = document.querySelector("#donationForm");
     el.data = {
-       formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
-       baseUrl: "https://localhost:5001",
-       singleText: "One-Off",
-       regularText: "Monthly",
-       showFrequencyFirst: true,
-       showCurrencyText: true,
-       footerText: "We accept all major credit cards and PayPal"
-    };
+        formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
+        baseUrl: "https://localhost:5001",
+        showFrequencyFirst: true,
+        showCurrencyText: true,
+        footerText: "We accept all major credit cards and PayPal",
+        icons: {
+          donateButton: {icon: "favorite", version: "filled" }
+        }
+      };
   </script>
 
 <data-donation-form id="donationForm" type="full"> </data-donation-form>
@@ -68,3 +67,35 @@ As such, developers do not have full control over shadow DOM styling from the ou
 Styles can be configured by setting CSS variables. Full list of CSS variables which may be configured for this component are listed in the demo code in `index.html`.
 
 Additional variables can easily be added, please contact the project authors or open a PR.
+
+### Fonts & Icons
+
+This component currently supports **Material Icons**.
+
+In order to include these icons, add or load the Material Icon font in your root HTML document, e.g.:
+
+```html
+<style>
+    @font-face {
+      font-family: 'Material Icons';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/materialicons/v121/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+    }
+</style>
+```
+
+Define as variables the icons you wish to use in various places in this component, passing the name of the icon you wish to display from the [Material Icons Library](https://fonts.google.com/icons):
+
+```javascript
+el.data = {
+      ...,
+      icons: {
+        donateButton: {icon: "favorite", variety: "filled" }
+      }
+    };
+```
+
+The variety may be "filled", "outlined", "rounded" or "sharp" (defaults to "filled").
+
+Check the full list of configurable CSS variables in `index.html` for further customization options, such as `--donate-button-icon-color`

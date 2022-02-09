@@ -6,6 +6,14 @@
   <meta name="viewport"
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <style>
+    @font-face {
+      font-family: 'Material Icons';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/materialicons/v121/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+    }
+  </style>
   <title>N3O Donation Form</title>
 
   <script type="module" src="./build/index.js"></script>
@@ -51,6 +59,8 @@
       --donate-button-hover-border: none;
       --donate-button-hover-box-shadow: none;
 
+      --donate-button-icon-color: #fff;
+
       /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
       --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%234FAF46' height='26' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
 
@@ -64,7 +74,10 @@
       baseUrl: "https://read-uk-staging.n3o.site",
       showFrequencyFirst: true,
       showCurrencyText: true,
-      footerText: "We accept all major credit cards and PayPal"
+      footerText: "We accept all major credit cards and PayPal",
+      icons: {
+        donateButton: {icon: "favorite", variety: "filled" }
+      }
     };
 
     el2.data = {

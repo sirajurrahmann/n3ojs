@@ -242,6 +242,24 @@ export const otherAmountStyles = css`
   }
 `;
 
+export const iconStyle = css`
+  .material-icons {
+    font-family: "Material Icons";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+  }
+`;
+
 export const donateButtonStyles = css`
   .n3o-donate-button button {
     width: 100%;
@@ -251,6 +269,14 @@ export const donateButtonStyles = css`
     transition: background-color 0.5s ease;
     color: var(--donate-button-text-color);
     background: var(--donate-button-background);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .n3o-donate-button button .icon {
+    margin-right: 10px;
+    color: var(--donate-button-icon-color);
   }
   .n3o-donate-button button:hover,
   .n3o-donate-button button:active {

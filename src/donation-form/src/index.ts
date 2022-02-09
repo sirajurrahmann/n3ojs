@@ -18,7 +18,7 @@ import {
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
 import { AddToCartReq, CartClient, GivingType, MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
-import { ApiErrorResponse, DonationFormType } from "./types";
+import { ApiErrorResponse, DonationFormType, IconDefinitions } from "./types";
 import { DonationFormHelpers } from "./helpers";
 
 import "./components/FundSelector";
@@ -30,6 +30,7 @@ import "./components/FundDimension";
 import "./components/DonateButton";
 import "./components/SponsorshipDuration";
 import "./components/Quick/QuickDonationType";
+import defaultIcons from "./config/icons";
 
 @customElement("data-donation-form")
 class DonationForm extends LitElement {
@@ -40,6 +41,7 @@ class DonationForm extends LitElement {
     baseUrl: string;
     formId: string;
     mode: DonationFormType;
+    icons?: IconDefinitions;
 
     // If true, first 2 rows of Donation Form are:
     // 1) Frequency (One Off/Regular), 2) Fund choice
@@ -61,6 +63,7 @@ class DonationForm extends LitElement {
     showCurrencyText: false,
     showFundDimensionsFirst: false,
     footerText: "",
+    icons: defaultIcons,
   };
 
   @property()
@@ -148,8 +151,6 @@ class DonationForm extends LitElement {
     // TODO: How much frontend validation to do?
     if (!this._option) return;
 
-    this._saving = true;
-
     const client = new CartClient(this.data.baseUrl);
 
     const req: AddToCartReq = {
@@ -203,6 +204,8 @@ class DonationForm extends LitElement {
       quantity: this._quantity || 1, // TODO: show a quantity selector for donation items too
     };
 
+    this._saving = true;
+
     client
       .add(req)
       .then((res) => {
@@ -212,10 +215,6 @@ class DonationForm extends LitElement {
         this.handleError(err);
         this._saving = false;
       });
-  }
-
-  quickDonate() {
-    console.log("quick donate");
   }
 
   getDonationForm(fundStructure: FundStructureRes | void) {
@@ -783,7 +782,9 @@ class DonationForm extends LitElement {
         <div class="n3o-quick-donate-col">
           <donate-button
             .saving="${this._saving}"
-            .onClick="${() => this.quickDonate()}"
+            .onClick="${() => this.donate()}"
+            .iconName="${this.data.icons?.donateButton.icon}"
+            .iconVariety="${this.data.icons?.donateButton.variety}"
           ></donate-button>
         </div>
       </div>
