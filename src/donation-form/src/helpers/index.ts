@@ -67,7 +67,7 @@ export class DonationFormHelpers {
   }
 
   public static getDonationValue(
-    duration: number,
+    multiplier: number,
     currencyId: string,
     userSelectedAmount?: MoneyReq,
     selectedPriceHandle?: PriceHandleRes,
@@ -76,13 +76,14 @@ export class DonationFormHelpers {
     if (userSelectedAmount) {
       return {
         currency: userSelectedAmount.currency,
-        amount: (userSelectedAmount.amount || 0) * duration,
+        amount: (userSelectedAmount.amount || 0) * multiplier,
       };
     } else {
       return {
         currency: selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.currency,
         amount:
-          (selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.amount || 0) * duration,
+          (selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.amount || 0) *
+          multiplier,
       };
     }
   }

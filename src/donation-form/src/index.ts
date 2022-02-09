@@ -157,7 +157,7 @@ class DonationForm extends LitElement {
       allocation: {
         type: this._option.type,
         value: DonationFormHelpers.getDonationValue(
-          1, // TODO: should we be multiplying by duration here?
+          1,
           this._selectedCurrencyId || "",
           this._otherAmount,
           this._amount,
