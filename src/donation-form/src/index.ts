@@ -201,7 +201,7 @@ class DonationForm extends LitElement {
               }
             : undefined,
       },
-      quantity: this._quantity || 1, // TODO: show a quantity selector for donation items too
+      quantity: this._quantity || 1,
     };
 
     this._saving = true;
@@ -771,9 +771,18 @@ class DonationForm extends LitElement {
                 this._amount = undefined;
               }
             }}"
+            .showQuantitySelector="${this._otherAmountLocked}"
+            .showDurationSelector="${this._option?.type === "sponsorship" &&
+            this._givingType !== GivingType.RegularGiving}"
+            .baseUrl="${this.data.baseUrl}"
+            .duration="${this._duration}"
+            .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
+            .quantity="${this._quantity}"
+            .onChangeQuantity="${(v: number) => (this._quantity = v)}"
             .value="${this._otherAmount}"
             .fixed="${this._otherAmountLocked}"
-            .showCurrencyText="${this.data.showCurrencyText}"
+            .showCurrencyText="${this.data.showCurrencyText &&
+            this.data.mode === DonationFormType.Full}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .currencies="${this.currencies}"
           ></other-amount>
@@ -815,15 +824,23 @@ class DonationForm extends LitElement {
                           this._amount = undefined;
                         }
                       }}"
+                      .baseUrl="${this.data.baseUrl}"
+                      .duration="${this._duration}"
+                      .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
+                      .quantity="${this._quantity}"
+                      .onChangeQuantity="${(v: number) => (this._quantity = v)}"
                       .value="${this._otherAmount}"
-                      .fixed="${this._otherAmountLocked}"
-                      .showCurrencyText="${this.data.showCurrencyText}"
+                      .showQuantitySelector="${this._otherAmountLocked}"
+                      .showCurrencyText="${this.data.showCurrencyText &&
+                      this.data.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
+                      .fixed="${this._otherAmountLocked}"
                     ></other-amount>
                   </div>
 
-                  ${this._option?.type === "sponsorship"
+                  ${this._option?.type === "sponsorship" &&
+                  this._givingType !== GivingType.RegularGiving
                     ? html`<div class="n3o-donation-form-row">
                         <sponsorship-duration
                           .givingType="${this._givingType}"
@@ -846,6 +863,9 @@ class DonationForm extends LitElement {
 
                   <div class="n3o-donation-form-row">
                     <other-amount
+                      .baseUrl="${this.data.baseUrl}"
+                      .duration="${this._duration}"
+                      .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                       .onCurrencyChange="${(currency: CurrencyRes) => {
                         if (currency?.id) {
                           this.setCurrency(currency.id);
@@ -858,8 +878,12 @@ class DonationForm extends LitElement {
                           this._amount = undefined;
                         }
                       }}"
+                      .showQuantitySelector="${this._otherAmountLocked}"
+                      .quantity="${this._quantity}"
+                      .onChangeQuantity="${(v: number) => (this._quantity = v)}"
                       .value="${this._otherAmount}"
-                      .showCurrencyText="${this.data.showCurrencyText}"
+                      .showCurrencyText="${this.data.showCurrencyText &&
+                      this.data.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
                       .fixed="${this._otherAmountLocked}"

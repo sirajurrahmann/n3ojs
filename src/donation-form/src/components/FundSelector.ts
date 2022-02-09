@@ -67,13 +67,15 @@ class FundSelector extends LitElement {
 
     // First we check whether a matching price rule is locked, which is more specific
     if (matchingPricingRule && matchingPricingRule.locked) {
-      return `${name} (${
-        matchingPricingRule.currencyValues?.[this.selectedCurrencyId || ""]?.text || ""
-      })`;
+      return `${name} (${DonationFormHelpers.removeTrailingZeros(
+        matchingPricingRule.currencyValues?.[this.selectedCurrencyId || ""]?.text || "",
+      )})`;
 
       // Then we check whether the fallback price is locked
     } else if (pricing?.locked) {
-      return `${name} (${pricing.currencyValues?.[this.selectedCurrencyId || ""]?.text})`;
+      return `${name} (${DonationFormHelpers.removeTrailingZeros(
+        pricing.currencyValues?.[this.selectedCurrencyId || ""]?.text,
+      )})`;
     }
 
     return name;

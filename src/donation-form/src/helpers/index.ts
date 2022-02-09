@@ -1,5 +1,6 @@
 import {
   AllocationType,
+  CurrencyRes,
   DonationItemRes,
   DonationOptionRes,
   FundDimensionValueRes,
@@ -100,5 +101,20 @@ export class DonationFormHelpers {
       case "sharp":
         return "material-icons-sharp";
     }
+  }
+
+  public static removeTrailingZeros(amount: string = ""): string {
+    if (amount.endsWith(".00")) return amount.slice(0, -3);
+    else return amount;
+  }
+
+  public static getAndFormatTotal(
+    multiplier: number,
+    currency?: CurrencyRes,
+    amount?: MoneyReq,
+  ): string {
+    if (!multiplier || !currency || !amount) return "";
+    const numberAsString = ((amount?.amount || 0) * multiplier).toFixed(2);
+    return `${currency?.symbol || ""}${this.removeTrailingZeros(numberAsString)}`;
   }
 }

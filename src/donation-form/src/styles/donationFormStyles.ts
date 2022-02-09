@@ -154,6 +154,12 @@ export const selectStyles = css`
   }
 `;
 
+export const utilStyles = css`
+  .n3o-hide-border {
+    border: none;
+  }
+`;
+
 export const selectCustomArrowStyles = css`
   select {
     -webkit-appearance: none;
@@ -186,16 +192,17 @@ export const otherAmountStyles = css`
 
   .n3o-amount-input-inner {
     flex-grow: 1;
+    display: flex;
   }
 
-  .n3o-amount-input select {
+  .n3o-amount-input .n3o-select-currency {
     font-size: var(--input-font-size);
     height: calc(var(--input-height) - 1px);
     border: none;
     width: 38px;
     background-position-y: 2px;
   }
-  .n3o-amount-input select:focus-visible {
+  .n3o-amount-input .n3o-select-currency:focus-visible {
     border: none;
     outline: none;
   }
@@ -213,6 +220,10 @@ export const otherAmountStyles = css`
     outline: none;
     box-shadow: none;
     background: #fff;
+    padding: 0;
+    height: var(--input-height);
+    font-size: var(--input-font-size);
+    width: calc(100% - 50px);
   }
   input:focus,
   input:focus-visible,
@@ -228,12 +239,7 @@ export const otherAmountStyles = css`
     border: none;
     box-shadow: var(--input-box-shadow);
   }
-  input {
-    padding: 0;
-    height: var(--input-height);
-    font-size: var(--input-font-size);
-    width: calc(100% - 50px);
-  }
+
   .n3o-amount-disabled {
     background-color: rgba(246, 246, 246, 1);
   }

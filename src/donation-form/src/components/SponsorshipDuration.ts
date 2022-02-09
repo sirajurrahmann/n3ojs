@@ -1,22 +1,25 @@
-import { html, LitElement } from "lit";
+import { html, LitElement, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
-import {
-  CurrencyRes,
-  GivingClient,
-  GivingType,
-  SponsorshipDurationRes,
-} from "@n3oltd/umbraco-giving-client";
-import { selectCustomArrowStyles, selectStyles } from "../styles/donationFormStyles";
+import { CurrencyRes, GivingClient, SponsorshipDurationRes } from "@n3oltd/umbraco-giving-client";
+import { selectCustomArrowStyles, selectStyles, utilStyles } from "../styles/donationFormStyles";
+import { DonationFormHelpers } from "../helpers";
 
 @customElement("sponsorship-duration")
 class SponsorshipDuration extends LitElement {
-  static styles = [selectStyles, selectCustomArrowStyles];
-
-  static quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  static styles = [
+    css`
+      :host {
+        width: 100%;
+      }
+    `,
+    selectStyles,
+    selectCustomArrowStyles,
+    utilStyles,
+  ];
 
   @property()
-  givingType?: GivingType;
+  hideBorder?: boolean;
 
   @property()
   currencies: CurrencyRes[] = [];
@@ -28,9 +31,6 @@ class SponsorshipDuration extends LitElement {
   quantity: number = 1;
 
   @property()
-  theme: string = "";
-
-  @property()
   baseUrl: string = "";
 
   @property()
@@ -39,20 +39,8 @@ class SponsorshipDuration extends LitElement {
   @property()
   onChange?: (val?: SponsorshipDurationRes) => void;
 
-  @property()
-  onChangeQuantity?: (val?: number) => void;
-
   @state()
   _durations: SponsorshipDurationRes[] = [];
-
-  getTotal(months?: number): string {
-    if (!months) return "";
-
-    const curr = this.currencies.find(
-      (c) => this.amount?.currency?.toLowerCase() === c.id?.toLowerCase(),
-    );
-    return `${curr?.symbol || ""}${((this.amount?.amount || 0) * months).toFixed(2)}`;
-  }
 
   fetchDurations() {
     const client = new GivingClient(this.baseUrl);
@@ -76,11 +64,12 @@ class SponsorshipDuration extends LitElement {
     });
   }
 
-  renderDonationVersion() {
+  render() {
     // language=html
     return html`
       <div>
         <select
+          class="${this.hideBorder ? "n3o-hide-border" : ""}"
           @change="${(e: Event) => {
             this.onChange?.(
               this._durations?.find((d) => d.id === (e.target as HTMLSelectElement).value),
@@ -92,7 +81,14 @@ class SponsorshipDuration extends LitElement {
               .selected="${duration.id === this.value?.id}"
               value="${duration.id}"
             >
-              ${this.quantity} * ${duration.name} (${this.getTotal(duration.months)})
+              ${duration.name}
+              (${DonationFormHelpers.getAndFormatTotal(
+                (duration.months || 0) * this.quantity,
+                this.currencies.find(
+                  (c) => this.amount?.currency?.toLowerCase() === c.id?.toLowerCase(),
+                ),
+                this.amount,
+              )})
             </option>`;
           })}
         </select>
@@ -100,27 +96,34 @@ class SponsorshipDuration extends LitElement {
     `;
   }
 
-  renderRegularGivingVersion() {
-    // language=html
-    return html`
-      <div>
-        <select
-          @change="${(e: Event) => {
-            this.onChangeQuantity?.(Number((e.target as HTMLSelectElement).value));
-          }}"
-        >
-          ${SponsorshipDuration.quantities?.map((q) => {
-            return html`<option .selected="${q === this.quantity}" value="${q}">
-              ${q} ${this.theme.toLowerCase()}/month (${this.getTotal(q)})
-            </option>`;
-          })}
-        </select>
-      </div>
-    `;
-  }
+  // renderRegularGivingVersion() {
+  //   // language=html
+  //   return html`
+  //     <div>
+  //       <select
+  //         @change="${(e: Event) => {
+  //           this.onChangeQuantity?.(Number((e.target as HTMLSelectElement).value));
+  //         }}"
+  //       >
+  //         ${quantities?.map((q) => {
+  //           return html`<option .selected="${q === this.quantity}" value="${q}">
+  //             ${q} ${this.theme.toLowerCase()}/month
+  //             (${DonationFormHelpers.getAndFormatTotal(
+  //               q || 0,
+  //               this.currencies.find(
+  //                 (c) => this.amount?.currency?.toLowerCase() === c.id?.toLowerCase(),
+  //               ),
+  //               this.amount,
+  //             )})
+  //           </option>`;
+  //         })}
+  //       </select>
+  //     </div>
+  //   `;
+  // }
 
-  render() {
-    if (this.givingType === GivingType.Donation) return this.renderDonationVersion();
-    else return this.renderRegularGivingVersion();
-  }
+  // render() {
+  //   if (this.givingType === GivingType.Donation) return this.renderDonationVersion();
+  //   else return this.renderRegularGivingVersion();
+  // }
 }
