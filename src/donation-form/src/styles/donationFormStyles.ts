@@ -216,7 +216,8 @@ export const otherAmountStyles = css`
     display: flex;
   }
 
-  .n3o-select-quantity {
+  .n3o-select-quantity,
+  .n3o-input-amount {
     width: 100%;
   }
   .n3o-amount-input .n3o-select-currency {

@@ -150,6 +150,7 @@ class OtherAmount extends LitElement {
                 `
               : html`
                   <input
+                    class="n3o-input-amount"
                     .value="${this.value?.amount || ""}"
                     .disabled="${this.fixed && !this.showQuantitySelector}"
                     @input="${(e: Event) => {
