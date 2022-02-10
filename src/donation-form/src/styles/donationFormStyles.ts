@@ -90,6 +90,11 @@ export const buttonStyles = css`
   * {
     font-family: "Raleway", sans-serif;
   }
+  .n3o-button-disabled {
+    background: lightgray !important;
+    cursor: not-allowed !important;
+  }
+
   .n3o-donation-form-button {
     width: 48%;
     font-size: var(--button-text-size, 18px);
@@ -114,11 +119,6 @@ export const buttonStyles = css`
     border: var(--button-selected-border);
     color: var(--button-selected-text-color);
     box-shadow: var(--button-selected-box-shadow);
-  }
-
-  .n3o-button-disabled {
-    background: lightgray;
-    cursor: not-allowed;
   }
 `;
 

@@ -25,7 +25,6 @@ class DonateButton extends LitElement {
   saving?: boolean;
 
   render() {
-    // TODO: Loading icon or similar?
     //language=HTML
     return html`
       <div class="n3o-donate-button" @click="${this.onClick}">
@@ -33,7 +32,7 @@ class DonateButton extends LitElement {
           <span class="${DonationFormHelpers.getMaterialIconName(this.iconVariety)} icon">
             ${this.iconName}
           </span>
-          ${this.buttonText}
+          ${this.saving ? "Saving..." : this.buttonText}
         </button>
       </div>
     `;
