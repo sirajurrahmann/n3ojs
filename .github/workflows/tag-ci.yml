@@ -16,6 +16,16 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
+  donation-form:
+    name: 'npm-publish donation-form'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      prepack: true
+      working-directory: 'src/donation-form'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
   error-modal:
     name: 'npm-publish error-modal'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
