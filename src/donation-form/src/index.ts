@@ -362,8 +362,11 @@ class DonationForm extends LitElement {
     }
   }
 
-  shouldShowDimension(dim?: FixedOrDefaultFundDimensionValueRes): boolean {
-    if (!dim) return false;
+  shouldShowDimension(
+    options: FundDimensionValueRes[],
+    dim?: FixedOrDefaultFundDimensionValueRes,
+  ): boolean {
+    if (!dim || options.length < 2) return false;
     else return !dim.fixed;
   }
 
@@ -535,6 +538,38 @@ class DonationForm extends LitElement {
     return themeDim?.options?.[0]?.name || "";
   }
 
+  getOptions(dim: string): FundDimensionValueRes[] {
+    if (this._option?.type === AllocationType.Fund) {
+      const di = this.donationItems.find((d) => d.id === this._option?.fund?.donationItem);
+      switch (dim) {
+        case "dimension1":
+          return di?.dimension1Options || [];
+        case "dimension2":
+          return di?.dimension2Options || [];
+        case "dimension3":
+          return di?.dimension3Options || [];
+        case "dimension4":
+          return di?.dimension4Options || [];
+        default:
+          return [];
+      }
+    } else {
+      const sch = this.sponsorshipSchemes.find((s) => s.id === this._option?.sponsorship?.scheme);
+      switch (dim) {
+        case "dimension1":
+          return sch?.dimension1Options || [];
+        case "dimension2":
+          return sch?.dimension2Options || [];
+        case "dimension3":
+          return sch?.dimension3Options || [];
+        case "dimension4":
+          return sch?.dimension4Options || [];
+        default:
+          return [];
+      }
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -563,7 +598,7 @@ class DonationForm extends LitElement {
   renderFundDimensions() {
     return html`
       <div>
-        ${this.shouldShowDimension(this._option?.dimension1) &&
+        ${this.shouldShowDimension(this.getOptions("dimension1"), this._option?.dimension1) &&
         this.fundStructure?.dimension1?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
@@ -575,10 +610,11 @@ class DonationForm extends LitElement {
                   this.setOtherAmount(this._option);
                 }}"
                 .default="${this._option?.dimension1?.default}"
+                .options="${this.getOptions("dimension1")}"
               ></fund-dimension>
             </div>`
           : undefined}
-        ${this.shouldShowDimension(this._option?.dimension2) &&
+        ${this.shouldShowDimension(this.getOptions("dimension2"), this._option?.dimension2) &&
         this.fundStructure?.dimension2?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
@@ -590,10 +626,11 @@ class DonationForm extends LitElement {
                   this.setOtherAmount(this._option);
                 }}"
                 .default="${this._option?.dimension2?.default}"
+                .options="${this.getOptions("dimension2")}"
               ></fund-dimension>
             </div>`
           : undefined}
-        ${this.shouldShowDimension(this._option?.dimension3) &&
+        ${this.shouldShowDimension(this.getOptions("dimension3"), this._option?.dimension3) &&
         this.fundStructure?.dimension3?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
@@ -605,10 +642,11 @@ class DonationForm extends LitElement {
                   this.setOtherAmount(this._option);
                 }}"
                 .default="${this._option?.dimension3?.default}"
+                .options="${this.getOptions("dimension3")}"
               ></fund-dimension>
             </div>`
           : undefined}
-        ${this.shouldShowDimension(this._option?.dimension4) &&
+        ${this.shouldShowDimension(this.getOptions("dimension4"), this._option?.dimension4) &&
         this.fundStructure?.dimension4?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
@@ -620,6 +658,7 @@ class DonationForm extends LitElement {
                   this.setOtherAmount(this._option);
                 }}"
                 .default="${this._option?.dimension4?.default}"
+                .options="${this.getOptions("dimension4")}"
               ></fund-dimension>
             </div>`
           : undefined}
