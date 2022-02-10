@@ -13,9 +13,7 @@ class DonationFormLoading extends LitElement {
 
     //language=HTML
     return html`
-      <div style="${containerStyle}" class="n3o-donation-form-loading">
-        Loading...
-      </div>
+      <div style="${containerStyle}" class="n3o-donation-form-loading">Loading...</div>
     `;
   }
 }

@@ -925,8 +925,14 @@ class DonationForm extends LitElement {
 
   render() {
     if (this._loading) {
-      // TODO: style
-      return html`<donation-form-loading></donation-form-loading>`;
+      return html`<div
+        id="n3o-donation-form-${this.data.formId}"
+        class="${this.type === DonationFormType.Quick
+          ? "n3o-quick-donate-form"
+          : "n3o-full-donate-form"} n3o-loading"
+      >
+        <donation-form-loading></donation-form-loading>
+      </div>`;
     }
 
     //language=HTML

@@ -12,6 +12,10 @@ export const donationFormStyles = css`
     color: var(--text-color);
   }
 
+  .n3o-full-donate-form.n3o-loading {
+    padding: 30px;
+  }
+
   .n3o-quick-donate-form {
     display: flex;
     align-items: center;
