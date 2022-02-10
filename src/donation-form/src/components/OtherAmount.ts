@@ -123,6 +123,7 @@ class OtherAmount extends LitElement {
               : this.showQuantitySelector
               ? html`
                   <select
+                    class="n3o-select-quantity"
                     .disabled="${this.fixed && !this.showQuantitySelector}"
                     @change="${(e: Event) => {
                       this.onChangeQuantity?.(Number((e.target as HTMLSelectElement).value));

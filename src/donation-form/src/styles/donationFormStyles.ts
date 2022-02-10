@@ -212,6 +212,9 @@ export const otherAmountStyles = css`
     display: flex;
   }
 
+  .n3o-select-quantity {
+    width: 100%;
+  }
   .n3o-amount-input .n3o-select-currency {
     font-size: var(--input-font-size);
     height: calc(var(--input-height) - 1px);
