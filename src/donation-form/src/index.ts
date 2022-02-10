@@ -59,6 +59,7 @@ class DonationForm extends LitElement {
 
     showCurrencyText?: boolean;
     footerText?: string;
+    afterAddToCart?: () => void;
   } = {
     baseUrl: "",
     formId: "",
@@ -225,6 +226,7 @@ class DonationForm extends LitElement {
       .add(req)
       .then((res) => {
         this._saving = false;
+        this.data.afterAddToCart?.();
       })
       .catch((err) => {
         this.handleError(err);

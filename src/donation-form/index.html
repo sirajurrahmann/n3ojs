@@ -78,6 +78,7 @@
       showFrequencyFirst: true,
       showCurrencyText: true,
       footerText: "We accept all major credit cards and PayPal",
+      afterAddToCart: () => console.log("Item added to cart"),
       icons: {
         donateButton: {icon: "favorite", variety: "filled" }
       }
@@ -88,7 +89,8 @@
       baseUrl: "https://read-uk-staging.n3o.site",
       showFrequencyFirst: true,
       showCurrencyText: true,
-      footerText: "We accept all major credit cards and PayPal"
+      footerText: "We accept all major credit cards and PayPal",
+      afterAddToCart: () => console.log("Item added to cart"),
     };
   </script>
 
