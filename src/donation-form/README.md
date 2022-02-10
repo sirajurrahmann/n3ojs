@@ -68,7 +68,7 @@ Styles can be configured by setting CSS variables. Full list of CSS variables wh
 
 Additional variables can easily be added, please contact the project authors or open a PR.
 
-### Fonts & Icons
+### Icons
 
 This component currently supports **Material Icons**.
 
@@ -99,3 +99,9 @@ el.data = {
 The variety may be "filled", "outlined", "rounded" or "sharp" (defaults to "filled").
 
 Check the full list of configurable CSS variables in `index.html` for further customization options, such as `--donate-button-icon-color`
+
+### Fonts
+
+The component will pick up any font defined by the end user in the `--font-family` variable.
+
+If you are using third part fonts, ensure to link the font in the main HTML page where you are using this component. An example is provided in the demo.

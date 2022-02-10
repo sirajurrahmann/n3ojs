@@ -1,11 +1,13 @@
 import { css } from "lit";
 
 export const donationFormStyles = css`
+  * {
+    font-family: var(--font-family);
+  }
   :host {
     width: 100%;
   }
   div[id*="n3o-donation-form"] {
-    font-family: var(--font-family);
     border: 4px solid var(--theme-color);
     color: var(--text-color);
   }
@@ -81,6 +83,9 @@ export const donationFormStyles = css`
 `;
 
 export const buttonStyles = css`
+  * {
+    font-family: "Raleway", sans-serif;
+  }
   .n3o-donation-form-button {
     width: 48%;
     font-size: var(--button-text-size, 18px);
@@ -114,6 +119,9 @@ export const buttonStyles = css`
 `;
 
 export const amountSelectorStyles = css`
+  * {
+    font-family: "Raleway", sans-serif;
+  }
   .n3o-donation-form-price-select {
     display: flex;
     justify-content: space-between;
@@ -130,6 +138,9 @@ export const amountSelectorStyles = css`
 `;
 
 export const frequencyStyles = css`
+  * {
+    font-family: var(--font-family);
+  }
   .n3o-donation-frequency-container {
     display: flex;
     justify-content: space-between;
@@ -137,6 +148,9 @@ export const frequencyStyles = css`
 `;
 
 export const selectStyles = css`
+  * {
+    font-family: var(--font-family);
+  }
   select {
     background-color: #fff;
     width: 100%;
@@ -172,6 +186,9 @@ export const selectCustomArrowStyles = css`
 `;
 
 export const otherAmountStyles = css`
+  * {
+    font-family: var(--font-family);
+  }
   .n3o-amount-input {
     background-color: #fff;
     color: #888;
