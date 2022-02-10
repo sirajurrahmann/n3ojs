@@ -10,35 +10,8 @@
 
     <script type="module" src="./build/index.js"></script>
 
-    <script type="module">
-      const el = document.querySelector("#donationForm-errorModal");
-      el.data = {
-        showing: true,
-        genericErrorText: "Sorry, an error has occurred. If you continue to experience difficulties please contact our donor care team on +44 (0)3000 121 121.",
-        onClose: () => {
-          el.setAttribute("showing", "false");
-        },
-        error: {
-          status: 400,
-          title: "Something went wrong",
-          errors: {
-            "allocation.amount": "Amount must be entered",
-            "allocation.location": "Location is not valid",
-          }
-        },
-      };
-
-
-      var button = document.getElementById("modalVisButton");
-      button.addEventListener("click", function () {
-        var modal = document.getElementById("donationForm-errorModal");
-        modal.setAttribute("showing", "true");
-      })
-
-    </script>
-
     <style>
-        error-modal {
+        sample-app {
             --border-radius: 2px;
             --font-family: "Museo Sans 300", Arial, sans-serif;
             --default-text-color: rgb(33, 37, 41);
@@ -53,10 +26,7 @@
         EXAMPLE PAGE
     </h2>
 </div>
-<error-modal id="donationForm-errorModal" showing="false"></error-modal>
-<button id="modalVisButton">
-    Show Modal
-</button>
+    <sample-app></sample-app>
 </body>
 
 </html>
