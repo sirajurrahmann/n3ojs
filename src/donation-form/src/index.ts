@@ -30,6 +30,10 @@ import "./components/FundDimension";
 import "./components/DonateButton";
 import "./components/SponsorshipDuration";
 import "./components/Quick/QuickDonationType";
+
+// TODO: Ideally we should just be able to import "@n3oltd/error-modal", look into build script.
+import "@n3oltd/error-modal/build/index";
+
 import defaultIcons from "./config/icons";
 
 @customElement("data-donation-form")
@@ -133,13 +137,16 @@ class DonationForm extends LitElement {
   _saving: boolean = false;
 
   @state()
-  _error?: ApiErrorResponse;
+  _apiError?: ApiErrorResponse;
+
+  @state()
+  _validationErrors?: string[];
 
   handleError(err: ApiErrorResponse) {
     if (err.status === 400) {
-      this._error = err;
+      this._apiError = err;
     } else {
-      this._error = {
+      this._apiError = {
         title: err.title || "Something went wrong",
         errors: err.errors || {},
         status: err.status,
@@ -148,8 +155,10 @@ class DonationForm extends LitElement {
   }
 
   donate() {
-    // TODO: How much frontend validation to do?
     if (!this._option) return;
+
+    this._apiError = undefined;
+    this._validationErrors = undefined;
 
     const client = new CartClient(this.data.baseUrl);
 
@@ -203,6 +212,12 @@ class DonationForm extends LitElement {
       },
       quantity: this._quantity || 1,
     };
+
+    // This is the only property that could be missing
+    if (!req.allocation?.value?.amount) {
+      this._validationErrors = ["Please choose an amount to donate"];
+      return;
+    }
 
     this._saving = true;
 
@@ -980,7 +995,21 @@ class DonationForm extends LitElement {
         id="n3o-donation-form-${this.data.formId}"
         class="${this.type === DonationFormType.Quick ? "n3o-quick-donate-form" : ""}"
       >
-        ${this._error ? html`<error-modal></error-modal>` : undefined}
+        ${this._apiError
+          ? html`<error-modal
+              .showing="${true}"
+              .onClose="${() => (this._apiError = undefined)}"
+              .errors="${Object.values(this._apiError.errors || {})}"
+              .title="${this._apiError.title}"
+            ></error-modal>`
+          : undefined}
+        ${this._validationErrors?.length
+          ? html`<error-modal
+              .showing="${true}"
+              .onClose="${() => (this._validationErrors = undefined)}"
+              .errors="${this._validationErrors}"
+            ></error-modal>`
+          : undefined}
 
         <div
           class="n3o-donation-form-title ${this.type === DonationFormType.Quick
