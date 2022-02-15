@@ -8,8 +8,10 @@ export const donationFormStyles = css`
     width: 100%;
   }
   div[id*="n3o-donation-form"] {
+    font-family: var(--font-family);
     border: 4px solid var(--theme-color);
     color: var(--text-color);
+    box-shadow: var(--button-box-shadow);
   }
 
   .n3o-full-donate-form.n3o-loading {
@@ -19,33 +21,42 @@ export const donationFormStyles = css`
   .n3o-quick-donate-form {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     border: none !important;
+    background: var(--form-background-color);
+    padding: 20px;
   }
 
   .n3o-quick-donate-form .n3o-quick-donate-title {
-    padding: 0 30px;
+    padding: 0 0 0 40px;
+    font-family: var(--title-font-family);
+    font-size: var(--quick-donate-text-size);
+    color: var(--text-color);
   }
   .n3o-quick-donate-form .n3o-quick-donate-form-selects {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     border: none !important;
     flex-grow: 1;
   }
   .n3o-quick-donate-form .n3o-quick-donate-form-selects .n3o-quick-donate-col {
-    width: 22%;
-    padding: 0 2%;
+    width: 20%;
+    max-width: 240px;
+    padding: 0 10px;
   }
 
   .n3o-donation-form-title {
+    font-family: var(--title-font-family);
     text-align: center;
     font-size: var(--header-font-size);
     color: var(--theme-color);
+    background: var(--form-background-color);
+    min-width: 200px;
   }
 
   .n3o-donation-form-card {
-    border-top: 4px solid var(--theme-color);
+    background: var(--form-background-color);
   }
 
   .n3o-donation-form-footer {
@@ -88,7 +99,7 @@ export const donationFormStyles = css`
 
 export const buttonStyles = css`
   * {
-    font-family: "Raleway", sans-serif;
+    font-family: var(--donate-button-font-family);
   }
   .n3o-button-disabled {
     background: lightgray !important;
@@ -96,6 +107,8 @@ export const buttonStyles = css`
   }
 
   .n3o-donation-form-button {
+    transition: background-color 0.5s ease;
+    font-weight: var(--button-font-weight);
     width: 48%;
     font-size: var(--button-text-size, 18px);
     text-transform: var(--type-button-text-transform);
@@ -124,7 +137,7 @@ export const buttonStyles = css`
 
 export const amountSelectorStyles = css`
   * {
-    font-family: "Raleway", sans-serif;
+    font-family: var(--donate-button-font-family);
   }
   .n3o-donation-form-price-select {
     display: flex;
@@ -132,12 +145,13 @@ export const amountSelectorStyles = css`
   }
   .n3o-donation-form-price-select button {
     width: 32%;
+    border-radius: var(--price-handle-border-radius);
   }
   .n3o-donation-form-price-desc {
     text-align: center;
     font-size: 14px;
     margin-top: 12px;
-    color: var(--default-text-color);
+    color: var(--text-color);
   }
 `;
 
@@ -148,6 +162,11 @@ export const frequencyStyles = css`
   .n3o-donation-frequency-container {
     display: flex;
     justify-content: space-between;
+  }
+  .n3o-donation-frequency-container .n3o-donation-form-button {
+    border-radius: var(--giving-type-border-radius);
+    text-transform: capitalize;
+    font-weight: var(--button-font-weight);
   }
 `;
 
@@ -160,6 +179,8 @@ export const selectStyles = css`
     width: 100%;
     height: var(--input-height);
     font-size: var(--input-font-size);
+    border: 0px solid #d3d2d1;
+    border-radius: var(--border-radius);
   }
   select:focus,
   select:focus-visible,
@@ -185,19 +206,19 @@ export const selectCustomArrowStyles = css`
     background-image: var(--select-dropdown-url);
     background-repeat: no-repeat;
     background-position-x: 100%;
-    padding: 0 5px;
+    padding: 0 10px;
   }
 `;
 
 export const otherAmountStyles = css`
   * {
     font-family: var(--font-family);
+    border-radius: var(--border-radius);
   }
   .n3o-amount-input {
     background-color: #fff;
-    color: #888;
+    border: 0 solid #d3d2d1;
     height: var(--input-height);
-    border: 1px #888 solid;
     font-size: var(--input-font-size);
     width: 100%;
     display: flex;
@@ -224,7 +245,7 @@ export const otherAmountStyles = css`
     font-size: var(--input-font-size);
     height: calc(var(--input-height) - 1px);
     border: none;
-    width: 38px;
+    width: 45px;
     background-position-y: 2px;
   }
   .n3o-amount-input .n3o-select-currency:focus-visible {
@@ -300,6 +321,8 @@ export const donateButtonStyles = css`
     transition: background-color 0.5s ease;
     color: var(--donate-button-text-color);
     background: var(--donate-button-background);
+    min-width: 200px;
+    height: var(--donate-button-height);
 
     display: flex;
     align-items: center;

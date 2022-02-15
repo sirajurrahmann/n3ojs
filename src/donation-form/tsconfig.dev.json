@@ -23,6 +23,6 @@
       }
     ]
   },
-  "exclude": ["**/*.js.map", "**/*.json", "./src/_sample.ts"],
+  "exclude": ["**/*.js.map", "**/*.json"],
   "include": ["./src/**/*.ts"]
 }

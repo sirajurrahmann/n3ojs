@@ -2,123 +2,89 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-  <style>
-    @font-face {
-      font-family: 'Material Icons';
-      font-style: normal;
-      font-weight: 400;
-      src: url(https://fonts.gstatic.com/s/materialicons/v121/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
-    }
-  </style>
-  <title>N3O Donation Form</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(https://fonts.gstatic.com/s/materialicons/v121/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+        }
+    </style>
+    <title>N3O Donation Form</title>
 
-  <script type="module" src="./build/index.js"></script>
+    <script type="module" src="./build/_sample.js"></script>
 
-  <style>
-    data-donation-form {
-      --row-spacing: 16px;
-      --font-family: "Raleway", sans-serif;
-      --default-text-color: rgb(33, 37, 41);
-      --text-muted-color: #6c757d;
-      --input-height: 28px;
-      --input-font-size: 16px;
-      --input-box-shadow: 0 0 0 0.2rem rgba(79, 175, 70, 0.5);
-      --header-font-size: 20px;
-      --text-color: #212529;
+    <style>
+        donation-form-sample-app {
+            --row-spacing: 16px;
+            --font-family: "proximanova-regular", Montserrat, Arial, sans-serif !important;
+            --default-text-color: rgb(33, 37, 41);
+            --text-muted-color: #6c757d;
+            --input-height: 40px;
+            --input-font-size: 16px;
+            --header-font-size: 20px;
+            --text-color: #212529;
+            --border-radius: 5px;
 
-      --theme-color: #4FAF46;
+            --title-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
+            --quick-donate-text-size: 24px;
+            --giving-type-border-radius: 80px;
+            --price-handle-border-radius: 80px;
 
-      --type-button-text-transform: uppercase;
-      --type-button-padding: 6px 12px;
+            --theme-color: #C80001;
+            --form-background-color: #e9e8e8;;
 
-      --button-text-size: 18px;
+            --type-button-text-transform: uppercase;
+            --type-button-padding: 16px 12px;
 
-      --button-background-color: none;
-      --button-text-color: #6c757d;
-      --button-border: 1px solid #6c757d;
-      --button-box-shadow: none;
+            --button-text-size: 18px;
+            --button-background-color: none;
+            --button-text-color: #6c757d;
+            --button-border: 1px solid #6c757d;
+            --button-box-shadow: none;
+            --button-font-weight: 800;
 
-      --button-hover-background-color: var(--theme-color);
-      --button-hover-text-color: #fff;
-      --button-hover-border: 1px solid var(--theme-color);
-      --button-hover-box-shadow: var(--input-box-shadow);
+            --button-hover-background-color: var(--theme-color);
+            --button-hover-text-color: #fff;
+            --button-hover-border: 1px solid var(--theme-color);
+            --button-hover-box-shadow: var(--input-box-shadow);
 
-      --button-selected-background-color: var(--theme-color);
-      --button-selected-text-color: #fff;
-      --button-selected-border: 1px solid var(--theme-color);
-      --button-selected-box-shadow: var(--input-box-shadow);
+            --button-selected-background-color: var(--theme-color);
+            --button-selected-text-color: #fff;
+            --button-selected-border: 1px solid var(--theme-color);
+            --button-selected-box-shadow: var(--input-box-shadow);
 
-      --donate-button-text-color: #fff;
-      --donate-button-background: #F26F22;
-      --donate-button-hover-text-color: #fff;
-      --donate-button-hover-background: var(--theme-color);
-      --donate-button-hover-border: none;
-      --donate-button-hover-box-shadow: none;
+            --donate-button-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
+            --donate-button-text-color: #fff;
+            --donate-button-background: #C80001;
+            --donate-button-hover-text-color: #fff;
+            --donate-button-hover-background: var(--theme-color);
+            --donate-button-hover-border: none;
+            --donate-button-hover-box-shadow: none;
+            --donate-button-height: 40px;
 
-      --donate-button-icon-color: #fff;
+            --donate-button-icon-color: #fff;
 
-      /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
-      --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%234FAF46' height='26' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-
-    }
-  </style>
-  <script type="module">
-    const el = document.querySelector("#donationForm");
-    const el2 = document.querySelector("#quickDonationForm");
-    el.data = {
-      formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
-      baseUrl: "https://read-uk-staging.n3o.site",
-      showFrequencyFirst: true,
-      showCurrencyText: true,
-      footerText: "We accept all major credit cards and PayPal",
-      afterAddToCart: () => console.log("Item added to cart"),
-      icons: {
-        donateButton: {icon: "favorite", variety: "filled" }
-      }
-    };
-
-    el2.data = {
-      formId: "a8492d39-1455-4de4-bcb2-e4d014d9bfc5",
-      baseUrl: "https://read-uk-staging.n3o.site",
-      showFrequencyFirst: true,
-      showCurrencyText: true,
-      footerText: "We accept all major credit cards and PayPal",
-      afterAddToCart: () => console.log("Item added to cart"),
-    };
-  </script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    #quickDonationFormContainer {
-      width: 100%;
-      position: fixed;
-      bottom: 0;
-      background: rgba(255,255,255, 0.8);
-      display: flex;
-      padding: 10px;
-      align-items: center;
-    }
-  </style>
+            /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
+            --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%211c18' height='40' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        }
+    </style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 
 <body>
-<div style="height: 800px">
-  <div style="width: 300px">
-    <data-donation-form id="donationForm" type="full"> </data-donation-form>
-    <div id="quickDonationFormContainer">
-      <data-donation-form id="quickDonationForm" type="quick"> </data-donation-form>
-    </div>
-  </div>
-</div>
+    <donation-form-sample-app></donation-form-sample-app>
 </body>
 
 </html>

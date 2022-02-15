@@ -1,4 +1,4 @@
-import { html, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import Cookies from "js-cookie";
 import { donationFormStyles } from "./styles/donationFormStyles";
@@ -71,9 +71,6 @@ class DonationForm extends LitElement {
 
   @property()
   afterAddToCart?: () => void;
-
-  @property()
-  type: DonationFormType = DonationFormType.Full;
 
   @property()
   options: DonationOptionRes[] = [];
@@ -241,7 +238,7 @@ class DonationForm extends LitElement {
       .getDonationForm(this.formId)
       .then((res) => {
         this.options =
-          this.type === DonationFormType.Full
+          this.mode === DonationFormType.Full
             ? res.options || []
             : res.options?.filter?.((opt) => this.fundsCanBeInferred(opt, fundStructure)) || [];
         this.formTitle = res.title || "Donate Now";
@@ -983,7 +980,7 @@ class DonationForm extends LitElement {
     if (this._loading) {
       return html`<div
         id="n3o-donation-form-${this.formId}"
-        class="${this.type === DonationFormType.Quick
+        class="${this.mode === DonationFormType.Quick
           ? "n3o-quick-donate-form"
           : "n3o-full-donate-form"} n3o-loading"
       >
@@ -995,7 +992,7 @@ class DonationForm extends LitElement {
     return html`
       <div
         id="n3o-donation-form-${this.formId}"
-        class="${this.type === DonationFormType.Quick ? "n3o-quick-donate-form" : ""}"
+        class="${this.mode === DonationFormType.Quick ? "n3o-quick-donate-form" : ""}"
       >
         ${this._apiError
           ? html`<error-modal
@@ -1014,14 +1011,14 @@ class DonationForm extends LitElement {
           : undefined}
 
         <div
-          class="n3o-donation-form-title ${this.type === DonationFormType.Quick
+          class="n3o-donation-form-title ${this.mode === DonationFormType.Quick
             ? "n3o-quick-donate-title"
             : ""}"
         >
           ${this.formTitle.toUpperCase()}
         </div>
 
-        ${this.type === DonationFormType.Full
+        ${this.mode === DonationFormType.Full
           ? html` <div class="n3o-donation-form-card">${this.renderDonationCardContents()}</div> `
           : this.renderQuickDonationContents()}
       </div>

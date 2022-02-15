@@ -8,7 +8,7 @@ import replace from "@rollup/plugin-replace";
 import { babel } from "@rollup/plugin-babel";
 
 export default {
-  input: "src/index.ts",
+  input: process.env.NODE_ENV === "development" ? "src/_sample.ts" : "src/index.ts",
   output: {
     dir: "build",
     format: "cjs",
@@ -25,7 +25,7 @@ export default {
     resolve(),
     babel({
       babelHelpers: "bundled",
-      exclude: ["node_modules/**"],
+      exclude: ["node_modules/**" , process.env.NODE_ENV === "development" ? null : "src/_sample.ts"].filter(Boolean),
       include: [
         "src/**",
         "node_modules/lit/**",

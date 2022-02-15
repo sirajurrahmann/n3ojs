@@ -12,15 +12,19 @@ Install Dependencies:
 npm install
 ```
 
-The `index.html` file is provided for development purposes only.
+The `index.html` and `src/_sample` contains a sample page using the N3O Donation Form component.
 
-The project can be run locally using the below command:
+This is provided for development purposes only.
+
+The sample project can be run locally using the below command:
 
 ```shell script
 npm run serve
 ```
 
 This will watch the source files and rebuild them upon changes, as well as start a local webserver serving the `index.html` page.
+
+Navigate to http://localhost:8000/ to view the sample project
 
 This project uses [Lit](https://lit.dev/) as the component library, which builds on top of [Web Components Standards](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
 
@@ -38,4 +42,3 @@ To build the project, run the below command
 npm run build
 ```
 
-This will start a local development server at http://localhost:8000/
