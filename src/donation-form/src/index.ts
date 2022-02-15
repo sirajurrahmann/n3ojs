@@ -30,7 +30,6 @@ import "./components/FundDimension";
 import "./components/DonateButton";
 import "./components/SponsorshipDuration";
 import "./components/Quick/QuickDonationType";
-
 // TODO: Ideally we should just be able to import "@n3oltd/error-modal", look into build script.
 import "@n3oltd/error-modal/build/index";
 
@@ -40,36 +39,38 @@ import defaultIcons from "./config/icons";
 class DonationForm extends LitElement {
   static styles = [donationFormStyles];
 
-  @property({ attribute: false })
-  data: {
-    baseUrl: string;
-    formId: string;
-    mode: DonationFormType;
-    icons?: IconDefinitions;
+  @property()
+  baseUrl: string = "";
 
-    // If true, first 2 rows of Donation Form are:
-    // 1) Frequency (One Off/Regular), 2) Fund choice
-    // else 1) Fund Choice, 2) Frequency (One Off/Regular)
-    showFrequencyFirst: boolean;
+  @property()
+  formId: string = "";
 
-    // If true, after the frequency and fund rows, show
-    // 1) Fund Dimension choices, if necessary 2) Amount selector
-    // else 1) Amount selector, 2) Fund Dimension choices, if necessary
-    showFundDimensionsFirst: boolean;
+  @property()
+  mode: DonationFormType = DonationFormType.Full;
 
-    showCurrencyText?: boolean;
-    footerText?: string;
-    afterAddToCart?: () => void;
-  } = {
-    baseUrl: "",
-    formId: "",
-    mode: DonationFormType.Full,
-    showFrequencyFirst: false,
-    showCurrencyText: false,
-    showFundDimensionsFirst: false,
-    footerText: "",
-    icons: defaultIcons,
-  };
+  @property()
+  icons?: IconDefinitions = defaultIcons;
+
+  @property()
+  // If true, first 2 rows of Donation Form are:
+  // 1) Frequency (One Off/Regular), 2) Fund choice
+  // else 1) Fund Choice, 2) Frequency (One Off/Regular)
+  showFrequencyFirst: boolean = false;
+
+  @property()
+  // If true, after the frequency and fund rows, show
+  // 1) Fund Dimension choices, if necessary 2) Amount selector
+  // else 1) Amount selector, 2) Fund Dimension choices, if necessary
+  showFundDimensionsFirst: boolean = false;
+
+  @property()
+  showCurrencyText?: boolean;
+
+  @property()
+  footerText?: string;
+
+  @property()
+  afterAddToCart?: () => void;
 
   @property()
   type: DonationFormType = DonationFormType.Full;
@@ -161,7 +162,7 @@ class DonationForm extends LitElement {
     this._apiError = undefined;
     this._validationErrors = undefined;
 
-    const client = new CartClient(this.data.baseUrl);
+    const client = new CartClient(this.baseUrl);
 
     const req: AddToCartReq = {
       givingType: this._givingType,
@@ -226,7 +227,7 @@ class DonationForm extends LitElement {
       .add(req)
       .then((res) => {
         this._saving = false;
-        this.data.afterAddToCart?.();
+        this.afterAddToCart?.();
       })
       .catch((err) => {
         this.handleError(err);
@@ -235,9 +236,9 @@ class DonationForm extends LitElement {
   }
 
   getDonationForm(fundStructure: FundStructureRes | void) {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
-      .getDonationForm(this.data.formId)
+      .getDonationForm(this.formId)
       .then((res) => {
         this.options =
           this.type === DonationFormType.Full
@@ -255,7 +256,7 @@ class DonationForm extends LitElement {
   }
 
   getGivingTypes() {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
       .getLookupGivingTypes()
       .then((res) => {
@@ -267,7 +268,7 @@ class DonationForm extends LitElement {
   }
 
   getDonationItems() {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
       .getLookupDonationItems()
       .then((res) => {
@@ -279,7 +280,7 @@ class DonationForm extends LitElement {
   }
 
   getFundStructure(): Promise<void | FundStructureRes> {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
       .getFundStructure()
       .then((res) => {
@@ -292,7 +293,7 @@ class DonationForm extends LitElement {
   }
 
   getSponsorshipSchemes() {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
       .getLookupSponsorshipSchemes()
       .then((res) => {
@@ -304,7 +305,7 @@ class DonationForm extends LitElement {
   }
 
   getCurrencies() {
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     return client
       .getLookupCurrencies()
       .then((res) => {
@@ -537,7 +538,7 @@ class DonationForm extends LitElement {
     this._selectedCurrencyId = currencyId;
 
     // Calling this enpoint will set the cookie on the response headers
-    const client = new GivingClient(this.data.baseUrl);
+    const client = new GivingClient(this.baseUrl);
     client.setCurrency(currencyId).catch((err) => {
       console.log(err);
     });
@@ -619,7 +620,7 @@ class DonationForm extends LitElement {
         this.fundStructure?.dimension1?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
-                .baseUrl="${this.data.baseUrl}"
+                .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${1}"
                 .value="${this._dimension1}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
@@ -635,7 +636,7 @@ class DonationForm extends LitElement {
         this.fundStructure?.dimension2?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
-                .baseUrl="${this.data.baseUrl}"
+                .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${2}"
                 .value="${this._dimension2}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
@@ -651,7 +652,7 @@ class DonationForm extends LitElement {
         this.fundStructure?.dimension3?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
-                .baseUrl="${this.data.baseUrl}"
+                .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${3}"
                 .value="${this._dimension3}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
@@ -667,7 +668,7 @@ class DonationForm extends LitElement {
         this.fundStructure?.dimension4?.isActive
           ? html`<div class="n3o-donation-form-row">
               <fund-dimension
-                .baseUrl="${this.data.baseUrl}"
+                .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${4}"
                 .value="${this._dimension4}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
@@ -830,15 +831,14 @@ class DonationForm extends LitElement {
             .showQuantitySelector="${this._otherAmountLocked}"
             .showDurationSelector="${this._option?.type === "sponsorship" &&
             this._givingType !== GivingType.RegularGiving}"
-            .baseUrl="${this.data.baseUrl}"
+            .baseUrl="${this.baseUrl}"
             .duration="${this._duration}"
             .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
             .quantity="${this._quantity}"
             .onChangeQuantity="${(v: number) => (this._quantity = v)}"
             .value="${this._otherAmount}"
             .fixed="${this._otherAmountLocked}"
-            .showCurrencyText="${this.data.showCurrencyText &&
-            this.data.mode === DonationFormType.Full}"
+            .showCurrencyText="${this.showCurrencyText && this.mode === DonationFormType.Full}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .currencies="${this.currencies}"
           ></other-amount>
@@ -848,8 +848,8 @@ class DonationForm extends LitElement {
           <donate-button
             .saving="${this._saving}"
             .onClick="${() => this.donate()}"
-            .iconName="${this.data.icons?.donateButton.icon}"
-            .iconVariety="${this.data.icons?.donateButton.variety}"
+            .iconName="${this.icons?.donateButton.icon}"
+            .iconVariety="${this.icons?.donateButton.variety}"
           ></donate-button>
         </div>
       </div>
@@ -860,9 +860,9 @@ class DonationForm extends LitElement {
     //language=html
     return html`
     <div>
-          ${this.data.showFrequencyFirst ? this.renderFrequencyFirst() : this.renderFundFirst()}
+          ${this.showFrequencyFirst ? this.renderFrequencyFirst() : this.renderFundFirst()}
           ${
-            !this.data.showFundDimensionsFirst && this.canShowAmountFirst()
+            !this.showFundDimensionsFirst && this.canShowAmountFirst()
               ? html`<div>
                   ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
 
@@ -880,15 +880,15 @@ class DonationForm extends LitElement {
                           this._amount = undefined;
                         }
                       }}"
-                      .baseUrl="${this.data.baseUrl}"
+                      .baseUrl="${this.baseUrl}"
                       .duration="${this._duration}"
                       .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                       .quantity="${this._quantity}"
                       .onChangeQuantity="${(v: number) => (this._quantity = v)}"
                       .value="${this._otherAmount}"
                       .showQuantitySelector="${this._otherAmountLocked}"
-                      .showCurrencyText="${this.data.showCurrencyText &&
-                      this.data.mode === DonationFormType.Full}"
+                      .showCurrencyText="${this.showCurrencyText &&
+                      this.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
                       .fixed="${this._otherAmountLocked}"
@@ -905,7 +905,7 @@ class DonationForm extends LitElement {
                           .value="${this._duration}"
                           .quantity="${this._quantity}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
-                          .baseUrl="${this.data.baseUrl}"
+                          .baseUrl="${this.baseUrl}"
                           .amount="${this._otherAmount ||
                           this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
                         ></sponsorship-duration>
@@ -919,7 +919,7 @@ class DonationForm extends LitElement {
 
                   <div class="n3o-donation-form-row">
                     <other-amount
-                      .baseUrl="${this.data.baseUrl}"
+                      .baseUrl="${this.baseUrl}"
                       .duration="${this._duration}"
                       .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                       .onCurrencyChange="${(currency: CurrencyRes) => {
@@ -938,8 +938,8 @@ class DonationForm extends LitElement {
                       .quantity="${this._quantity}"
                       .onChangeQuantity="${(v: number) => (this._quantity = v)}"
                       .value="${this._otherAmount}"
-                      .showCurrencyText="${this.data.showCurrencyText &&
-                      this.data.mode === DonationFormType.Full}"
+                      .showCurrencyText="${this.showCurrencyText &&
+                      this.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
                       .fixed="${this._otherAmountLocked}"
@@ -955,7 +955,7 @@ class DonationForm extends LitElement {
                           .theme="${this.getTheme()}"
                           .value="${this._duration}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
-                          .baseUrl="${this.data.baseUrl}"
+                          .baseUrl="${this.baseUrl}"
                           .amount="${this._otherAmount ||
                           this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
                         ></sponsorship-duration>
@@ -971,8 +971,8 @@ class DonationForm extends LitElement {
           </div>
 
           ${
-            this.data.footerText
-              ? html`<div class="n3o-donation-form-footer">${this.data.footerText}</div>`
+            this.footerText
+              ? html`<div class="n3o-donation-form-footer">${this.footerText}</div>`
               : undefined
           }
         </div>
@@ -982,7 +982,7 @@ class DonationForm extends LitElement {
   render() {
     if (this._loading) {
       return html`<div
-        id="n3o-donation-form-${this.data.formId}"
+        id="n3o-donation-form-${this.formId}"
         class="${this.type === DonationFormType.Quick
           ? "n3o-quick-donate-form"
           : "n3o-full-donate-form"} n3o-loading"
@@ -994,7 +994,7 @@ class DonationForm extends LitElement {
     //language=HTML
     return html`
       <div
-        id="n3o-donation-form-${this.data.formId}"
+        id="n3o-donation-form-${this.formId}"
         class="${this.type === DonationFormType.Quick ? "n3o-quick-donate-form" : ""}"
       >
         ${this._apiError
