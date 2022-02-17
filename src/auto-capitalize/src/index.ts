@@ -5,12 +5,13 @@ function autoCapitaliseAll(className: string): void {
   const elements: HTMLElement[] = arrayFrom(elementsCollection);
 
   elements.forEach((elem) => {
-    let str = elem.innerHTML;
+    let str = elem.innerHTML.trim();
+
     if (str.length < 2) return;
 
     if (str !== str.toUpperCase() && str !== str.toLowerCase()) return;
 
-    if (elem.getAttribute("data-__preCorrectionText") === str) return;
+    if (elem.getAttribute("data-__preCorrectionText") !== str) return;
 
     elem.setAttribute("data-__preCorrectionText", str);
 
@@ -22,10 +23,20 @@ function autoCapitaliseAll(className: string): void {
   });
 }
 
-const autoCapitalize = {
+interface AutoCapitalize {
+  all: (className: string) => void;
+}
+
+const autoCapitalize: AutoCapitalize = {
   all: (className: string) => {
     autoCapitaliseAll(className);
   },
 };
 
-export default autoCapitalize;
+declare global {
+  interface Window {
+    autoCapitalize: AutoCapitalize;
+  }
+}
+
+window.autoCapitalize = autoCapitalize;

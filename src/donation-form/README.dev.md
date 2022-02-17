@@ -12,9 +12,9 @@ Install Dependencies:
 npm install
 ```
 
-The `index.html` and `src/_sample` contains a sample page using the N3O Donation Form component.
+The `index.html` and `src/_sample.ts` provide a sample page using the N3O Donation Form component.
 
-This is provided for development purposes only.
+These files are provided for development purposes only and are not included in the production build.
 
 The sample project can be run locally using the below command:
 
@@ -42,3 +42,8 @@ To build the project, run the below command
 npm run build
 ```
 
+#### Release
+
+Release is automatic on pushing of a new tag to Github.
+
+Create a tag on the master branch following symver conventions and push to Github to trigger build and release of a new version of the [@n3oltd/donation-form](https://www.npmjs.com/package/@n3oltd/donation-form) npm package.
