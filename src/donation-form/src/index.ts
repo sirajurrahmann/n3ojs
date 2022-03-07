@@ -457,15 +457,26 @@ class DonationForm extends LitElement {
     // option, or leaves them as whatever was previously selected.
     if (option?.dimension1?.default) {
       this._dimension1 = option?.dimension1.default;
+    } else if (option?.dimension1?.fixed) {
+      this._dimension1 = option?.dimension1.fixed;
     }
+
     if (option?.dimension2?.default) {
       this._dimension2 = option?.dimension2.default;
+    } else if (option?.dimension2?.fixed) {
+      this._dimension2 = option?.dimension2.fixed;
     }
+
     if (option?.dimension3?.default) {
       this._dimension3 = option?.dimension3.default;
+    } else if (option?.dimension3?.fixed) {
+      this._dimension3 = option?.dimension3.fixed;
     }
+
     if (option?.dimension4?.default) {
       this._dimension4 = option?.dimension4.default;
+    } else if (option?.dimension4?.fixed) {
+      this._dimension4 = option?.dimension4.fixed;
     }
   }
 
