@@ -26,7 +26,7 @@ export const modalStyles = css`
   @media (min-width: 576px) {
     .n3o-modal-dialog {
       max-width: 500px;
-      margin: 1.75rem auto;
+      margin: 30vh auto;
     }
   }
 
