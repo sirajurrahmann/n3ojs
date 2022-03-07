@@ -235,6 +235,7 @@ export const otherAmountStyles = css`
   .n3o-amount-input-inner {
     flex-grow: 1;
     display: flex;
+    align-items: center;
   }
 
   .n3o-select-quantity,
