@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "rollup -c rollup.config.js",
-    "build": "shx cp -r src/* build && cp src/index.ts build",
+    "build": "shx rm -rf build && shx mkdir build && shx cp -r src/* build && cp src/index.ts build",
     "upgrade@n3o": "npx update-by-scope -n npm -c install @n3oltd"
   },
   "license": "MIT",
