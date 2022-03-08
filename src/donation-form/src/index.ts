@@ -171,7 +171,7 @@ class DonationForm extends LitElement {
       allocation: {
         type: this._option.type,
         value: DonationFormHelpers.getDonationValue(
-          1,
+          this._givingType === GivingType.RegularGiving ? 1 : this._duration?.months || 1,
           this._selectedCurrencyId || "",
           this._otherAmount,
           this._amount,
@@ -204,7 +204,9 @@ class DonationForm extends LitElement {
                     )?.id,
                     // Currently the component value is the value of the whole donation because we only support the 1 mandatory component
                     value: DonationFormHelpers.getDonationValue(
-                      this._duration?.months || 1,
+                      this._givingType === GivingType.RegularGiving
+                        ? 1
+                        : this._duration?.months || 1,
                       this._selectedCurrencyId || "",
                       this._otherAmount,
                       this._amount,
