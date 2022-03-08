@@ -1,4 +1,4 @@
-import { css, html, LitElement } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import Cookies from "js-cookie";
 import { donationFormStyles } from "./styles/donationFormStyles";
@@ -312,7 +312,7 @@ class DonationForm extends LitElement {
         // included as a header all responses from Umbraco.
         const currentCurrency = Cookies.get("Currency");
         if (currentCurrency) {
-          this._selectedCurrencyId = currentCurrency;
+          this._selectedCurrencyId = currentCurrency.toLowerCase();
         }
       })
       .catch((err) => {
@@ -543,7 +543,7 @@ class DonationForm extends LitElement {
   }
 
   setCurrency(currencyId: string) {
-    this._selectedCurrencyId = currencyId;
+    this._selectedCurrencyId = currencyId.toLowerCase();
 
     // Calling this enpoint will set the cookie on the response headers
     const client = new GivingClient(this.baseUrl);
