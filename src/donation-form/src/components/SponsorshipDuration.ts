@@ -1,7 +1,12 @@
 import { html, LitElement, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
-import { CurrencyRes, GivingClient, SponsorshipDurationRes } from "@n3oltd/umbraco-giving-client";
+import {
+  CurrencyRes,
+  GivingClient,
+  SponsorshipDurationRes,
+  SponsorshipSchemeRes,
+} from "@n3oltd/umbraco-giving-client";
 import { selectCustomArrowStyles, selectStyles, utilStyles } from "../styles/donationFormStyles";
 import { DonationFormHelpers } from "../helpers";
 
@@ -28,10 +33,16 @@ class SponsorshipDuration extends LitElement {
   amount?: MoneyReq;
 
   @property()
+  fixedToDefault: boolean = false;
+
+  @property()
   quantity: number = 1;
 
   @property()
   baseUrl: string = "";
+
+  @property()
+  selectedSponsorshipScheme?: SponsorshipSchemeRes;
 
   @property()
   value?: SponsorshipDurationRes;
@@ -47,8 +58,14 @@ class SponsorshipDuration extends LitElement {
     client
       .getLookupSponsorshipDurations()
       .then((res) => {
-        this._durations = res;
-        this.onChange?.(res[0]); // Setting the first duration by default
+        this._durations = res.filter((dur) =>
+          this.selectedSponsorshipScheme?.allowedDurations?.find((allowed) => allowed === dur.id),
+        );
+        if (this.fixedToDefault) {
+          this.onChange?.(DonationFormHelpers.getDefaultOrNextBestDuration(this._durations));
+        } else {
+          this.onChange?.(this._durations[0]); // Setting the first duration by default
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -69,6 +86,7 @@ class SponsorshipDuration extends LitElement {
     return html`
       <div>
         <select
+          .disabled="${this.fixedToDefault}"
           class="${this.hideBorder ? "n3o-hide-border" : ""}"
           @change="${(e: Event) => {
             this.onChange?.(
@@ -95,35 +113,4 @@ class SponsorshipDuration extends LitElement {
       </div>
     `;
   }
-
-  // renderRegularGivingVersion() {
-  //   // language=html
-  //   return html`
-  //     <div>
-  //       <select
-  //         @change="${(e: Event) => {
-  //           this.onChangeQuantity?.(Number((e.target as HTMLSelectElement).value));
-  //         }}"
-  //       >
-  //         ${quantities?.map((q) => {
-  //           return html`<option .selected="${q === this.quantity}" value="${q}">
-  //             ${q} ${this.theme.toLowerCase()}/month
-  //             (${DonationFormHelpers.getAndFormatTotal(
-  //               q || 0,
-  //               this.currencies.find(
-  //                 (c) => this.amount?.currency?.toLowerCase() === c.id?.toLowerCase(),
-  //               ),
-  //               this.amount,
-  //             )})
-  //           </option>`;
-  //         })}
-  //       </select>
-  //     </div>
-  //   `;
-  // }
-
-  // render() {
-  //   if (this.givingType === GivingType.Donation) return this.renderDonationVersion();
-  //   else return this.renderRegularGivingVersion();
-  // }
 }

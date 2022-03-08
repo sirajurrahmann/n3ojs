@@ -8,6 +8,7 @@ import {
   PricingRes,
   PricingRuleRes,
   SponsorshipComponentRes,
+  SponsorshipDurationRes,
   SponsorshipSchemeRes,
 } from "@n3oltd/umbraco-giving-client";
 import { MoneyReq } from "@n3oltd/umbraco-giving-cart-client";
@@ -87,6 +88,23 @@ export class DonationFormHelpers {
           (selectedPriceHandle?.currencyValues?.[currencyId.toLowerCase()]?.amount || 0) *
           multiplier,
       };
+    }
+  }
+
+  public static getDefaultOrNextBestDuration(
+    durations: SponsorshipDurationRes[],
+  ): SponsorshipDurationRes | undefined {
+    const best = durations.find((d) => d.id === "_12");
+    if (best) return best;
+    else {
+      let nextBest: SponsorshipDurationRes | undefined = undefined;
+      const otherDurs = ["_6", "_18", "_24"];
+
+      for (let i = 0; i < otherDurs.length; i++) {
+        let found = durations.find((d) => d.id === otherDurs[i]);
+        if (found && !nextBest) nextBest = found;
+      }
+      return nextBest;
     }
   }
 

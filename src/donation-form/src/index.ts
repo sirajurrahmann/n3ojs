@@ -64,6 +64,11 @@ class DonationForm extends LitElement {
   showFundDimensionsFirst: boolean = false;
 
   @property()
+  // If true, disallow selection of sponsorship duration when making a one-off donation
+  // Default duration is 12 months, if not available, fallback to another duration
+  fixSponsorshipDurationToDefault: boolean = false;
+
+  @property()
   showCurrencyText?: boolean;
 
   @property()
@@ -564,6 +569,13 @@ class DonationForm extends LitElement {
     return themeDim?.options?.[0]?.name || "";
   }
 
+  getSelectedSponsorshipScheme(
+    option: DonationOptionRes,
+    schemes: SponsorshipSchemeRes[],
+  ): SponsorshipSchemeRes | undefined {
+    return schemes.find((sc) => option.sponsorship?.scheme === sc.id);
+  }
+
   getOptions(dim: string): FundDimensionValueRes[] {
     if (this._option?.type === AllocationType.Fund) {
       const di = this.donationItems.find((d) => d.id === this._option?.fund?.donationItem);
@@ -913,6 +925,11 @@ class DonationForm extends LitElement {
                           .value="${this._duration}"
                           .quantity="${this._quantity}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
+                          .fixedToDefault="${this.fixSponsorshipDurationToDefault}"
+                          .selectedSponsorshipScheme="${this.getSelectedSponsorshipScheme(
+                            this._option,
+                            this.sponsorshipSchemes,
+                          )}"
                           .baseUrl="${this.baseUrl}"
                           .amount="${this._otherAmount ||
                           this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
@@ -964,6 +981,11 @@ class DonationForm extends LitElement {
                           .value="${this._duration}"
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                           .baseUrl="${this.baseUrl}"
+                          .fixedToDefault="${this.fixSponsorshipDurationToDefault}"
+                          .selectedSponsorshipScheme="${this.getSelectedSponsorshipScheme(
+                            this._option,
+                            this.sponsorshipSchemes,
+                          )}"
                           .amount="${this._otherAmount ||
                           this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
                         ></sponsorship-duration>
