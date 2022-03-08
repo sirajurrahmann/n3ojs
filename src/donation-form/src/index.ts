@@ -850,6 +850,7 @@ class DonationForm extends LitElement {
                 this._amount = undefined;
               }
             }}"
+            .isRegular="${this._givingType === GivingType.RegularGiving}"
             .showQuantitySelector="${this._otherAmountLocked}"
             .showDurationSelector="${this._option?.type === "sponsorship" &&
             this._givingType !== GivingType.RegularGiving}"
@@ -902,6 +903,7 @@ class DonationForm extends LitElement {
                           this._amount = undefined;
                         }
                       }}"
+                      .isRegular="${this._givingType === GivingType.RegularGiving}"
                       .baseUrl="${this.baseUrl}"
                       .duration="${this._duration}"
                       .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"

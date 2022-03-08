@@ -23,7 +23,7 @@ class DonationFormSampleApp extends LitElement {
   render() {
     //lang=html
     return html`
-      <div style="width: 300px">
+      <div style="width: 500px">
         <data-donation-form
           .formId="${"a8492d39-1455-4de4-bcb2-e4d014d9bfc5"}"
           .baseUrl="${"https://read-uk-staging.n3o.site"}"
