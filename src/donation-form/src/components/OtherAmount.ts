@@ -55,6 +55,9 @@ class OtherAmount extends LitElement {
   @property()
   isRegular?: boolean;
 
+  @property()
+  isSponsorship?: boolean;
+
   validateInput(target: HTMLInputElement) {
     const re = /^[0-9]+$/;
     if (re.test(target.value)) {
@@ -134,7 +137,8 @@ class OtherAmount extends LitElement {
                   >
                     ${quantities?.map((q) => {
                       return html`<option .selected="${q === this.quantity}" value="${q}">
-                        ${q} ${q === 1 ? "Sponsorship" : "Sponsorships"} @
+                        ${q} ${this.isSponsorship ? (q === 1 ? "Sponsorship" : "Sponsorships") : ""}
+                        @
                         ${this.currencies?.find(
                           (c) => c.id?.toLowerCase() === this.selectedCurrencyId?.toLowerCase(),
                         )?.symbol}${DonationFormHelpers.removeTrailingZeros(

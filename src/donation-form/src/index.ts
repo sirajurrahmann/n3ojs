@@ -447,7 +447,7 @@ class DonationForm extends LitElement {
         this._otherAmount = matchingPricingRule.currencyValues?.[this._selectedCurrencyId];
         this._otherAmountLocked = matchingPricingRule.locked || false;
       } else {
-        if (pricing?.amount && this._selectedCurrencyId) {
+        if (this._selectedCurrencyId) {
           this._otherAmount = pricing.currencyValues?.[this._selectedCurrencyId];
           this._otherAmountLocked = pricing?.locked || false;
         }
@@ -748,6 +748,9 @@ class DonationForm extends LitElement {
               this._option = option;
               this.updateFundDimensions(option);
               this.setOtherAmount(option);
+              if (option.type === AllocationType.Fund) {
+                this._duration = undefined;
+              }
             }}"
             .fixedAmount="${this._otherAmountLocked && this._otherAmount
               ? this._otherAmount
@@ -851,6 +854,7 @@ class DonationForm extends LitElement {
               }
             }}"
             .isRegular="${this._givingType === GivingType.RegularGiving}"
+            .isSponsorship="${this._option?.type === AllocationType.Sponsorship}"
             .showQuantitySelector="${this._otherAmountLocked}"
             .showDurationSelector="${this._option?.type === "sponsorship" &&
             this._givingType !== GivingType.RegularGiving}"
@@ -903,6 +907,7 @@ class DonationForm extends LitElement {
                           this._amount = undefined;
                         }
                       }}"
+                      .isSponsorship="${this._option?.type === AllocationType.Sponsorship}"
                       .isRegular="${this._givingType === GivingType.RegularGiving}"
                       .baseUrl="${this.baseUrl}"
                       .duration="${this._duration}"
