@@ -25,8 +25,9 @@ class DonateButton extends LitElement {
   saving?: boolean;
 
   render() {
-    //language=HTML
-    return html`
+    if (this.iconName !== null) {
+      //language=HTML
+      return html`
       <div class="n3o-donate-button" @click="${this.onClick}">
         <button class="n3o-donation-form-button ${this.saving ? "n3o-button-disabled" : ""}">
           <span class="${DonationFormHelpers.getMaterialIconName(this.iconVariety)} icon">
@@ -36,5 +37,15 @@ class DonateButton extends LitElement {
         </button>
       </div>
     `;
+    } else {
+      //language=HTML
+      return html`
+      <div class="n3o-donate-button" @click="${this.onClick}">
+        <button class="n3o-donation-form-button ${this.saving ? "n3o-button-disabled" : ""}">
+          ${this.saving ? "Saving..." : this.buttonText}
+        </button>
+      </div>
+    `;
+    }
   }
 }
