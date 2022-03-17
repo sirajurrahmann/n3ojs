@@ -179,7 +179,7 @@ export const selectStyles = css`
     width: 100%;
     height: var(--input-height);
     font-size: var(--input-font-size);
-    border: 0px solid #d3d2d1;
+    border: var(--input-border-size) solid #d3d2d1;
     border-radius: var(--border-radius);
   }
   select:focus,
