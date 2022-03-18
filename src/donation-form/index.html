@@ -8,7 +8,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Material Icons';
@@ -31,15 +30,17 @@
             --input-font-size: 16px;
             --header-font-size: 20px;
             --text-color: #212529;
-            --border-radius: 5px;
+            --border-radius: 0px;
+
+            --input-border-size: 1px;
 
             --title-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
             --quick-donate-text-size: 24px;
-            --giving-type-border-radius: 80px;
-            --price-handle-border-radius: 80px;
+            --giving-type-border-radius: 0px;
+            --price-handle-border-radius: 0px;
 
-            --theme-color: #C80001;
-            --form-background-color: #e9e8e8;;
+            --theme-color: #4faf46;
+            --form-background-color: #white;
 
             --type-button-text-transform: uppercase;
             --type-button-padding: 16px 12px;
@@ -63,19 +64,21 @@
 
             --donate-button-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
             --donate-button-text-color: #fff;
-            --donate-button-background: #C80001;
+            --donate-button-background: #f26f22;
             --donate-button-hover-text-color: #fff;
             --donate-button-hover-background: var(--theme-color);
             --donate-button-hover-border: none;
             --donate-button-hover-box-shadow: none;
             --donate-button-height: 40px;
 
-            --donate-button-icon-color: #fff;
-
+            --donate-button-icon-color: white;
+            --donate-button-icon-visibility: none; /* change to 'block' to make icon visible */
+            
             /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
             --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%211c18' height='40' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
         }
     </style>
+    
     <style>
         * {
             box-sizing: border-box;
