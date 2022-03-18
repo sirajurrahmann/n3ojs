@@ -217,7 +217,7 @@ export const otherAmountStyles = css`
   }
   .n3o-amount-input {
     background-color: #fff;
-    border: 0 solid #d3d2d1;
+    border: var(--input-border-size) solid #d3d2d1;
     height: var(--input-height);
     font-size: var(--input-font-size);
     width: 100%;
