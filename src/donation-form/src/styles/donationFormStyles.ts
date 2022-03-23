@@ -190,6 +190,7 @@ export const selectStyles = css`
     outline: none;
     border: none;
     box-shadow: var(--input-box-shadow);
+    border: var(--input-border-size) solid var(--theme-color);
   }
 `;
 
@@ -332,6 +333,7 @@ export const donateButtonStyles = css`
   .n3o-donate-button button .icon {
     margin-right: 10px;
     color: var(--donate-button-icon-color);
+    display: var(--donate-button-icon-visibility);
   }
   .n3o-donate-button button:hover,
   .n3o-donate-button button:active {
