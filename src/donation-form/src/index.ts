@@ -81,6 +81,9 @@ class DonationForm extends LitElement {
   options: DonationOptionRes[] = [];
 
   @property()
+  defaultCurrency?: CurrencyRes;
+
+  @property()
   donationItems: DonationItemRes[] = [];
 
   @property()
@@ -172,7 +175,7 @@ class DonationForm extends LitElement {
         type: this._option.type,
         value: DonationFormHelpers.getDonationValue(
           this._givingType === GivingType.RegularGiving ? 1 : this._duration?.months || 1,
-          this._selectedCurrencyId || "",
+          this._selectedCurrencyId || this.defaultCurrency?.id as string,
           this._otherAmount,
           this._amount,
         ),
@@ -313,16 +316,23 @@ class DonationForm extends LitElement {
     return client
       .getLookupCurrencies()
       .then((res) => {
-        this.currencies = res || [];
+        this.currencies = res || [this.defaultCurrency];
 
         // Currency should have already been set in the Cookies by previous requests, it is
         // included as a header all responses from Umbraco.
         const currentCurrency = Cookies.get("Currency");
         if (currentCurrency) {
           this._selectedCurrencyId = currentCurrency.toLowerCase();
+        } else if(this.defaultCurrency) {
+          this._selectedCurrencyId = this.defaultCurrency?.code?.toLowerCase();
         }
       })
       .catch((err) => {
+        if(this.defaultCurrency){
+          this.currencies = [this.defaultCurrency];
+          this._selectedCurrencyId = this.defaultCurrency?.code?.toLowerCase();
+        }
+
         console.log(err);
       });
   }
@@ -449,6 +459,9 @@ class DonationForm extends LitElement {
       } else {
         if (this._selectedCurrencyId) {
           this._otherAmount = pricing.currencyValues?.[this._selectedCurrencyId];
+          this._otherAmountLocked = pricing?.locked || false;
+        } else if(this.defaultCurrency && this.defaultCurrency.id) {
+          this._otherAmount = pricing.currencyValues?.[this.defaultCurrency.id];
           this._otherAmountLocked = pricing?.locked || false;
         }
       }
