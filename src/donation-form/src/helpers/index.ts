@@ -78,7 +78,7 @@ export class DonationFormHelpers {
     // Gets the value
     if (userSelectedAmount) {
       return {
-        currency: userSelectedAmount.currency,
+        currency: userSelectedAmount.currency ?? currencyId,
         amount: (userSelectedAmount.amount || 0) * multiplier,
       };
     } else {

@@ -1,11 +1,17 @@
 import { html, LitElement, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { DonationFormType } from "./types/index";
 
 import "./index";
+import { CurrencyRes } from "@n3oltd/umbraco-giving-client";
 
 @customElement("donation-form-sample-app")
 class DonationFormSampleApp extends LitElement {
+  @property({attribute: false})
+  data?: {
+      defaultCurrency?: CurrencyRes;
+  };
+
   static styles = [
     css`
       #quickDonationFormContainer {
@@ -32,25 +38,11 @@ class DonationFormSampleApp extends LitElement {
           .showCurrencyText="${true}"
           .footerText="${"We accept all major credit cards and PayPal"}"
           .afterAddToCart="${() => console.log("Item Added")}"
+          .defaultCurrency="${this.data?.defaultCurrency}"
           .icons="${{
             donateButton: { icon: "favorite", variety: "filled" },
           }}"
         ></data-donation-form>
-
-        <div id="quickDonationFormContainer">
-          <data-donation-form
-            .formId="${"a8492d39-1455-4de4-bcb2-e4d014d9bfc5"}"
-            .baseUrl="${"https://read-uk-staging.n3o.site"}"
-            .showFrequencyFirst="${true}"
-            .mode="${DonationFormType.Quick}"
-            .showCurrencyText="${true}"
-            .footerText="${"We accept all major credit cards and PayPal"}"
-            .afterAddToCart="${() => console.log("Item Added")}"
-            .icons="${{
-              donateButton: { icon: "favorite", variety: "filled" },
-            }}"
-          ></data-donation-form>
-        </div>
       </div>
     `;
   }

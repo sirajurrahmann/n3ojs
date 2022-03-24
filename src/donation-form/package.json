@@ -11,11 +11,11 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "14.17.6"
+    "node": ">= 14.0.0"
   },
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "serve": "NODE_ENV=\"development\" && concurrently --raw \"tsc --p ./tsconfig.dev.json --watch --preserveWatchOutput\" \"wds --watch\"",
+    "serve": "concurrently --raw \"tsc --p ./tsconfig.dev.json --watch --preserveWatchOutput\" \"wds --watch\"",
     "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\"  --ignore-path ./.prettierignore --write",
     "upgrade@n3o": "npx update-by-scope -n npm -c install @n3oltd"
   },
