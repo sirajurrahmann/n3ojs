@@ -39,12 +39,8 @@ class FundSelector extends LitElement {
   sponsorshipSchemes: SponsorshipSchemeRes[] = [];
 
   getItemName(option: DonationOptionRes): string {
-    let name: string;
-    if (option.type === "fund") {
-      name = this.donationItems.find((d) => d.id === option.fund?.donationItem)?.name || "";
-    } else {
-      name = this.sponsorshipSchemes.find((s) => s.id === option.sponsorship?.scheme)?.name || "";
-    }
+    let name: string = option.name!;
+    
     if (!this.showFixedAmountInOption) {
       return name;
     }

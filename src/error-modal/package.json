@@ -11,7 +11,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "14.17.6"
+    "node": ">= 14.0.0"
   },
   "scripts": {
     "build": "rollup -c rollup.config.js",
@@ -41,9 +41,9 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@n3oltd/umbraco-allocations-client": "^9.0.0-beta-74",
-    "@n3oltd/umbraco-cart-client": "^9.0.0-beta-75",
-    "@n3oltd/umbraco-donations-client": "^9.0.0-beta-67",
+    "@n3oltd/umbraco-allocations-client": "^9.0.0-beta-81",
+    "@n3oltd/umbraco-cart-client": "^9.0.0-beta-81",
+    "@n3oltd/umbraco-donations-client": "^9.0.0-beta-81",
     "lit": "^2.1.1"
   }
 }

@@ -11,7 +11,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "14.17.6"
+    "node": ">= 14.0.0"
   },
   "scripts": {
     "build": "rollup -c rollup.config.js",
