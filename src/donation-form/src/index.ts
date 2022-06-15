@@ -7,7 +7,7 @@ import {
   CurrencyRes,
   DonationItemRes,
   DonationOptionRes,
-  FixedOrDefaultFundDimensionValueRes,
+  InitialFundDimensionValueRes,
   FundDimensionValueRes,
   FundStructureRes,
   GivingClient,
@@ -396,7 +396,7 @@ class DonationForm extends LitElement {
 
   shouldShowDimension(
     options: FundDimensionValueRes[],
-    dim?: FixedOrDefaultFundDimensionValueRes,
+    dim?: InitialFundDimensionValueRes,
   ): boolean {
     if (!dim || options.length < 2) return false;
     else return !dim.fixed;
@@ -479,6 +479,8 @@ class DonationForm extends LitElement {
       this._dimension1 = option?.dimension1.default;
     } else if (option?.dimension1?.fixed) {
       this._dimension1 = option?.dimension1.fixed;
+    } else {
+      this._dimension1 = option?.dimension1?.suggested;
     }
 
     if (option?.dimension2?.default) {
@@ -963,7 +965,7 @@ class DonationForm extends LitElement {
               : html`<div>
                   ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
                   ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
-
+                  ${this.setOtherAmount(this._option)}
                   <div class="n3o-donation-form-row">
                     <other-amount
                       .baseUrl="${this.baseUrl}"
