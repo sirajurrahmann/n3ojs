@@ -965,7 +965,6 @@ class DonationForm extends LitElement {
               : html`<div>
                   ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
                   ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
-                  ${this.setOtherAmount(this._option)}
                   <div class="n3o-donation-form-row">
                     <other-amount
                       .baseUrl="${this.baseUrl}"
