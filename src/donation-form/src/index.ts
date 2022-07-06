@@ -424,6 +424,7 @@ class DonationForm extends LitElement {
       if (this._givingType === GivingType.Donation) {
         if (option.fund?.donationPriceHandles?.length) {
           this._otherAmountLocked = false;
+          this._otherAmount = undefined;
           return;
         }
       } else {
