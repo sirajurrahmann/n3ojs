@@ -42,9 +42,9 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@n3oltd/error-modal": "^1.0.1",
-    "@n3oltd/umbraco-giving-cart-client": "^9.0.66",
-    "@n3oltd/umbraco-giving-client": "^9.0.66",
+    "@n3oltd/error-modal": "^1.0.3",
+    "@n3oltd/umbraco-giving-cart-client": "^10.0.25",
+    "@n3oltd/umbraco-giving-client": "^10.0.25",
     "js-cookie": "^3.0.1",
     "lit": "^2.1.1"
   }
