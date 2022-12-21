@@ -101,6 +101,8 @@ class DonationForm extends LitElement {
   @property()
   fundStructure?: FundStructureRes;
 
+  // if true then _givingType will be determined from defulatype of fund 
+  // if defualt type is empty then Donation will be Prefered 
   @property()
   forceFundGivingType?:Boolean = false;
 
