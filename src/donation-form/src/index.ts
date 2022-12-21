@@ -101,6 +101,9 @@ class DonationForm extends LitElement {
   @property()
   fundStructure?: FundStructureRes;
 
+  @property()
+  forceFundGivingType?:Boolean = false;
+
   @state()
   _loading: boolean = true;
 
@@ -253,7 +256,8 @@ class DonationForm extends LitElement {
             : res.options?.filter?.((opt) => this.fundsCanBeInferred(opt, fundStructure)) || [];
         this.formTitle = res.title || "Donate Now";
         this._option = res.options?.[0];
-
+        if (res.options?.[0])
+          this.updateGivingTypeFromFund(res.options?.[0])
         this.updateFundDimensions(this._option);
         this.setOtherAmount(this._option);
       })
@@ -651,6 +655,16 @@ class DonationForm extends LitElement {
     });
   }
 
+  updateGivingTypeFromFund (option: DonationOptionRes) {
+    if (this.forceFundGivingType){
+      if (option?.defaultGivingType && option?.defaultGivingType !== this._givingType){
+        this._givingType = option?.defaultGivingType
+      }
+      else if (this._givingType !== GivingType.Donation){
+        this._givingType = GivingType.Donation
+      }
+    }
+  }
   renderFundDimensions() {
     return html`
       <div>
@@ -762,6 +776,7 @@ class DonationForm extends LitElement {
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this.updateGivingTypeFromFund(option)
               this.updateFundDimensions(option);
               this.setOtherAmount(option);
               if (option.type === AllocationType.Fund) {
@@ -794,6 +809,7 @@ class DonationForm extends LitElement {
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this.updateGivingTypeFromFund(option)
               this.updateFundDimensions(option);
               this.setOtherAmount(option);
             }}"
@@ -843,6 +859,7 @@ class DonationForm extends LitElement {
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .onChange="${(option: DonationOptionRes) => {
               this._option = option;
+              this.updateGivingTypeFromFund(option)
               this.updateFundDimensions(option);
               this.setOtherAmount(option);
             }}"
