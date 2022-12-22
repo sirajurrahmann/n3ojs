@@ -259,7 +259,7 @@ class DonationForm extends LitElement {
         this.formTitle = res.title || "Donate Now";
         this._option = res.options?.[0];
         if (res.options?.[0])
-          this.updateGivingTypeFromFund(res.options?.[0])
+          this.updateGivingTypeFromFund(res.options?.[0]);
         this.updateFundDimensions(this._option);
         this.setOtherAmount(this._option);
       })
