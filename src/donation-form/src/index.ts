@@ -101,10 +101,10 @@ class DonationForm extends LitElement {
   @property()
   fundStructure?: FundStructureRes;
 
-  // if true then _givingType will be determined from defulatype of fund 
-  // if defualt type is empty then Donation will be Prefered 
+  // if true then _givingType will be determined from default type of fund 
+  // if default type is empty then Donation will be Prefered 
   @property()
-  forceFundGivingType?:Boolean = false;
+  forceFundGivingType?: Boolean = false;
 
   @state()
   _loading: boolean = true;
@@ -193,35 +193,35 @@ class DonationForm extends LitElement {
         fund:
           this._option.type === "fund"
             ? {
-                donationItem: this._option.fund?.donationItem,
-              }
+              donationItem: this._option.fund?.donationItem,
+            }
             : undefined,
         sponsorship:
           this._option.type === "sponsorship"
             ? {
-                scheme: this._option.sponsorship?.scheme,
-                duration:
-                  this._givingType === GivingType.Donation
-                    ? (this._duration?.id as SponsorshipDuration)
-                    : undefined,
-                components: [
-                  {
-                    component: DonationFormHelpers.getMandatoryComponent(
-                      this.sponsorshipSchemes,
-                      this._option.sponsorship?.scheme,
-                    )?.id,
-                    // Currently the component value is the value of the whole donation because we only support the 1 mandatory component
-                    value: DonationFormHelpers.getDonationValue(
-                      this._givingType === GivingType.RegularGiving
-                        ? 1
-                        : this._duration?.months || 1,
-                      this._selectedCurrencyId || "",
-                      this._otherAmount,
-                      this._amount,
-                    ),
-                  },
-                ],
-              }
+              scheme: this._option.sponsorship?.scheme,
+              duration:
+                this._givingType === GivingType.Donation
+                  ? (this._duration?.id as SponsorshipDuration)
+                  : undefined,
+              components: [
+                {
+                  component: DonationFormHelpers.getMandatoryComponent(
+                    this.sponsorshipSchemes,
+                    this._option.sponsorship?.scheme,
+                  )?.id,
+                  // Currently the component value is the value of the whole donation because we only support the 1 mandatory component
+                  value: DonationFormHelpers.getDonationValue(
+                    this._givingType === GivingType.RegularGiving
+                      ? 1
+                      : this._duration?.months || 1,
+                    this._selectedCurrencyId || "",
+                    this._otherAmount,
+                    this._amount,
+                  ),
+                },
+              ],
+            }
             : undefined,
       },
       quantity: this._quantity || 1,
@@ -329,12 +329,12 @@ class DonationForm extends LitElement {
         const currentCurrency = Cookies.get("Currency");
         if (currentCurrency) {
           this._selectedCurrencyId = currentCurrency.toLowerCase();
-        } else if(this.defaultCurrency) {
+        } else if (this.defaultCurrency) {
           this._selectedCurrencyId = this.defaultCurrency?.code?.toLowerCase();
         }
       })
       .catch((err) => {
-        if(this.defaultCurrency){
+        if (this.defaultCurrency) {
           this.currencies = [this.defaultCurrency];
           this._selectedCurrencyId = this.defaultCurrency?.code?.toLowerCase();
         }
@@ -355,12 +355,12 @@ class DonationForm extends LitElement {
       return this._option?.sponsorship
         ? false
         : !this.donationHasPrice(this._option?.fund?.donationItem) &&
-            Boolean(this._option?.fund?.donationPriceHandles?.length);
+        Boolean(this._option?.fund?.donationPriceHandles?.length);
     if (this._givingType === GivingType.RegularGiving)
       return this._option?.sponsorship
         ? false
         : !this.donationHasPrice(this._option?.fund?.donationItem) &&
-            Boolean(this._option?.fund?.regularGivingPriceHandles?.length);
+        Boolean(this._option?.fund?.regularGivingPriceHandles?.length);
     return false;
   }
 
@@ -467,7 +467,7 @@ class DonationForm extends LitElement {
         if (this._selectedCurrencyId) {
           this._otherAmount = pricing.currencyValues?.[this._selectedCurrencyId];
           this._otherAmountLocked = pricing?.locked || false;
-        } else if(this.defaultCurrency && this.defaultCurrency.id) {
+        } else if (this.defaultCurrency && this.defaultCurrency.id) {
           this._otherAmount = pricing.currencyValues?.[this.defaultCurrency.id];
           this._otherAmountLocked = pricing?.locked || false;
         }
@@ -657,12 +657,12 @@ class DonationForm extends LitElement {
     });
   }
 
-  updateGivingTypeFromFund (option: DonationOptionRes) {
-    if (this.forceFundGivingType){
-      if (option?.defaultGivingType && option?.defaultGivingType !== this._givingType){
+  updateGivingTypeFromFund(option: DonationOptionRes) {
+    if (this.forceFundGivingType) {
+      if (option?.defaultGivingType && option?.defaultGivingType !== this._givingType) {
         this._givingType = option?.defaultGivingType;
       }
-      else if (this._givingType !== GivingType.Donation){
+      else if (this._givingType !== GivingType.Donation) {
         this._givingType = GivingType.Donation;
       }
     }
@@ -672,68 +672,68 @@ class DonationForm extends LitElement {
       <div>
         ${this.shouldShowDimension(this.getOptions("dimension1"), this._option?.dimension1) &&
         this.fundStructure?.dimension1?.isActive
-          ? html`<div class="n3o-donation-form-row">
+        ? html`<div class="n3o-donation-form-row">
               <fund-dimension
                 .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${1}"
                 .value="${this._dimension1}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
-                  this._dimension1 = dim;
-                  this.setOtherAmount(this._option);
-                }}"
+            this._dimension1 = dim;
+            this.setOtherAmount(this._option);
+          }}"
                 .default="${this._option?.dimension1?.default}"
                 .options="${this.getOptions("dimension1")}"
               ></fund-dimension>
             </div>`
-          : undefined}
+        : undefined}
         ${this.shouldShowDimension(this.getOptions("dimension2"), this._option?.dimension2) &&
         this.fundStructure?.dimension2?.isActive
-          ? html`<div class="n3o-donation-form-row">
+        ? html`<div class="n3o-donation-form-row">
               <fund-dimension
                 .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${2}"
                 .value="${this._dimension2}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
-                  this._dimension2 = dim;
-                  this.setOtherAmount(this._option);
-                }}"
+            this._dimension2 = dim;
+            this.setOtherAmount(this._option);
+          }}"
                 .default="${this._option?.dimension2?.default}"
                 .options="${this.getOptions("dimension2")}"
               ></fund-dimension>
             </div>`
-          : undefined}
+        : undefined}
         ${this.shouldShowDimension(this.getOptions("dimension3"), this._option?.dimension3) &&
         this.fundStructure?.dimension3?.isActive
-          ? html`<div class="n3o-donation-form-row">
+        ? html`<div class="n3o-donation-form-row">
               <fund-dimension
                 .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${3}"
                 .value="${this._dimension3}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
-                  this._dimension3 = dim;
-                  this.setOtherAmount(this._option);
-                }}"
+            this._dimension3 = dim;
+            this.setOtherAmount(this._option);
+          }}"
                 .default="${this._option?.dimension3?.default}"
                 .options="${this.getOptions("dimension3")}"
               ></fund-dimension>
             </div>`
-          : undefined}
+        : undefined}
         ${this.shouldShowDimension(this.getOptions("dimension4"), this._option?.dimension4) &&
         this.fundStructure?.dimension4?.isActive
-          ? html`<div class="n3o-donation-form-row">
+        ? html`<div class="n3o-donation-form-row">
               <fund-dimension
                 .baseUrl="${this.baseUrl}"
                 .dimensionNumber="${4}"
                 .value="${this._dimension4}"
                 .onChange="${(dim?: FundDimensionValueRes) => {
-                  this._dimension4 = dim;
-                  this.setOtherAmount(this._option);
-                }}"
+            this._dimension4 = dim;
+            this.setOtherAmount(this._option);
+          }}"
                 .default="${this._option?.dimension4?.default}"
                 .options="${this.getOptions("dimension4")}"
               ></fund-dimension>
             </div>`
-          : undefined}
+        : undefined}
       </div>
     `;
   }
@@ -742,16 +742,16 @@ class DonationForm extends LitElement {
     return html`<div class="n3o-donation-form-row">
       <amount-selector
         .onChange="${(amount: PriceHandleRes) => {
-          this._amount = amount;
-          if (amount) {
-            this._otherAmount = undefined;
-          }
-        }}"
+        this._amount = amount;
+        if (amount) {
+          this._otherAmount = undefined;
+        }
+      }}"
         .selectedCurrencyId="${this._selectedCurrencyId}"
         .value="${this._amount}"
         .priceHandles="${this._givingType === GivingType.Donation
-          ? this._option?.fund?.donationPriceHandles
-          : this._option?.fund?.regularGivingPriceHandles}"
+        ? this._option?.fund?.donationPriceHandles
+        : this._option?.fund?.regularGivingPriceHandles}"
       ></amount-selector>
     </div>`;
   }
@@ -767,8 +767,8 @@ class DonationForm extends LitElement {
             .onChange="${(frequency: GivingType) => (this._givingType = frequency)}"
             .selected="${this._givingType}"
             .disableRegular="${this._option?.type === "fund"
-              ? this._option?.hideRegularGiving
-              : false}"
+        ? this._option?.hideRegularGiving
+        : false}"
           ></frequency-selector>
         </div>
 
@@ -777,23 +777,23 @@ class DonationForm extends LitElement {
             .variation="${DonationFormType.Full}"
             .donationItems="${this.donationItems}"
             .onChange="${(option: DonationOptionRes) => {
-              this._option = option;
-              this.updateGivingTypeFromFund(option);
-              this.updateFundDimensions(option);
-              this.setOtherAmount(option);
-              if (option.type === AllocationType.Fund) {
-                this._duration = undefined;
-              }
-            }}"
+        this._option = option;
+        this.updateGivingTypeFromFund(option);
+        this.updateFundDimensions(option);
+        this.setOtherAmount(option);
+        if (option.type === AllocationType.Fund) {
+          this._duration = undefined;
+        }
+      }}"
             .fixedAmount="${this._otherAmountLocked && this._otherAmount
-              ? this._otherAmount
-              : undefined}"
+        ? this._otherAmount
+        : undefined}"
             .value="${this._option}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
-              return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
-            })}"
+          return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
+        })}"
           ></fund-selector>
         </div>
       </div>
@@ -810,18 +810,18 @@ class DonationForm extends LitElement {
             .donationItems="${this.donationItems}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .onChange="${(option: DonationOptionRes) => {
-              this._option = option;
-              this.updateGivingTypeFromFund(option);
-              this.updateFundDimensions(option);
-              this.setOtherAmount(option);
-            }}"
+        this._option = option;
+        this.updateGivingTypeFromFund(option);
+        this.updateFundDimensions(option);
+        this.setOtherAmount(option);
+      }}"
             .fixedAmount="${this._otherAmountLocked && this._otherAmount
-              ? this._otherAmount
-              : undefined}"
+        ? this._otherAmount
+        : undefined}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .options="${this.options.filter((opt) => {
-              return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
-            })}"
+          return this._givingType === GivingType.Donation ? true : !opt.hideRegularGiving;
+        })}"
             .value="${this._option}"
           ></fund-selector>
         </div>
@@ -833,8 +833,8 @@ class DonationForm extends LitElement {
             .onChange="${(frequency: GivingType) => (this._givingType = frequency)}"
             .selected="${this._givingType}"
             disableRegular="${this._option?.type === "fund"
-              ? this._option?.hideRegularGiving
-              : false}"
+        ? this._option?.hideRegularGiving
+        : false}"
           ></frequency-selector>
         </div>
       </div>
@@ -860,14 +860,14 @@ class DonationForm extends LitElement {
             .selectedCurrencyId="${this._selectedCurrencyId}"
             .sponsorshipSchemes="${this.sponsorshipSchemes}"
             .onChange="${(option: DonationOptionRes) => {
-              this._option = option;
-              this.updateGivingTypeFromFund(option);
-              this.updateFundDimensions(option);
-              this.setOtherAmount(option);
-            }}"
+        this._option = option;
+        this.updateGivingTypeFromFund(option);
+        this.updateFundDimensions(option);
+        this.setOtherAmount(option);
+      }}"
             .fixedAmount="${this._otherAmountLocked && this._otherAmount
-              ? this._otherAmount
-              : undefined}"
+        ? this._otherAmount
+        : undefined}"
             .showFixedAmountInOption="${true}"
             .options="${this.options}"
             .value="${this._option}"
@@ -877,22 +877,22 @@ class DonationForm extends LitElement {
         <div class="n3o-quick-donate-col">
           <other-amount
             .onCurrencyChange="${(currency: CurrencyRes) => {
-              if (currency?.id) {
-                this.setCurrency(currency.id);
-                this.setOtherAmount(this._option);
-              }
-            }}"
+        if (currency?.id) {
+          this.setCurrency(currency.id);
+          this.setOtherAmount(this._option);
+        }
+      }}"
             .onChange="${(amount?: MoneyReq) => {
-              this._otherAmount = amount;
-              if (amount) {
-                this._amount = undefined;
-              }
-            }}"
+        this._otherAmount = amount;
+        if (amount) {
+          this._amount = undefined;
+        }
+      }}"
             .isRegular="${this._givingType === GivingType.RegularGiving}"
             .isSponsorship="${this._option?.type === AllocationType.Sponsorship}"
             .showQuantitySelector="${this._otherAmountLocked}"
             .showDurationSelector="${this._option?.type === "sponsorship" &&
-            this._givingType !== GivingType.RegularGiving}"
+      this._givingType !== GivingType.RegularGiving}"
             .baseUrl="${this.baseUrl}"
             .duration="${this._duration}"
             .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
@@ -925,23 +925,23 @@ class DonationForm extends LitElement {
           ${this.showFrequencyFirst ? this.renderFrequencyFirst() : this.renderFundFirst()}
           ${
             !this.showFundDimensionsFirst && this.canShowAmountFirst()
-              ? html`<div>
+        ? html`<div>
                   ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
 
                   <div class="n3o-donation-form-row">
                     <other-amount
                       .onCurrencyChange="${(currency: CurrencyRes) => {
-                        if (currency?.id) {
-                          this.setCurrency(currency.id);
-                          this.setOtherAmount(this._option);
-                        }
-                      }}"
+            if (currency?.id) {
+              this.setCurrency(currency.id);
+              this.setOtherAmount(this._option);
+            }
+          }}"
                       .onChange="${(amount?: MoneyReq) => {
-                        this._otherAmount = amount;
-                        if (amount) {
-                          this._amount = undefined;
-                        }
-                      }}"
+            this._otherAmount = amount;
+            if (amount) {
+              this._amount = undefined;
+            }
+          }}"
                       .isSponsorship="${this._option?.type === AllocationType.Sponsorship}"
                       .isRegular="${this._givingType === GivingType.RegularGiving}"
                       .baseUrl="${this.baseUrl}"
@@ -952,7 +952,7 @@ class DonationForm extends LitElement {
                       .value="${this._otherAmount}"
                       .showQuantitySelector="${this._otherAmountLocked}"
                       .showCurrencyText="${this.showCurrencyText &&
-                      this.mode === DonationFormType.Full}"
+          this.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
                       .fixed="${this._otherAmountLocked}"
@@ -960,8 +960,8 @@ class DonationForm extends LitElement {
                   </div>
 
                   ${this._option?.type === "sponsorship" &&
-                  this._givingType !== GivingType.RegularGiving
-                    ? html`<div class="n3o-donation-form-row">
+            this._givingType !== GivingType.RegularGiving
+            ? html`<div class="n3o-donation-form-row">
                         <sponsorship-duration
                           .givingType="${this._givingType}"
                           .currencies="${this.currencies}"
@@ -971,18 +971,18 @@ class DonationForm extends LitElement {
                           .onChange="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                           .fixedToDefault="${this.fixSponsorshipDurationToDefault}"
                           .selectedSponsorshipScheme="${this.getSelectedSponsorshipScheme(
-                            this._option,
-                            this.sponsorshipSchemes,
-                          )}"
+              this._option,
+              this.sponsorshipSchemes,
+            )}"
                           .baseUrl="${this.baseUrl}"
                           .amount="${this._otherAmount ||
-                          this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
+              this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
                         ></sponsorship-duration>
                       </div>`
-                    : null}
+            : null}
                   ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
                 </div>`
-              : html`<div>
+        : html`<div>
                   ${this.shouldPickFundDimensions() ? this.renderFundDimensions() : undefined}
                   ${this.shouldShowPriceHandles() ? this.renderPriceHandles() : null}
                   <div class="n3o-donation-form-row">
@@ -991,23 +991,23 @@ class DonationForm extends LitElement {
                       .duration="${this._duration}"
                       .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                       .onCurrencyChange="${(currency: CurrencyRes) => {
-                        if (currency?.id) {
-                          this.setCurrency(currency.id);
-                          this.setOtherAmount(this._option);
-                        }
-                      }}"
+            if (currency?.id) {
+              this.setCurrency(currency.id);
+              this.setOtherAmount(this._option);
+            }
+          }}"
                       .onChange="${(amount?: MoneyReq) => {
-                        this._otherAmount = amount;
-                        if (amount) {
-                          this._amount = undefined;
-                        }
-                      }}"
+            this._otherAmount = amount;
+            if (amount) {
+              this._amount = undefined;
+            }
+          }}"
                       .showQuantitySelector="${this._otherAmountLocked}"
                       .quantity="${this._quantity}"
                       .onChangeQuantity="${(v: number) => (this._quantity = v)}"
                       .value="${this._otherAmount}"
                       .showCurrencyText="${this.showCurrencyText &&
-                      this.mode === DonationFormType.Full}"
+          this.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
                       .currencies="${this.currencies}"
                       .fixed="${this._otherAmountLocked}"
@@ -1015,7 +1015,7 @@ class DonationForm extends LitElement {
                   </div>
 
                   ${this._option?.type === "sponsorship"
-                    ? html`<div class="n3o-donation-form-row">
+            ? html`<div class="n3o-donation-form-row">
                         <sponsorship-duration
                           .givingType="${this._givingType}"
                           .currencies="${this.currencies}"
@@ -1026,16 +1026,16 @@ class DonationForm extends LitElement {
                           .baseUrl="${this.baseUrl}"
                           .fixedToDefault="${this.fixSponsorshipDurationToDefault}"
                           .selectedSponsorshipScheme="${this.getSelectedSponsorshipScheme(
-                            this._option,
-                            this.sponsorshipSchemes,
-                          )}"
+              this._option,
+              this.sponsorshipSchemes,
+            )}"
                           .amount="${this._otherAmount ||
-                          this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
+              this._amount?.currencyValues?.[this._selectedCurrencyId || ""]}"
                         ></sponsorship-duration>
                       </div>`
-                    : null}
+            : null}
                 </div>`
-          }
+      }
           <div class="n3o-donation-form-row">
             <donate-button
               .saving="${this._saving}"
@@ -1045,9 +1045,9 @@ class DonationForm extends LitElement {
 
           ${
             this.footerText
-              ? html`<div class="n3o-donation-form-footer">${this.footerText}</div>`
-              : undefined
-          }
+        ? html`<div class="n3o-donation-form-footer">${this.footerText}</div>`
+        : undefined
+      }
         </div>
       </div>`;
   }
@@ -1071,32 +1071,32 @@ class DonationForm extends LitElement {
         class="${this.mode === DonationFormType.Quick ? "n3o-quick-donate-form" : ""}"
       >
         ${this._apiError
-          ? html`<error-modal
+        ? html`<error-modal
               .showing="${true}"
               .onClose="${() => (this._apiError = undefined)}"
               .errors="${Object.values(this._apiError.errors || {})}"
               .title="${this._apiError.title}"
             ></error-modal>`
-          : undefined}
+        : undefined}
         ${this._validationErrors?.length
-          ? html`<error-modal
+        ? html`<error-modal
               .showing="${true}"
               .onClose="${() => (this._validationErrors = undefined)}"
               .errors="${this._validationErrors}"
             ></error-modal>`
-          : undefined}
+        : undefined}
 
         <div
           class="n3o-donation-form-title ${this.mode === DonationFormType.Quick
-            ? "n3o-quick-donate-title"
-            : ""}"
+        ? "n3o-quick-donate-title"
+        : ""}"
         >
           ${this.formTitle.toUpperCase()}
         </div>
 
         ${this.mode === DonationFormType.Full
-          ? html` <div class="n3o-donation-form-card">${this.renderDonationCardContents()}</div> `
-          : this.renderQuickDonationContents()}
+        ? html` <div class="n3o-donation-form-card">${this.renderDonationCardContents()}</div> `
+        : this.renderQuickDonationContents()}
       </div>
     `;
   }
