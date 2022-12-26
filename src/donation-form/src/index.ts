@@ -898,7 +898,7 @@ class DonationForm extends LitElement {
             .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
             .quantity="${this._quantity}"
             .onChangeQuantity="${(v: number) => (this._quantity = v)}"
-            .value="${this._otherAmount}"
+            .value="${this._otherAmount || this._amount}"
             .fixed="${this._otherAmountLocked}"
             .showCurrencyText="${this.showCurrencyText && this.mode === DonationFormType.Full}"
             .selectedCurrencyId="${this._selectedCurrencyId}"
@@ -949,7 +949,7 @@ class DonationForm extends LitElement {
                       .onChangeDuration="${(v?: SponsorshipDurationRes) => (this._duration = v)}"
                       .quantity="${this._quantity}"
                       .onChangeQuantity="${(v: number) => (this._quantity = v)}"
-                      .value="${this._otherAmount}"
+                      .value="${this._otherAmount || this._amount}"
                       .showQuantitySelector="${this._otherAmountLocked}"
                       .showCurrencyText="${this.showCurrencyText &&
           this.mode === DonationFormType.Full}"
@@ -1005,7 +1005,7 @@ class DonationForm extends LitElement {
                       .showQuantitySelector="${this._otherAmountLocked}"
                       .quantity="${this._quantity}"
                       .onChangeQuantity="${(v: number) => (this._quantity = v)}"
-                      .value="${this._otherAmount}"
+                      .value="${this._otherAmount || this._amount}"
                       .showCurrencyText="${this.showCurrencyText &&
           this.mode === DonationFormType.Full}"
                       .selectedCurrencyId="${this._selectedCurrencyId}"
