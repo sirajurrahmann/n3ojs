@@ -17,6 +17,16 @@
         src: url(https://fonts.gstatic.com/s/materialicons/v121/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2)
           format("woff2");
       }
+      @font-face {
+        font-family: "Museo Sans 100";
+        src: url(https://readfoundation.org.uk/assets/fonts/MuseoSans-100.otf)
+          format("opentype");
+      }
+      @font-face {
+        font-family: "Museo Sans 700";
+        src: url(https://readfoundation.org.uk/assets/fonts/MuseoSans_700.otf)
+          format("opentype");
+      }
     </style>
     <title>N3O Donation Form</title>
 
@@ -25,32 +35,32 @@
     <style>
       donation-form-sample-app {
         --row-spacing: 16px;
-        --font-family: "proximanova-regular", Montserrat, Arial, sans-serif !important;
+        --font-family: "Museo Sans 100", Montserrat, Arial, sans-serif !important;
         --default-text-color: rgb(33, 37, 41);
         --text-muted-color: #6c757d;
         --input-height: 40px;
         --input-font-size: 16px;
         --header-font-size: 20px;
         --text-color: #212529;
-        --border-radius: 0px;
+        --border-radius: 5px;
 
-        --input-border-size: 1px;
+        --input-border-size: 0px;
 
-        --title-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
+        --title-font-family: "Museo Sans 700", Montserrat, Arial, sans-serif !important;
         --quick-donate-text-size: 24px;
-        --giving-type-border-radius: 0px;
-        --price-handle-border-radius: 0px;
+        --giving-type-border-radius: 4px;
+        --price-handle-border-radius: 4px;
 
         --theme-color: #4faf46;
-        --form-background-color: #white;
+        --form-background-color: #ebebeb;
 
         --type-button-text-transform: uppercase;
-        --type-button-padding: 16px 12px;
+        --type-button-padding: 16px 16px;
 
         --button-text-size: 18px;
-        --button-background-color: none;
+        --button-background-color: white;
         --button-text-color: #6c757d;
-        --button-border: 1px solid #6c757d;
+        --button-border: 0;
         --button-box-shadow: none;
         --button-font-weight: 800;
 
@@ -64,7 +74,7 @@
         --button-selected-border: 1px solid var(--theme-color);
         --button-selected-box-shadow: var(--input-box-shadow);
 
-        --donate-button-font-family: "proximanova-bold", Montserrat, Arial, sans-serif !important;
+        --donate-button-font-family: "Museo Sans 700", Montserrat, Arial, sans-serif !important;
         --donate-button-text-color: #fff;
         --donate-button-background: #f26f22;
         --donate-button-hover-text-color: #fff;
@@ -72,6 +82,7 @@
         --donate-button-hover-border: none;
         --donate-button-hover-box-shadow: none;
         --donate-button-height: 40px;
+        --donate-button-roundedness: 4px;
 
         --donate-button-icon-color: white;
         --donate-button-icon-visibility: none; /* change to 'block' to make icon visible */

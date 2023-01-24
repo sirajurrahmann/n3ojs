@@ -9,7 +9,7 @@ export const donationFormStyles = css`
   }
   div[id*="n3o-donation-form"] {
     font-family: var(--font-family);
-    border: 4px solid var(--theme-color);
+    // border: 4px solid var(--theme-color);
     color: var(--text-color);
     box-shadow: var(--button-box-shadow);
   }
@@ -109,7 +109,8 @@ export const buttonStyles = css`
   .n3o-donation-form-button {
     transition: background-color 0.5s ease;
     font-weight: var(--button-font-weight);
-    width: 48%;
+    width: 50%;
+    height: var(--donate-button-height);
     font-size: var(--button-text-size, 18px);
     text-transform: var(--type-button-text-transform);
     padding: var(--type-button-padding, 6px 12px);
@@ -162,6 +163,8 @@ export const frequencyStyles = css`
   .n3o-donation-frequency-container {
     display: flex;
     justify-content: space-between;
+    background-color: var(--button-background-color);
+    border-radius: var(--donate-button-roundedness);
   }
   .n3o-donation-frequency-container .n3o-donation-form-button {
     border-radius: var(--giving-type-border-radius);
@@ -323,6 +326,7 @@ export const donateButtonStyles = css`
     transition: background-color 0.5s ease;
     color: var(--donate-button-text-color);
     background: var(--donate-button-background);
+    border-radius: var(--donate-button-roundedness);
     min-width: 200px;
     height: var(--donate-button-height);
 
