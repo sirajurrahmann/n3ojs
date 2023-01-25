@@ -258,8 +258,11 @@ export const otherAmountStyles = css`
     outline: none;
   }
   .n3o-input-amount-symbol {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: var(--input-font-size);
+    font-weight: var(--input-font-weight);
+    color: var(--theme-color);
   }
   .n3o-input-amount-text {
     margin-right: 5px;
@@ -341,6 +344,8 @@ export const donateButtonStyles = css`
   }
   .n3o-donate-button button:hover,
   .n3o-donate-button button:active {
+    font-size: calc(var(--button-text-size)*1.2);
+    transition: font-size 0.3s;
     color: var(--donate-button-hover-text-color);
     background: var(--donate-button-hover-background);
     border: var(--donate-button-hover-border);
