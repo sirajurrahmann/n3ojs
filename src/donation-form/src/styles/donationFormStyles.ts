@@ -70,7 +70,11 @@ export const donationFormStyles = css`
   }
   .n3o-donation-form-title,
   .n3o-donation-form-card {
-    padding: 8px 16px;
+    padding: 16px;
+  }
+
+  .n3o-donation-form-title{
+    display: var(--form-title-display);
   }
 
   @media (max-width: 992px) {
@@ -111,9 +115,9 @@ export const buttonStyles = css`
     font-weight: var(--button-font-weight);
     width: 50%;
     height: var(--donate-button-height);
-    font-size: var(--button-text-size, 18px);
+    font-size: var(--button-text-size);
     text-transform: var(--type-button-text-transform);
-    padding: var(--type-button-padding, 6px 12px);
+    // padding: var(--type-button-padding);
   }
   .n3o-donation-form-button-unselected {
     background: var(--button-background-color);
@@ -131,27 +135,33 @@ export const buttonStyles = css`
   .n3o-donation-form-button-selected {
     background-color: var(--button-selected-background-color);
     border: var(--button-selected-border);
-    color: var(--button-selected-text-color);
+    color: var(--button-selected-text-color) !important;
     box-shadow: var(--button-selected-box-shadow);
+  }
+  .main-donate-button{
+    height: var(--main-donate-button-height) !important;
   }
 `;
 
 export const amountSelectorStyles = css`
   * {
-    font-family: var(--donate-button-font-family);
+    font-family: var(--font-family);
   }
   .n3o-donation-form-price-select {
     display: flex;
     justify-content: space-between;
+    gap: 14px;
   }
   .n3o-donation-form-price-select button {
+    font-family: var(--donate-button-font-family);
+    color: var(--button-text-color-accent);
     width: 32%;
     border-radius: var(--price-handle-border-radius);
   }
   .n3o-donation-form-price-desc {
     text-align: center;
-    font-size: 14px;
-    margin-top: 12px;
+    font-size: 12px;
+    margin: 20px 0;
     color: var(--text-color);
   }
 `;
@@ -167,8 +177,10 @@ export const frequencyStyles = css`
     border-radius: var(--donate-button-roundedness);
   }
   .n3o-donation-frequency-container .n3o-donation-form-button {
+    padding: 12px;
     border-radius: var(--giving-type-border-radius);
-    text-transform: capitalize;
+    text-transform: uppercase;
+    font-size: var(--button-frequency-text-size);
     font-weight: var(--button-font-weight);
   }
 `;
@@ -210,7 +222,7 @@ export const selectCustomArrowStyles = css`
     background-image: var(--select-dropdown-url);
     background-repeat: no-repeat;
     background-position-x: 100%;
-    padding: 0 10px;
+    padding: 0 16px;
   }
 `;
 
@@ -220,7 +232,7 @@ export const otherAmountStyles = css`
     border-radius: var(--border-radius);
   }
   .n3o-amount-input {
-    background-color: #fff;
+    // background-color: #fff;
     border: var(--input-border-size) solid #d3d2d1;
     height: var(--input-height);
     font-size: var(--input-font-size);
@@ -242,16 +254,33 @@ export const otherAmountStyles = css`
     align-items: center;
   }
 
-  .n3o-select-quantity,
+  .n3o-select-quantity{
+    width: 208px;
+    height: 40px;
+    padding: 0 32px 0 16px;
+    text-overflow: ellipsis;
+  }
   .n3o-input-amount {
-    width: 100%;
+    width: 188px;
+    height: 40px;
+    padding-left: 20px;
+  }
+  .n3o-input-amount::placeholder {
+    color: var(--button-text-color);
+    font-style: italic;
   }
   .n3o-amount-input .n3o-select-currency {
     font-size: var(--input-font-size);
+    font-family: var(--donate-button-font-family);
+    color: var(--button-text-color-accent);
     height: calc(var(--input-height) - 1px);
     border: none;
-    width: 45px;
-    background-position-y: 2px;
+    width: 96px;
+    margin-right: 14px;
+    height: 40px;
+    background-image: var(--select-currency-dropdown-url) !important;
+    background-position-y: 0px;
+    background-position-x: 46px;
   }
   .n3o-amount-input .n3o-select-currency:focus-visible {
     border: none;
@@ -267,6 +296,7 @@ export const otherAmountStyles = css`
   .n3o-input-amount-text {
     margin-right: 5px;
     width: 40px;
+    display: none;
   }
   input,
   select {

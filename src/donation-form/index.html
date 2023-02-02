@@ -18,13 +18,17 @@
           format("woff2");
       }
       @font-face {
-        font-family: "Museo Sans 100";
-        src: url(https://readfoundation.org.uk/assets/fonts/MuseoSans-100.otf)
-          format("opentype");
+        font-family: "Museo Sans 500";
+        src: url(https://readfoundation.org.uk/assets/fonts/MuseoSans_500.otf)
+        /* local font testing */
+        /* src: url(./MuseoSans_500.otf) */
+        format("opentype");
       }
       @font-face {
         font-family: "Museo Sans 700";
         src: url(https://readfoundation.org.uk/assets/fonts/MuseoSans_700.otf)
+        /* local font testing */
+        /* src: url(./MuseoSans-700.otf) */
           format("opentype");
       }
     </style>
@@ -34,12 +38,12 @@
 
     <style>
       donation-form-sample-app {
-        --row-spacing: 20px;
-        --font-family: "Museo Sans 100", Montserrat, Arial, sans-serif !important;
-        --default-text-color: rgb(33, 37, 41);
+        --row-spacing: 14px;
+        --font-family: "Museo Sans 500", Montserrat, Arial, sans-serif !important;
+        --default-text-color: #3c3c3c;
         --text-muted-color: #6c757d;
-        --input-height: 60px;
-        --input-font-size: 18px;
+        --input-height: 40px;
+        --input-font-size: 15px;
         --input-font-weight: 700;
         --header-font-size: 20px;
         --text-color: #212529;
@@ -47,6 +51,7 @@
 
         --input-border-size: 0px;
 
+        --form-title-display: none; 
         --title-font-family: "Museo Sans 700", Montserrat, Arial, sans-serif !important;
         --quick-donate-text-size: 24px;
         --giving-type-border-radius: 4px;
@@ -55,19 +60,22 @@
         --theme-color: #4faf46;
         --form-background-color: #ebebeb;
 
-        --type-button-text-transform: uppercase;
-        --type-button-padding: 16px 16px;
+        --button-frequency-text-size: 12px;
 
-        --button-text-size: 18px;
+        --type-button-text-transform: uppercase;
+        --type-button-padding: 12px;
+
+        --button-text-size: 15px;
         --button-background-color: white;
-        --button-text-color: #6c757d;
+        --button-text-color: #939292;
+        --button-text-color-accent: #45A041;
         --button-border: 0;
         --button-box-shadow: none;
         --button-font-weight: 800;
 
         --button-hover-background-color: var(--theme-color);
         --button-hover-text-color: #fff;
-        --button-hover-border: 1px solid var(--theme-color);
+        --button-hover-border: 0px solid var(--theme-color);
         --button-hover-box-shadow: var(--input-box-shadow);
 
         --button-selected-background-color: var(--theme-color);
@@ -82,15 +90,20 @@
         --donate-button-hover-background: #de0633;
         --donate-button-hover-border: none;
         --donate-button-hover-box-shadow: none;
-        --donate-button-height: 60px;
+        --donate-button-height: 40px;
+        --main-donate-button-height: 50px;
         --donate-button-roundedness: 4px;
 
         --donate-button-icon-color: white;
         --donate-button-icon-visibility: none; /* change to 'block' to make icon visible */
 
         /* NOTE: Hex colour here must begin with %23 not # as # character is considered a fragment identifier. */
-        --select-dropdown-url: url("data:image/svg+xml;utf8,<svg fill='%211c18' height='40' viewBox='0 0 26 26' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        /* dropdown arrow without separator*/
+        --select-dropdown-url: url("data:image/svg+xml;utf8,<svg width='40' height='40' viewBox='0 0 26 40' fill='none' xmlns='http://www.w3.org/2000/svg'> <path d='M8 17L13 22L18 17' stroke='%2345A041' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/> </svg> ");
+        /* dropdown arrow with separator*/
+        --select-currency-dropdown-url: url("data:image/svg+xml;utf8,<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'> <path d='M20 17L25 22L30 17' stroke='%2345A041' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/> <path d='M2 40V0H-1V40H1Z' fill='%23EBEBEB' mask='url(%23path-1-inside-1_525_5131)'/> </svg> ");
       }
+
     </style>
 
     <style>

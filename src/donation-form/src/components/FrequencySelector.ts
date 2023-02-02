@@ -33,9 +33,9 @@ class FrequencySelector extends LitElement {
             : "n3o-donation-form-button-unselected"}"
           @click="${() => this.onChange?.(GivingType.Donation)}"
         >
-          ${this.singleText} SINGLE
+          ${this.singleText}
           <div style=" display:block; ${this.selected === GivingType.Donation
-            ? "position:relative; margin-top: 12px; left:40%; width: 0; height: 0; border-left: 24px solid transparent; border-right: 24px solid transparent; border-top: 24px solid var(--button-selected-background-color);" 
+            ? "position:relative; bottom: -12px; left:42%; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid var(--button-selected-background-color);" 
             : "display: none;"}">
           </div>
           </button>
@@ -46,9 +46,9 @@ class FrequencySelector extends LitElement {
             : "n3o-donation-form-button-unselected"}"
             @click="${() => this.onChange?.(GivingType.RegularGiving)}"
             >
-            ${this.regularText} MONTHLY
+            ${this.regularText}
             <div style=" display:block; ${this.selected === GivingType.RegularGiving
-              ? "position:relative; margin-top: 12px; left:40%; width: 0; height: 0; border-left: 24px solid transparent; border-right: 24px solid transparent; border-top: 24px solid var(--button-selected-background-color);" 
+              ? "position:relative; bottom: -12px; left:42%; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid var(--button-selected-background-color);" 
               : "display: none;"}">
             </div>
         </button>
