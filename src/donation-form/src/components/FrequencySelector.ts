@@ -34,15 +34,23 @@ class FrequencySelector extends LitElement {
           @click="${() => this.onChange?.(GivingType.Donation)}"
         >
           ${this.singleText}
-        </button>
-        <button
+          <div style=" display:block; ${this.selected === GivingType.Donation
+            ? "position:relative; bottom: -12px; left:42%; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid var(--button-selected-background-color);" 
+            : "display: none;"}">
+          </div>
+          </button>
+          <button
           aria-selected="${this.selected === GivingType.RegularGiving}"
           class="n3o-donation-form-button ${this.selected === GivingType.RegularGiving
             ? "n3o-donation-form-button-selected"
             : "n3o-donation-form-button-unselected"}"
-          @click="${() => this.onChange?.(GivingType.RegularGiving)}"
-        >
-          ${this.regularText}
+            @click="${() => this.onChange?.(GivingType.RegularGiving)}"
+            >
+            ${this.regularText}
+            <div style=" display:block; ${this.selected === GivingType.RegularGiving
+              ? "position:relative; bottom: -12px; left:42%; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid var(--button-selected-background-color);" 
+              : "display: none;"}">
+            </div>
         </button>
       </div>
     `;

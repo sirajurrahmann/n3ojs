@@ -157,6 +157,7 @@ class OtherAmount extends LitElement {
                 `
               : html`
                   <input
+                    placeholder="Enter Amount"
                     class="n3o-input-amount"
                     .value="${this.value?.amount || ""}"
                     .disabled="${this.fixed && !this.showQuantitySelector}"
